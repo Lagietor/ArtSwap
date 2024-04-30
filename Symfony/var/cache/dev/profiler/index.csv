@@ -1,2 +1,14 @@
 0e9acb,172.27.0.1,GET,http://localhost:1000/api,1712595471,,200
 5ff75c,172.27.0.1,GET,http://localhost:1000/api,1712595489,,200
+6cc55f,172.27.0.1,GET,http://localhost:1000/,1714493984,,404
+155904,172.27.0.1,GET,http://localhost:1000/favicon.ico,1714493987,fa4e19,404
+fa4e19,172.27.0.1,GET,http://localhost:1000/favicon.ico,1714493987,,404
+987cca,172.27.0.1,GET,http://localhost:1000/,1714493993,,404
+a244f7,172.27.0.1,GET,http://localhost:1000/pi,1714494010,7d1c1e,404
+7d1c1e,172.27.0.1,GET,http://localhost:1000/pi,1714494010,,404
+bd4331,172.27.0.1,GET,http://localhost:1000/api,1714494013,,200
+c04917,172.27.0.1,GET,http://localhost:1000/api/register,1714494102,3e379a,500
+3e379a,172.27.0.1,POST,http://localhost:1000/api/register,1714494102,,500
+2f88f7,172.27.0.1,POST,http://localhost:1000/api/register,1714494499,,200
+5414a3,172.27.0.1,POST,http://localhost:1000/api/login,1714494643,,200
+5304a0,172.27.0.1,POST,http://localhost:1000/api/login,1714494649,,302
