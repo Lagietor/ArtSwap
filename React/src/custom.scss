@@ -1,0 +1,31 @@
+// override theme variables
+// $primary: #E19898;
+// $secondary: #A2678A;
+// $info: #4D3C77;
+// $dark: #3F1D38;
+
+// $pagination-bg: $dark;
+// $pagination-border-color: $dark;
+// $pagination-hover-bg: $primary;
+// $pagination-hover-border-color: $primary;
+// $pagination-focus-bg: $primary;
+// $pagination-disabled-bg: #4F2E49;
+// $pagination-disabled-border-color: #4F2E49;
+// $pagination-disabled-color: #F2A9A9;
+// $primary:       $blue;
+// $secondary:     $gray-600;
+// $success:       $green;
+// $info:          $cyan;
+// $warning:       $yellow;
+// $danger:        $red;
+// $light:         $gray-100;
+// $dark:          $gray-900;
+
+// import bootstrap styles at the bottom!
+@import '../node_modules/bootstrap/scss/bootstrap.scss';
+
+// nie działa z jakiegoś powodu
+// select option:hover {
+//     background-color: $secondary !important; 
+//     color: $primary !important;
+// }

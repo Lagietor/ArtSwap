@@ -71,6 +71,7 @@ services:
     working_dir: /app
     environment:
       - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
     command: bash -c 'npm install && npm run dev'
     networks:
       - some_network
