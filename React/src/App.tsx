@@ -3,14 +3,19 @@ import "./custom.scss";
 import "./App.css"
 import Header from "./components/Header/Header";
 import Home from "./pages/Home";
+import Register from "./pages/Register";
 
 function App() {
   return (
     <BrowserRouter>
         <Header />
-        <Routes>
-            <Route path="/" element={<Home />} />
-        </Routes>
+        <div className="container-fluid">
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/register" element={<Register />} />
+            </Routes>
+        </div>
+
     </BrowserRouter>
   )
 }
