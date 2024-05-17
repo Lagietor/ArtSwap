@@ -1,9 +1,18 @@
 import Popup from "reactjs-popup";
 import PopupLogin from "./PopupLogin";
 import { useNavigate } from "react-router-dom";
+import useUser from "../../customHooks/useUser";
+import { Cookies } from "react-cookie";
 
 function Header() {
     const navigate = useNavigate();
+    const { user, isLogged } = useUser();
+
+    const handleLogout = () => {
+        const cookies = new Cookies();
+        cookies.remove("userToken");
+        window.location.reload();
+    }
 
     return(
         <>
@@ -17,7 +26,8 @@ function Header() {
                             </li>
                         </ul>
                         <div>
-                            <Popup
+                            {!isLogged ? (
+                                <Popup
                                 trigger={<button className="btn btn-primary">Log in</button>}
                                 modal
                                 nested
@@ -34,6 +44,9 @@ function Header() {
                                     <PopupLogin close={close} />
                                 }
                             </Popup>
+                            ) : (
+                                <button className="btn btn-primary" onClick={handleLogout}>Log out</button>
+                            )}
                         </div>
                     </div>
                 </div>

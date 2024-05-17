@@ -1,9 +1,20 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import { toast, ToastContainer } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { Cookies } from "react-cookie";
+import { useEffect } from "react";
 import useApi from "../customHooks/useApi";
+import useUser from "../customHooks/useUser";
 import 'react-toastify/dist/ReactToastify.css';
 
 function Register() {
+    const { isLogged } = useUser();
+    const navigate = useNavigate();
+
+    if (isLogged) {
+        navigate("/");
+    }
+
     const {
         register,
         handleSubmit,
@@ -11,23 +22,32 @@ function Register() {
         watch
     } = useForm();
 
-    const { isLoading, data, error, fetchData: handleSubmitApi } = useApi("http://localhost:1000/api/register", "POST");
+    const { isLoading, response, error, fetchData: handleSubmitApi } = useApi("http://localhost:1000/api/register", "POST");
+    const password = watch('password', '');
+    const cookies = new Cookies();
+
+    useEffect(() => {
+        if (response) {
+            cookies.set("userToken", response.token);
+            window.location.reload();
+        }
+    }, [response]);
 
     const onSubmit: SubmitHandler<{ email: string; password: string}> = async (data) => {
         try {
             await handleSubmitApi(data);
-            toast.success('Registration successful!');
         } catch (error) {
             toast.error('Registration failed!');
         }
-        console.log(data);
     }
 
-    const password = watch('password', '');
 
     return (
         <div className="container">
             <form onSubmit={handleSubmit(onSubmit)} className="my-5">
+                { error && (
+                    <p className="alert alert-danger">{error.response.data["message"]}</p>
+                )}
                 <div className="form-group">
                     <label htmlFor="email">Email</label>
                     <input

@@ -1,14 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 
 const useApi = (url: string, method = 'GET') => {
-    const [data, setData] = useState(null);
+    const [response, setResponse] = useState(null);
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
   
-    const fetchData = async (body) => {
+    const fetchData = async (body: object) => {
         setIsLoading(true);
-        console.log(body.email);
         try {
             let response;
             switch (method.toUpperCase()) {
@@ -27,7 +26,7 @@ const useApi = (url: string, method = 'GET') => {
                 default:
                     throw new Error('Unsupported HTTP method');
             }
-            setData(response.data);
+            setResponse(response.data);
         } catch (error) {
             setError(error);
         } finally {
@@ -35,7 +34,7 @@ const useApi = (url: string, method = 'GET') => {
         }
     };
   
-    return { data, error, isLoading, fetchData };
+    return { response, error, isLoading, fetchData };
   };
 
 export default useApi;

@@ -27,6 +27,14 @@ class AuthenticationController extends AbstractController
         $passwordPlain = $request['password'];
         $username = $request['username'];
 
+        $emailExists = $em->getRepository(User::class)->findOneBy(['email' => $email]);
+
+        if ($emailExists) {
+            return $this->json([
+                'message' => 'This email is already registered',
+            ], 403);
+        }
+
         $user = new User();
         $passwordHashed = $hasher->hashPassword($user, $passwordPlain);
 
