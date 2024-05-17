@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Route('/api', name: 'api_')]
 class AuthenticationController extends AbstractController
@@ -19,7 +20,8 @@ class AuthenticationController extends AbstractController
         Request $request,
         EntityManagerInterface $em,
         UserPasswordHasherInterface $hasher,
-        JWTTokenManagerInterface $jwtManager): JsonResponse
+        JWTTokenManagerInterface $jwtManager,
+        ValidatorInterface $validator): JsonResponse
     {
         $request = json_decode($request->getContent(), true);
 
@@ -32,15 +34,24 @@ class AuthenticationController extends AbstractController
         if ($emailExists) {
             return $this->json([
                 'message' => 'This email is already registered',
-            ], 403);
+            ], 400);
         }
 
         $user = new User();
-        $passwordHashed = $hasher->hashPassword($user, $passwordPlain);
 
         $user->setEmail($email);
-        $user->setPassword($passwordHashed);
+        $user->setPassword($passwordPlain);
         $user->setUsername($username);
+
+        // Validation
+        $errors = $validator->validate($user);
+
+        if (count($errors) > 0) {
+            return $this->json($errors, 400);
+        }
+
+        $passwordHashed = $hasher->hashPassword($user, $passwordPlain);
+        $user->setPassword($passwordHashed);
 
         $token = $jwtManager->create($user);
 
@@ -83,5 +94,10 @@ class AuthenticationController extends AbstractController
         return $this->json([
             'token' => $token
         ]);
+    }
+
+    private function validation($user)
+    {
+
     }
 }
