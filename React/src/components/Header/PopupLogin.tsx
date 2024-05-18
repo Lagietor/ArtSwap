@@ -1,7 +1,7 @@
+import "./header.css";
+import useApi from "../../customHooks/useApi";
 import { useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
-import useApi from "../../customHooks/useApi";
-import "./header.css";
 import { useEffect } from "react";
 import { Cookies } from "react-cookie";
 
@@ -11,13 +11,13 @@ function PopupLogin({ close }: {close: () => void }) {
     const {
         register,
         handleSubmit,
-    } = useForm();
+    } = useForm<{email: string, password: string}>();
 
     const { isLoading, response, error, fetchData: handleSubmitApi } = useApi("http://localhost:1000/api/login", "POST");
 
     useEffect(() => {
         if (response) {
-            cookies.set("userToken", response.token);
+            cookies.set("userToken", response["token"]);
             window.location.reload();
         }
     }, [response, error]);
@@ -25,7 +25,7 @@ function PopupLogin({ close }: {close: () => void }) {
     const onSubmit: SubmitHandler<{ email: string, password: string}> = async(data) => {
         try {
             await handleSubmitApi(data);
-        } catch (e) {
+        } catch (e: any) {
             console.log(e.message);
         }
     }
@@ -45,7 +45,9 @@ function PopupLogin({ close }: {close: () => void }) {
                 <div>
                     <form onSubmit={handleSubmit(onSubmit)} className="my-5">
                         {error && (
-                            <p className="alert alert-danger p-2">{error.response.data['message']}</p>
+                            <p className="alert alert-danger p-2">
+                                {(error["response"]["data"]["message"])}
+                            </p>
                         )}
                         <div className="">
                             <label htmlFor="email">Email</label>

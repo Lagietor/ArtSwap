@@ -20,7 +20,7 @@ function Register() {
         handleSubmit,
         formState: { errors },
         watch
-    } = useForm();
+    } = useForm<{email: string, username: string, password: string, confirmPassword: string}>();
 
     const { isLoading, response, error, fetchData: handleSubmitApi } = useApi("http://localhost:1000/api/register", "POST");
     const password = watch('password', '');
@@ -28,7 +28,7 @@ function Register() {
 
     useEffect(() => {
         if (response) {
-            cookies.set("userToken", response.token);
+            cookies.set("userToken", response["token"]);
             window.location.reload();
         }
     }, [response]);
@@ -46,7 +46,7 @@ function Register() {
         <div className="container">
             <form onSubmit={handleSubmit(onSubmit)} className="my-5">
                 { error && (
-                    <p className="alert alert-danger">{error.response.data["message"]}</p>
+                    <p className="alert alert-danger">{error["response"]["data"]["message"]}</p>
                 )}
                 <div className="form-group">
                     <label htmlFor="email">Email</label>
@@ -106,7 +106,9 @@ function Register() {
                             validate: (value) => value === password || 'The passwords do not match'
                         })}
                     />
-                    {errors.confirmPassword && <span className="text-danger">{errors.confirmPassword.message}</span>}
+                    {errors.confirmPassword && typeof errors.confirmPassword === 'string' &&
+                        <span className="text-danger">{errors.confirmPassword["message"]}</span>
+                    }
                 </div>
                 {isLoading ? (
                     <button type="submit" className="btn btn-primary disabled">

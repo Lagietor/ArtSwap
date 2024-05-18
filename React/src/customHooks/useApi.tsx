@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 
-const useApi = (url: string, method = 'GET') => {
+const useApi = (url: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE' = 'GET') => {
     const [response, setResponse] = useState(null);
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -27,7 +27,7 @@ const useApi = (url: string, method = 'GET') => {
                     throw new Error('Unsupported HTTP method');
             }
             setResponse(response.data);
-        } catch (error) {
+        } catch (error: any) {
             setError(error);
         } finally {
             setIsLoading(false);

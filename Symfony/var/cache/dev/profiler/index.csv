@@ -8,3 +8,12 @@ c4957e,172.18.0.1,POST,http://localhost:1000/api/register,1715978029,,403
 36956a,172.18.0.1,POST,http://localhost:1000/api/register,1715978514,,400
 8ec72f,172.18.0.1,POST,http://localhost:1000/api/register,1715978536,,400
 d1d96c,172.18.0.1,POST,http://localhost:1000/api/register,1715978564,,200
+d5cb6c,172.18.0.1,OPTIONS,http://localhost:1000/api/login,1716057282,,200
+fc3601,172.18.0.1,POST,http://localhost:1000/api/login,1716057286,,200
+fab6d0,172.18.0.1,POST,http://localhost:1000/api/login,1716057303,,302
+e1ee58,172.18.0.1,OPTIONS,http://localhost:1000/api/login,1716061383,,200
+b48860,172.18.0.1,POST,http://localhost:1000/api/login,1716061387,,302
+ce6967,172.18.0.1,POST,http://localhost:1000/api/login,1716061484,,302
+88ad46,172.18.0.1,POST,http://localhost:1000/api/login,1716063023,,302
+eb9344,172.18.0.1,POST,http://localhost:1000/api/login,1716063036,,302
+d4f938,172.18.0.1,POST,http://localhost:1000/api/login,1716063046,,200
