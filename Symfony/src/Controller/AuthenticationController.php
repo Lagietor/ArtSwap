@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Google_Client;
+use Google_Service_Oauth2;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -15,6 +17,13 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 #[Route('/api', name: 'api_')]
 class AuthenticationController extends AbstractController
 {
+    private $client;
+
+    public function __construct()
+    {
+        $this->client = new Google_Client(['client_id' => '219657399493-oiv4hv2f5h1f8rrejnb2cl87i02jj7q6.apps.googleusercontent.com']);
+    }
+
     #[Route('/register', name: 'api_register', methods:['POST'])]
     public function register(
         Request $request,
@@ -86,7 +95,7 @@ class AuthenticationController extends AbstractController
         if (!$user || !$hasher->isPasswordValid($user, $password)) {
             return $this->json([
                 'message' => 'wrong email or password'
-            ], 302);
+            ], 400);
         }
 
         $token = $jwtManager->create($user);
@@ -96,8 +105,39 @@ class AuthenticationController extends AbstractController
         ]);
     }
 
-    private function validation($user)
+    #[Route('/google-login', name: 'api_google_login', methods:['POST'])]
+    public  function googleLogin(
+        Request $request,
+        EntityManagerInterface $em,
+        JWTTokenManagerInterface $jwtManager,
+        UserPasswordHasherInterface $hasher): JsonResponse
     {
+        $data = json_decode($request->getContent(), true);
+        $idToken = $data['token'];
 
+        $payload = $this->client->verifyIdToken($idToken);
+
+        if (!$payload) {
+            return $this->json(['message' => 'Invalid token'], 400);
+        }
+
+        $email = $payload['email'];
+        $user = $em->getRepository(User::class)->findOneBy(['email' => $email]);
+
+        if (!$user) {
+            $user = new User();
+            $user->setEmail($email);
+            $user->setUsername($payload['name']);
+            $password = bin2hex(random_bytes(16));
+            $hashedPassword = $hasher->hashPassword($user, $password);
+            $user->setPassword($hashedPassword);
+
+            $em->persist($user);
+            $em->flush();
+        }
+
+        $token = $jwtManager->create($user);
+
+        return $this->json(['token' => $token]);
     }
 }

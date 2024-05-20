@@ -21,4 +21,5 @@ return [
     '_profiler_exception_css' => [['token'], ['_controller' => 'web_profiler.controller.exception_panel::stylesheet'], [], [['text', '/exception.css'], ['variable', '/', '[^/]++', 'token', true], ['text', '/_profiler']], [], [], []],
     'api_api_register' => [[], ['_controller' => 'App\\Controller\\AuthenticationController::register'], [], [['text', '/api/register']], [], [], []],
     'api_api_login' => [[], ['_controller' => 'App\\Controller\\AuthenticationController::login'], [], [['text', '/api/login']], [], [], []],
+    'api_api_google_login' => [[], ['_controller' => 'App\\Controller\\AuthenticationController::googleLogin'], [], [['text', '/api/google-login']], [], [], []],
 ];

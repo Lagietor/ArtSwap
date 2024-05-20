@@ -1,5 +1,5 @@
 import Popup from "reactjs-popup";
-import PopupLogin from "./PopupLogin";
+import PopupLogin from "../PopupLogin/PopupLogin";
 import { useNavigate } from "react-router-dom";
 import useUser from "../../customHooks/useUser";
 import { Cookies } from "react-cookie";

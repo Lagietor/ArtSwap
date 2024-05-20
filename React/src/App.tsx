@@ -4,11 +4,14 @@ import "./App.css"
 import Header from "./components/Header/Header";
 import Home from "./pages/Home";
 import Register from "./pages/Register";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 function App() {
   return (
     <BrowserRouter>
-        <Header />
+        <GoogleOAuthProvider clientId="219657399493-oiv4hv2f5h1f8rrejnb2cl87i02jj7q6.apps.googleusercontent.com">
+            <Header />
+        </GoogleOAuthProvider>
         <div className="container-fluid">
             <Routes>
                 <Route path="/" element={<Home />} />
