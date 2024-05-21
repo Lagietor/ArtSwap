@@ -6,6 +6,7 @@ use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Google_Client;
 use Google_Service_Oauth2;
+use GuzzleHttp\Client;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -113,11 +114,12 @@ class AuthenticationController extends AbstractController
         UserPasswordHasherInterface $hasher): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
-        $idToken = $data['token'];
+        $accessToken = $data['token'];
 
-        $payload = $this->client->verifyIdToken($idToken);
+        $response = file_get_contents("https://www.googleapis.com/oauth2/v3/userinfo?access_token={$accessToken}");
+        $payload = json_decode($response, true);
 
-        if (!$payload) {
+        if (!isset($payload['email'])) {
             return $this->json(['message' => 'Invalid token'], 400);
         }
 
@@ -128,6 +130,68 @@ class AuthenticationController extends AbstractController
             $user = new User();
             $user->setEmail($email);
             $user->setUsername($payload['name']);
+            $password = bin2hex(random_bytes(16));
+            $hashedPassword = $hasher->hashPassword($user, $password);
+            $user->setPassword($hashedPassword);
+
+            $em->persist($user);
+            $em->flush();
+        }
+
+        $token = $jwtManager->create($user);
+
+        return $this->json(['token' => $token]);
+    }
+
+    #[Route('/github-login', name: 'api_github_login', methods: ['POST'])]
+    public function githubLogin(
+        Request $request,
+        EntityManagerInterface $em,
+        JWTTokenManagerInterface $jwtManager,
+        UserPasswordHasherInterface $hasher): JsonResponse
+    {
+        $client = new Client();
+        $code = json_decode($request->getContent(), true)['code'];
+        $clientId = 'Ov23liBPuSRVeVtlU4jx';
+        $clientSecret = '9e2c2af46835f23dbc5d7ac52dc137a6e6db3e87';
+
+        $response = $client->post('https://github.com/login/oauth/access_token', [
+            'form_params' => [
+                'client_id' => $clientId,
+                'client_secret' => $clientSecret,
+                'code' => $code,
+            ],
+            'headers' => [
+                'Accept' => 'application/json',
+            ],
+        ]);
+
+        $data = json_decode($response->getBody()->getContents(), true);
+        $accessToken = $data['access_token'];
+
+        $userResponse = $client->get('https://api.github.com/user', [
+            'headers' => [
+                'Authorization' => "Bearer $accessToken",
+                'Accept' => 'application/json',
+            ],
+        ]);
+
+        $userData = json_decode($userResponse->getBody()->getContents(), true);
+
+        $email = $userData['email'];
+
+        if (!$email) {
+            return $this->json([
+                'message' => 'make your email public to let us use it for register purposes',
+            ], 400);
+        }
+
+        $user = $em->getRepository(User::class)->findOneBy(['email' => $email]);
+
+        if (!$user) {
+            $user = new User();
+            $user->setEmail($email);
+            $user->setUsername($userData['login']);
             $password = bin2hex(random_bytes(16));
             $hashedPassword = $hasher->hashPassword($user, $password);
             $user->setPassword($hashedPassword);

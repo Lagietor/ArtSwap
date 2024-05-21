@@ -22,4 +22,5 @@ return [
     'api_api_register' => [[], ['_controller' => 'App\\Controller\\AuthenticationController::register'], [], [['text', '/api/register']], [], [], []],
     'api_api_login' => [[], ['_controller' => 'App\\Controller\\AuthenticationController::login'], [], [['text', '/api/login']], [], [], []],
     'api_api_google_login' => [[], ['_controller' => 'App\\Controller\\AuthenticationController::googleLogin'], [], [['text', '/api/google-login']], [], [], []],
+    'api_api_github_login' => [[], ['_controller' => 'App\\Controller\\AuthenticationController::githubLogin'], [], [['text', '/api/github-login']], [], [], []],
 ];

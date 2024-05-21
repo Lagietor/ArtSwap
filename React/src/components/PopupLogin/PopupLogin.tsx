@@ -1,11 +1,11 @@
 import "./popupLogin.css";
 import useApi from "../../customHooks/useApi";
-import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useEffect } from "react";
 import { Cookies } from "react-cookie";
-import GoogleLog from "../GoogleLog/GoogleLog";
+import GoogleButton from "../GoogleButton/GoogleButton";
+import GithubButton from "../GithubButton/GithubButton";
 
 function PopupLogin({ close }: {close: () => void }) {
     const navigate = useNavigate();
@@ -71,9 +71,9 @@ function PopupLogin({ close }: {close: () => void }) {
                         <small className="text-muted">If you do not have an account <a onClick={handleSignInClick}>Sign In</a></small>
                     </form>
                 </div>
-                <div>
-                    <GoogleLog />
-                    <p>Login with Facebook</p>
+                <div className="social-buttons">
+                    <GoogleButton />
+                    <GithubButton />
                 </div>
                 <div>
                     <p>Login with MetaMask</p>

@@ -16,6 +16,7 @@ return [
         '/api/register' => [[['_route' => 'api_api_register', '_controller' => 'App\\Controller\\AuthenticationController::register'], null, ['POST' => 0], null, false, false, null]],
         '/api/login' => [[['_route' => 'api_api_login', '_controller' => 'App\\Controller\\AuthenticationController::login'], null, ['POST' => 0], null, false, false, null]],
         '/api/google-login' => [[['_route' => 'api_api_google_login', '_controller' => 'App\\Controller\\AuthenticationController::googleLogin'], null, ['POST' => 0], null, false, false, null]],
+        '/api/github-login' => [[['_route' => 'api_api_github_login', '_controller' => 'App\\Controller\\AuthenticationController::githubLogin'], null, ['POST' => 0], null, false, false, null]],
     ],
     [ // $regexpList
         0 => '{^(?'

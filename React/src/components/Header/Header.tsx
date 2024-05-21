@@ -1,12 +1,22 @@
-import Popup from "reactjs-popup";
-import PopupLogin from "../PopupLogin/PopupLogin";
-import { useNavigate } from "react-router-dom";
+import LoginModal from "../LoginModal/LoginModal";
+import { useLocation, useNavigate } from "react-router-dom";
 import useUser from "../../customHooks/useUser";
 import { Cookies } from "react-cookie";
+import { useEffect, useState } from "react";
 
 function Header() {
     const navigate = useNavigate();
     const { user, isLogged } = useUser();
+    const { search } = useLocation();
+    const [showLoginModal, setShowLoginModal] = useState(false);
+
+    useEffect(() => {
+        const params = new URLSearchParams(search);
+        const autoLogin = params.get("autoLogin");
+        if (autoLogin) {
+            setShowLoginModal(true);
+        }
+    })
 
     const handleLogout = () => {
         const cookies = new Cookies();
@@ -14,8 +24,13 @@ function Header() {
         window.location.reload();
     }
 
+    const handleLoginModalClose = () => {
+        setShowLoginModal(false);
+    };
+
     return(
         <>
+            <LoginModal open={showLoginModal} handleClose={handleLoginModalClose} />
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
                 <div className="container-fluid p-2 mx-5">
                     <a className="navbar-brand" href="#" onClick={() => navigate("/")}>Logo</a>
@@ -26,26 +41,27 @@ function Header() {
                             </li>
                         </ul>
                         <div>
-                            {!isLogged ? (
-                                <Popup
-                                trigger={<button className="btn btn-primary">Log in</button>}
-                                modal
-                                nested
-                                overlayStyle={{ background: 'rgba(0, 0, 0, 0.5)' }}
-                                contentStyle={{
-                                    width: '80%',
-                                    maxWidth: '400px',
-                                    background: '#fff',
-                                    borderRadius: '5px',
-                                    boxShadow: '0 2px 5px rgba(0, 0, 0, 0.3)'
-                                }}
-                            >
-                                {(close: () => void) => 
-                                    <PopupLogin close={close} />
-                                }
-                            </Popup>
+                        {!isLogged ? (
+                                <button className="btn btn-primary" onClick={() => setShowLoginModal(true)}>
+                                    Log in
+                                </button>
                             ) : (
-                                <button className="btn btn-primary" onClick={handleLogout}>Log out</button>
+                                <div className="dropdown text-end">
+                                    <a href="#" className="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
+                                        <img src="#" alt="profile-picture" width="32" height="32" className="rounded-circle" />
+                                    </a>
+                                    <ul className="dropdown-menu text-small">
+                                        <li>
+                                            <a className="dropdown-item" href="#">Profile</a>
+                                        </li>
+                                        <li>
+                                            <a className="dropdown-item" href="#">Settings</a>
+                                        </li>
+                                        <li>
+                                            <a className="dropdown-item" href="#">Sign out</a>
+                                        </li>
+                                    </ul>
+                                </div>
                             )}
                         </div>
                     </div>
