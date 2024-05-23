@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -50,6 +52,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: NFTCollection::class)]
+    private Collection $nFTCollections;
+
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: NFTItem::class)]
+    private Collection $nFTItems;
+
+    public function __construct()
+    {
+        $this->nFTCollections = new ArrayCollection();
+        $this->nFTItems = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -83,7 +97,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
@@ -140,6 +153,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setImage(?string $image): static
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, NFTCollection>
+     */
+    public function getNFTCollections(): Collection
+    {
+        return $this->nFTCollections;
+    }
+
+    public function addNFTCollection(NFTCollection $nFTCollection): static
+    {
+        if (!$this->nFTCollections->contains($nFTCollection)) {
+            $this->nFTCollections->add($nFTCollection);
+            $nFTCollection->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNFTCollection(NFTCollection $nFTCollection): static
+    {
+        if ($this->nFTCollections->removeElement($nFTCollection)) {
+            // set the owning side to null (unless already changed)
+            if ($nFTCollection->getUser() === $this) {
+                $nFTCollection->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, NFTItem>
+     */
+    public function getNFTItems(): Collection
+    {
+        return $this->nFTItems;
+    }
+
+    public function addNFTItem(NFTItem $nFTItem): static
+    {
+        if (!$this->nFTItems->contains($nFTItem)) {
+            $this->nFTItems->add($nFTItem);
+            $nFTItem->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNFTItem(NFTItem $nFTItem): static
+    {
+        if ($this->nFTItems->removeElement($nFTItem)) {
+            // set the owning side to null (unless already changed)
+            if ($nFTItem->getOwner() === $this) {
+                $nFTItem->setOwner(null);
+            }
+        }
 
         return $this;
     }

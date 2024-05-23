@@ -48,7 +48,7 @@ function Header() {
                             ) : (
                                 <div className="dropdown text-end">
                                     <a href="#" className="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
-                                        <img src="#" alt="profile-picture" width="32" height="32" className="rounded-circle" />
+                                        <img src="profileImages/BUBBA.jpg" alt="profile-picture" width="45" height="45" className="rounded-circle" />
                                     </a>
                                     <ul className="dropdown-menu text-small">
                                         <li>
@@ -58,7 +58,7 @@ function Header() {
                                             <a className="dropdown-item" href="#">Settings</a>
                                         </li>
                                         <li>
-                                            <a className="dropdown-item" href="#">Sign out</a>
+                                            <a className="dropdown-item" href="#" onClick={handleLogout}>Sign out</a>
                                         </li>
                                     </ul>
                                 </div>

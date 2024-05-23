@@ -4,8 +4,6 @@ namespace App\Controller;
 
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
-use Google_Client;
-use Google_Service_Oauth2;
 use GuzzleHttp\Client;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,13 +16,6 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 #[Route('/api', name: 'api_')]
 class AuthenticationController extends AbstractController
 {
-    private $client;
-
-    public function __construct()
-    {
-        $this->client = new Google_Client(['client_id' => '219657399493-oiv4hv2f5h1f8rrejnb2cl87i02jj7q6.apps.googleusercontent.com']);
-    }
-
     #[Route('/register', name: 'api_register', methods:['POST'])]
     public function register(
         Request $request,
@@ -53,7 +44,6 @@ class AuthenticationController extends AbstractController
         $user->setPassword($passwordPlain);
         $user->setUsername($username);
 
-        // Validation
         $errors = $validator->validate($user);
 
         if (count($errors) > 0) {

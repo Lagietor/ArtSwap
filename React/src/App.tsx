@@ -2,7 +2,7 @@ import {BrowserRouter, Routes, Route} from "react-router-dom";
 import "./custom.scss";
 import "./App.css"
 import Header from "./components/Header/Header";
-import Home from "./pages/Home";
+import Home from "./pages/Home/Home";
 import Register from "./pages/Register";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 

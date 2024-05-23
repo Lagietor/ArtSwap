@@ -457,9 +457,30 @@
         <argument type="service" id=".service_locator.l1ae.Qz.App\Controller\AuthenticationController"/>
       </call>
     </service>
+    <service id="App\Controller\NFTCollectionController" class="App\Controller\NFTCollectionController" public="true" autowire="true" autoconfigure="true">
+      <tag name="controller.service_arguments"/>
+      <tag name="container.service_subscriber"/>
+      <call method="setContainer">
+        <argument type="service" id=".service_locator.l1ae.Qz.App\Controller\NFTCollectionController"/>
+      </call>
+    </service>
+    <service id="App\EventSubscriber\JwtCreatedSubscriber" class="App\EventSubscriber\JwtCreatedSubscriber" autowire="true" autoconfigure="true">
+      <tag name="kernel.event_subscriber"/>
+    </service>
+    <service id="App\Repository\NFTCollectionRepository" class="App\Repository\NFTCollectionRepository" autowire="true" autoconfigure="true">
+      <tag name="doctrine.repository_service"/>
+      <argument type="service" id="doctrine"/>
+    </service>
+    <service id="App\Repository\NFTItemRepository" class="App\Repository\NFTItemRepository" autowire="true" autoconfigure="true">
+      <tag name="doctrine.repository_service"/>
+      <argument type="service" id="doctrine"/>
+    </service>
     <service id="App\Repository\UserRepository" class="App\Repository\UserRepository" autowire="true" autoconfigure="true">
       <tag name="doctrine.repository_service"/>
       <argument type="service" id="doctrine"/>
+    </service>
+    <service id="App\EventSubscriber\JWTCreatedSubscriber" class="App\EventSubscriber\JWTCreatedSubscriber" autowire="true" autoconfigure="true">
+      <tag name="kernel.event_subscriber"/>
     </service>
     <service id="argument_metadata_factory" class="Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadataFactory"/>
     <service id="response_listener" class="Symfony\Component\HttpKernel\EventListener\ResponseListener">
@@ -1513,6 +1534,22 @@
           <argument>onSecurityPostValidation</argument>
         </argument>
         <argument>63</argument>
+      </call>
+      <call method="addListener">
+        <argument>lexik_jwt_authentication.on_jwt_created</argument>
+        <argument type="collection">
+          <argument type="service_closure" id="App\EventSubscriber\JwtCreatedSubscriber"/>
+          <argument>onJWTCreated</argument>
+        </argument>
+        <argument>0</argument>
+      </call>
+      <call method="addListener">
+        <argument>lexik_jwt_authentication.on_jwt_created</argument>
+        <argument type="collection">
+          <argument type="service_closure" id="App\EventSubscriber\JWTCreatedSubscriber"/>
+          <argument>onJWTCreated</argument>
+        </argument>
+        <argument>0</argument>
       </call>
       <call method="addListener">
         <argument>kernel.response</argument>
@@ -2866,7 +2903,7 @@
     <service id="doctrine.orm.configuration" class="Doctrine\ORM\Configuration" abstract="true"/>
     <service id="doctrine.orm.entity_manager.abstract" class="Doctrine\ORM\EntityManager" lazy="true" abstract="true"/>
     <service id="doctrine.orm.container_repository_factory" class="Doctrine\Bundle\DoctrineBundle\Repository\ContainerRepositoryFactory">
-      <argument type="service" id=".service_locator._inl0RG"/>
+      <argument type="service" id=".service_locator.lM2jYg."/>
     </service>
     <service id="doctrine.orm.manager_configurator.abstract" class="Doctrine\Bundle\DoctrineBundle\ManagerConfigurator" abstract="true">
       <argument type="collection"/>
@@ -5654,8 +5691,19 @@
     <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\AuthenticationController" class="App\Controller\AuthenticationController" autowire="true" abstract="true"/>
     <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\AuthenticationController" class="App\Controller\AuthenticationController" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Controller\AuthenticationController" class="App\Controller\AuthenticationController" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\NFTCollectionController" class="App\Controller\NFTCollectionController" autowire="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\NFTCollectionController" class="App\Controller\NFTCollectionController" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Controller\NFTCollectionController" class="App\Controller\NFTCollectionController" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Component\EventDispatcher\EventSubscriberInterface.0.App\EventSubscriber\JwtCreatedSubscriber" class="App\EventSubscriber\JwtCreatedSubscriber" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\EventSubscriber\JwtCreatedSubscriber" class="App\EventSubscriber\JwtCreatedSubscriber" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\NFTCollectionRepository" class="App\Repository\NFTCollectionRepository" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Repository\NFTCollectionRepository" class="App\Repository\NFTCollectionRepository" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\NFTItemRepository" class="App\Repository\NFTItemRepository" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Repository\NFTItemRepository" class="App\Repository\NFTItemRepository" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\UserRepository" class="App\Repository\UserRepository" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Repository\UserRepository" class="App\Repository\UserRepository" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Component\EventDispatcher\EventSubscriberInterface.0.App\EventSubscriber\JWTCreatedSubscriber" class="App\EventSubscriber\JWTCreatedSubscriber" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\EventSubscriber\JWTCreatedSubscriber" class="App\EventSubscriber\JWTCreatedSubscriber" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".service_locator.gSv9zYw" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
@@ -6101,13 +6149,20 @@
         <argument key="jwtManager" type="service_closure" id="lexik_jwt_authentication.jwt_manager"/>
       </argument>
     </service>
-    <service id=".service_locator.LDXvmer" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.5miB8_X" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="em" type="service_closure" id="doctrine.orm.default_entity_manager"/>
+      </argument>
+    </service>
+    <service id=".service_locator.XK5qmET" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="App\Controller\AuthenticationController::githubLogin" type="service_closure" id=".service_locator.Lg7M_Sj"/>
         <argument key="App\Controller\AuthenticationController::googleLogin" type="service_closure" id=".service_locator.Lg7M_Sj"/>
         <argument key="App\Controller\AuthenticationController::login" type="service_closure" id=".service_locator.Lg7M_Sj"/>
         <argument key="App\Controller\AuthenticationController::register" type="service_closure" id=".service_locator.MkrZLUL"/>
+        <argument key="App\Controller\NFTCollectionController::create" type="service_closure" id=".service_locator.5miB8_X"/>
         <argument key="App\Kernel::loadRoutes" type="service_closure" id=".service_locator.KfbR3DY"/>
         <argument key="App\Kernel::registerContainerConfiguration" type="service_closure" id=".service_locator.KfbR3DY"/>
         <argument key="kernel::loadRoutes" type="service_closure" id=".service_locator.KfbR3DY"/>
@@ -6116,6 +6171,7 @@
         <argument key="App\Controller\AuthenticationController:googleLogin" type="service_closure" id=".service_locator.Lg7M_Sj"/>
         <argument key="App\Controller\AuthenticationController:login" type="service_closure" id=".service_locator.Lg7M_Sj"/>
         <argument key="App\Controller\AuthenticationController:register" type="service_closure" id=".service_locator.MkrZLUL"/>
+        <argument key="App\Controller\NFTCollectionController:create" type="service_closure" id=".service_locator.5miB8_X"/>
         <argument key="kernel:loadRoutes" type="service_closure" id=".service_locator.KfbR3DY"/>
         <argument key="kernel:registerContainerConfiguration" type="service_closure" id=".service_locator.KfbR3DY"/>
       </argument>
@@ -6187,9 +6243,11 @@
         <argument key="doctrine.orm.listeners.doctrine_token_provider_schema_subscriber" type="service_closure" id="doctrine.orm.listeners.doctrine_token_provider_schema_subscriber"/>
       </argument>
     </service>
-    <service id=".service_locator._inl0RG" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.lM2jYg." class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
+        <argument key="App\Repository\NFTCollectionRepository" type="service_closure" id="App\Repository\NFTCollectionRepository"/>
+        <argument key="App\Repository\NFTItemRepository" type="service_closure" id="App\Repository\NFTItemRepository"/>
         <argument key="App\Repository\UserRepository" type="service_closure" id="App\Repository\UserRepository"/>
       </argument>
     </service>
@@ -6252,6 +6310,12 @@
     <service id=".service_locator.l1ae.Qz.App\Controller\AuthenticationController" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator_context" id="App\Controller\AuthenticationController"/>
       <argument>App\Controller\AuthenticationController</argument>
+      <argument type="service" id="service_container"/>
+      <factory service=".service_locator.l1ae.Qz" method="withContext"/>
+    </service>
+    <service id=".service_locator.l1ae.Qz.App\Controller\NFTCollectionController" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator_context" id="App\Controller\NFTCollectionController"/>
+      <argument>App\Controller\NFTCollectionController</argument>
       <argument type="service" id="service_container"/>
       <factory service=".service_locator.l1ae.Qz" method="withContext"/>
     </service>
@@ -6440,12 +6504,12 @@
       <argument type="service" id="security.token_storage"/>
     </service>
     <service id="debug.argument_resolver.service.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver">
-      <argument type="service" id=".service_locator.LDXvmer"/>
+      <argument type="service" id=".service_locator.XK5qmET"/>
     </service>
     <service id="debug.argument_resolver.default.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver"/>
     <service id="debug.argument_resolver.variadic.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\VariadicValueResolver"/>
     <service id="debug.argument_resolver.not_tagged_controller.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\NotTaggedControllerValueResolver">
-      <argument type="service" id=".service_locator.LDXvmer"/>
+      <argument type="service" id=".service_locator.XK5qmET"/>
     </service>
     <service id=".doctrine.orm.default_metadata_driver.inner" class="Doctrine\Persistence\Mapping\Driver\MappingDriverChain">
       <call method="addDriver">
@@ -7486,7 +7550,7 @@
     <service id="lexik_jwt_authentication.key_loader" alias="lexik_jwt_authentication.key_loader.raw" public="true"/>
     <service id="container.env_var_processors_locator" alias=".service_locator.gSv9zYw" public="true"/>
     <service id="twig.loader.filesystem" alias="twig.loader.native_filesystem"/>
-    <service id="argument_resolver.controller_locator" alias=".service_locator.LDXvmer"/>
+    <service id="argument_resolver.controller_locator" alias=".service_locator.XK5qmET"/>
     <service id="doctrine.id_generator_locator" alias=".service_locator.KLVvNIq"/>
     <service id="twig.loader" alias="twig.loader.native_filesystem"/>
     <service id="api_platform.name_converter" alias="serializer.name_converter.metadata_aware"/>
@@ -7495,7 +7559,7 @@
     <service id=".service_locator.Xbsa8iG" alias="api_platform.filter_locator"/>
     <service id=".service_locator.0GV1BZZ" alias=".service_locator.gSv9zYw"/>
     <service id=".service_locator.mreGqg1" alias=".service_locator.Lg7M_Sj"/>
-    <service id=".service_locator.pSOVVQa" alias=".service_locator.LDXvmer"/>
+    <service id=".service_locator.f6h_aI3" alias=".service_locator.XK5qmET"/>
     <service id=".service_locator.wKF4yn1" alias=".service_locator.19_mNxd"/>
     <service id=".service_locator.qBCHs1a" alias=".service_locator.QXcJQkF"/>
     <service id=".service_locator.jkb6XQV" alias=".service_locator.l1ae.Qz"/>
@@ -7556,6 +7620,7 @@
     <service id=".service_locator.JBAFp66" alias=".service_locator.KfbR3DY"/>
     <service id=".service_locator.e8md00c" alias=".service_locator.MkrZLUL"/>
     <service id=".service_locator.1tGHM8U" alias=".service_locator.Lg7M_Sj"/>
+    <service id=".service_locator.kydi4Ed" alias=".service_locator.5miB8_X"/>
     <service id=".service_locator.bk6HUrh" alias=".service_locator.l1ae.Qz"/>
     <service id=".service_locator.u6DWx23" alias=".service_locator.cXsfP3P"/>
     <service id=".service_locator.aa1PbBb" alias=".service_locator.nLgZj7R"/>

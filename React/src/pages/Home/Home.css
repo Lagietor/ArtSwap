@@ -1,0 +1,19 @@
+body {
+    background-color: #404040;
+}
+
+.category-btn {
+    padding: 4px;
+    border: 1px solid #a0a0a0;
+    border-radius: 40px;
+    width: 5vw;
+    text-align: center;
+    color: white;
+    margin-left: 0.5vw;
+    background-color: transparent;
+    transition: 0.5s;
+}
+
+.category-btn:hover {
+    background-color: #a0a0a0;
+}
