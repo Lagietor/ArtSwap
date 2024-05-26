@@ -45,4 +45,36 @@ class NFTCollectionRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+
+    /**
+     * @return NFTCollection[]
+     */
+    public function findByFilters($phrase = '', $filter = ''): array
+    {
+        $queryBuilder = $this->createQueryBuilder('n');
+
+        if (!empty($phrase)) {
+            $queryBuilder->andWhere('n.name LIKE :phrase')
+            ->setParameter('phrase', '%' . $phrase . '%');
+        }
+
+        if ($filter === 'Newest') {
+            $queryBuilder->orderBy('n.createdAt', 'DESC');
+        }
+
+        if ($filter === 'Oldest') {
+            $queryBuilder->orderBy('n.createdAt', 'ASC');
+        }
+
+        if ($filter === 'Popular') {
+            $queryBuilder->orderBy('n.views', 'DESC');
+        }
+
+        if ($filter === 'Expensive') {
+            $queryBuilder->orderBy('n.floorPrice', 'DESC');
+        }
+
+        return $queryBuilder->getQuery()->getResult();
+    }
 }

@@ -6,7 +6,7 @@ const useApi = (url: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE' = 'GET') 
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
   
-    const fetchData = async (body: object) => {
+    const fetchData = async (body: object = {}) => {
         setIsLoading(true);
         try {
             let response;

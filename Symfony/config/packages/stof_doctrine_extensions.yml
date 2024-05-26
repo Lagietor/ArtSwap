@@ -1,0 +1,16 @@
+stof_doctrine_extensions:
+    default_locale: en
+    orm:
+        default:
+            timestampable: true
+    class:
+        timestampable: Gedmo\Timestampable\TimestampableListener
+    uploadable:
+        default_file_path: null
+        mime_type_guesser_class: Stof\DoctrineExtensionsBundle\Uploadable\MimeTypeGuesserAdapter
+        default_file_info_class: Stof\DoctrineExtensionsBundle\Uploadable\UploadedFileInfo
+        validate_writable_directory: true
+    translation_fallback: false
+    persist_default_translation: false
+    skip_translation_on_load: false
+    metadata_cache_pool: null

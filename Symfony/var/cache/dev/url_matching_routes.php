@@ -17,6 +17,11 @@ return [
         '/api/login' => [[['_route' => 'api_api_login', '_controller' => 'App\\Controller\\AuthenticationController::login'], null, ['POST' => 0], null, false, false, null]],
         '/api/google-login' => [[['_route' => 'api_api_google_login', '_controller' => 'App\\Controller\\AuthenticationController::googleLogin'], null, ['POST' => 0], null, false, false, null]],
         '/api/github-login' => [[['_route' => 'api_api_github_login', '_controller' => 'App\\Controller\\AuthenticationController::githubLogin'], null, ['POST' => 0], null, false, false, null]],
+        '/api/collection' => [
+            [['_route' => 'api_api_collection_create', '_controller' => 'App\\Controller\\NFTCollectionController::create'], null, ['POST' => 0], null, false, false, null],
+            [['_route' => 'api_api_collection_get_all', '_controller' => 'App\\Controller\\NFTCollectionController::getAll'], null, ['GET' => 0], null, false, false, null],
+        ],
+        '/api/collection/search' => [[['_route' => 'api_api_collection_search', '_controller' => 'App\\Controller\\NFTCollectionController::search'], null, ['GET' => 0], null, false, false, null]],
     ],
     [ // $regexpList
         0 => '{^(?'
@@ -25,22 +30,25 @@ return [
                     .'|(?:/(index)(?:\\.([^/]++))?)?(*:78)'
                     .'|/(?'
                         .'|docs(?:\\.([^/]++))?(*:108)'
-                        .'|contexts/([^.]+)(?:\\.(jsonld))?(*:147)'
+                        .'|co(?'
+                            .'|ntexts/([^.]+)(?:\\.(jsonld))?(*:150)'
+                            .'|llection/([^/]++)(*:175)'
+                        .')'
                     .')'
                 .')'
                 .'|/_(?'
-                    .'|error/(\\d+)(?:\\.([^/]++))?(*:188)'
-                    .'|wdt/([^/]++)(*:208)'
+                    .'|error/(\\d+)(?:\\.([^/]++))?(*:217)'
+                    .'|wdt/([^/]++)(*:237)'
                     .'|profiler/([^/]++)(?'
                         .'|/(?'
-                            .'|search/results(*:254)'
-                            .'|router(*:268)'
+                            .'|search/results(*:283)'
+                            .'|router(*:297)'
                             .'|exception(?'
-                                .'|(*:288)'
-                                .'|\\.css(*:301)'
+                                .'|(*:317)'
+                                .'|\\.css(*:330)'
                             .')'
                         .')'
-                        .'|(*:311)'
+                        .'|(*:340)'
                     .')'
                 .')'
             .')/?$}sDu',
@@ -49,14 +57,15 @@ return [
         43 => [[['_route' => 'api_genid', '_controller' => 'api_platform.action.not_exposed', '_api_respond' => 'true'], ['id'], null, null, false, true, null]],
         78 => [[['_route' => 'api_entrypoint', '_controller' => 'api_platform.action.entrypoint', '_format' => '', '_api_respond' => 'true', 'index' => 'index'], ['index', '_format'], null, null, false, true, null]],
         108 => [[['_route' => 'api_doc', '_controller' => 'api_platform.action.documentation', '_format' => '', '_api_respond' => 'true'], ['_format'], null, null, false, true, null]],
-        147 => [[['_route' => 'api_jsonld_context', '_controller' => 'api_platform.jsonld.action.context', '_format' => 'jsonld', '_api_respond' => 'true'], ['shortName', '_format'], null, null, false, true, null]],
-        188 => [[['_route' => '_preview_error', '_controller' => 'error_controller::preview', '_format' => 'html'], ['code', '_format'], null, null, false, true, null]],
-        208 => [[['_route' => '_wdt', '_controller' => 'web_profiler.controller.profiler::toolbarAction'], ['token'], null, null, false, true, null]],
-        254 => [[['_route' => '_profiler_search_results', '_controller' => 'web_profiler.controller.profiler::searchResultsAction'], ['token'], null, null, false, false, null]],
-        268 => [[['_route' => '_profiler_router', '_controller' => 'web_profiler.controller.router::panelAction'], ['token'], null, null, false, false, null]],
-        288 => [[['_route' => '_profiler_exception', '_controller' => 'web_profiler.controller.exception_panel::body'], ['token'], null, null, false, false, null]],
-        301 => [[['_route' => '_profiler_exception_css', '_controller' => 'web_profiler.controller.exception_panel::stylesheet'], ['token'], null, null, false, false, null]],
-        311 => [
+        150 => [[['_route' => 'api_jsonld_context', '_controller' => 'api_platform.jsonld.action.context', '_format' => 'jsonld', '_api_respond' => 'true'], ['shortName', '_format'], null, null, false, true, null]],
+        175 => [[['_route' => 'api_api_collection_get', '_controller' => 'App\\Controller\\NFTCollectionController::get'], ['id'], ['GET' => 0], null, false, true, null]],
+        217 => [[['_route' => '_preview_error', '_controller' => 'error_controller::preview', '_format' => 'html'], ['code', '_format'], null, null, false, true, null]],
+        237 => [[['_route' => '_wdt', '_controller' => 'web_profiler.controller.profiler::toolbarAction'], ['token'], null, null, false, true, null]],
+        283 => [[['_route' => '_profiler_search_results', '_controller' => 'web_profiler.controller.profiler::searchResultsAction'], ['token'], null, null, false, false, null]],
+        297 => [[['_route' => '_profiler_router', '_controller' => 'web_profiler.controller.router::panelAction'], ['token'], null, null, false, false, null]],
+        317 => [[['_route' => '_profiler_exception', '_controller' => 'web_profiler.controller.exception_panel::body'], ['token'], null, null, false, false, null]],
+        330 => [[['_route' => '_profiler_exception_css', '_controller' => 'web_profiler.controller.exception_panel::stylesheet'], ['token'], null, null, false, false, null]],
+        340 => [
             [['_route' => '_profiler', '_controller' => 'web_profiler.controller.profiler::panelAction'], ['token'], null, null, false, true, null],
             [null, null, null, null, false, false, 0],
         ],

@@ -20,6 +20,8 @@
       <parameter key="MakerBundle">Symfony\Bundle\MakerBundle\MakerBundle</parameter>
       <parameter key="WebProfilerBundle">Symfony\Bundle\WebProfilerBundle\WebProfilerBundle</parameter>
       <parameter key="LexikJWTAuthenticationBundle">Lexik\Bundle\JWTAuthenticationBundle\LexikJWTAuthenticationBundle</parameter>
+      <parameter key="DoctrineBehaviorsBundle">Knp\DoctrineBehaviors\DoctrineBehaviorsBundle</parameter>
+      <parameter key="StofDoctrineExtensionsBundle">Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle</parameter>
     </parameter>
     <parameter key="kernel.bundles_metadata" type="collection">
       <parameter key="FrameworkBundle" type="collection">
@@ -65,6 +67,14 @@
       <parameter key="LexikJWTAuthenticationBundle" type="collection">
         <parameter key="path">/var/www/html/vendor/lexik/jwt-authentication-bundle</parameter>
         <parameter key="namespace">Lexik\Bundle\JWTAuthenticationBundle</parameter>
+      </parameter>
+      <parameter key="DoctrineBehaviorsBundle" type="collection">
+        <parameter key="path">/var/www/html/vendor/knplabs/doctrine-behaviors/src</parameter>
+        <parameter key="namespace">Knp\DoctrineBehaviors</parameter>
+      </parameter>
+      <parameter key="StofDoctrineExtensionsBundle" type="collection">
+        <parameter key="path">/var/www/html/vendor/stof/doctrine-extensions-bundle/src</parameter>
+        <parameter key="namespace">Stof\DoctrineExtensionsBundle</parameter>
       </parameter>
     </parameter>
     <parameter key="kernel.charset">UTF-8</parameter>
@@ -366,6 +376,24 @@
     <parameter key="lexik_jwt_authentication.user_id_claim">username</parameter>
     <parameter key="lexik_jwt_authentication.encoder.signature_algorithm">RS256</parameter>
     <parameter key="lexik_jwt_authentication.encoder.crypto_engine">openssl</parameter>
+    <parameter key="doctrine_behaviors_translatable_fetch_mode">LAZY</parameter>
+    <parameter key="doctrine_behaviors_translation_fetch_mode">LAZY</parameter>
+    <parameter key="doctrine_behaviors_blameable_user_entity">null</parameter>
+    <parameter key="doctrine_behaviors_timestampable_date_field_type">datetime</parameter>
+    <parameter key="stof_doctrine_extensions.default_locale">en</parameter>
+    <parameter key="stof_doctrine_extensions.translation_fallback">false</parameter>
+    <parameter key="stof_doctrine_extensions.persist_default_translation">false</parameter>
+    <parameter key="stof_doctrine_extensions.skip_translation_on_load">false</parameter>
+    <parameter key="stof_doctrine_extensions.listener.translatable.class">Gedmo\Translatable\TranslatableListener</parameter>
+    <parameter key="stof_doctrine_extensions.listener.timestampable.class">Gedmo\Timestampable\TimestampableListener</parameter>
+    <parameter key="stof_doctrine_extensions.listener.blameable.class">Gedmo\Blameable\BlameableListener</parameter>
+    <parameter key="stof_doctrine_extensions.listener.sluggable.class">Gedmo\Sluggable\SluggableListener</parameter>
+    <parameter key="stof_doctrine_extensions.listener.tree.class">Gedmo\Tree\TreeListener</parameter>
+    <parameter key="stof_doctrine_extensions.listener.loggable.class">Gedmo\Loggable\LoggableListener</parameter>
+    <parameter key="stof_doctrine_extensions.listener.sortable.class">Gedmo\Sortable\SortableListener</parameter>
+    <parameter key="stof_doctrine_extensions.listener.softdeleteable.class">Gedmo\SoftDeleteable\SoftDeleteableListener</parameter>
+    <parameter key="stof_doctrine_extensions.listener.uploadable.class">Gedmo\Uploadable\UploadableListener</parameter>
+    <parameter key="stof_doctrine_extensions.listener.reference_integrity.class">Gedmo\ReferenceIntegrity\ReferenceIntegrityListener</parameter>
     <parameter key="data_collector.templates" type="collection">
       <parameter key="data_collector.request" type="collection">
         <parameter>request</parameter>
@@ -479,8 +507,14 @@
       <tag name="doctrine.repository_service"/>
       <argument type="service" id="doctrine"/>
     </service>
+    <service id="App\Service\SearchCollectionService" class="App\Service\SearchCollectionService" autowire="true" autoconfigure="true">
+      <argument type="service" id="doctrine.orm.default_entity_manager"/>
+    </service>
     <service id="App\EventSubscriber\JWTCreatedSubscriber" class="App\EventSubscriber\JWTCreatedSubscriber" autowire="true" autoconfigure="true">
       <tag name="kernel.event_subscriber"/>
+    </service>
+    <service id="gedmo.listener.timestampable" class="Gedmo\Timestampable\TimestampableListener" autowire="true" autoconfigure="true">
+      <tag name="doctrine.event_subscriber" connection="default"/>
     </service>
     <service id="argument_metadata_factory" class="Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadataFactory"/>
     <service id="response_listener" class="Symfony\Component\HttpKernel\EventListener\ResponseListener">
@@ -2832,10 +2866,19 @@
       </call>
     </service>
     <service id="doctrine.dbal.default_connection.event_manager" class="Symfony\Bridge\Doctrine\ContainerAwareEventManager">
-      <argument type="service" id=".service_locator.QXcJQkF"/>
+      <argument type="service" id=".service_locator.ypReOeu"/>
       <argument type="collection">
+        <argument>gedmo.listener.timestampable</argument>
         <argument>doctrine.orm.listeners.doctrine_dbal_cache_adapter_schema_subscriber</argument>
         <argument>doctrine.orm.listeners.doctrine_token_provider_schema_subscriber</argument>
+        <argument>Knp\DoctrineBehaviors\EventSubscriber\BlameableEventSubscriber</argument>
+        <argument>Knp\DoctrineBehaviors\EventSubscriber\LoggableEventSubscriber</argument>
+        <argument>Knp\DoctrineBehaviors\EventSubscriber\SluggableEventSubscriber</argument>
+        <argument>Knp\DoctrineBehaviors\EventSubscriber\SoftDeletableEventSubscriber</argument>
+        <argument>Knp\DoctrineBehaviors\EventSubscriber\TimestampableEventSubscriber</argument>
+        <argument>Knp\DoctrineBehaviors\EventSubscriber\TranslatableEventSubscriber</argument>
+        <argument>Knp\DoctrineBehaviors\EventSubscriber\TreeEventSubscriber</argument>
+        <argument>Knp\DoctrineBehaviors\EventSubscriber\UuidableEventSubscriber</argument>
         <argument type="collection">
           <argument type="collection">
             <argument>loadClassMetadata</argument>
@@ -5688,6 +5731,53 @@
         <argument>Generate public/private keys for use in your application.</argument>
       </call>
     </service>
+    <service id="Knp\DoctrineBehaviors\EventSubscriber\BlameableEventSubscriber" class="Knp\DoctrineBehaviors\EventSubscriber\BlameableEventSubscriber" public="true" autowire="true" autoconfigure="true">
+      <tag name="doctrine.event_subscriber"/>
+      <argument type="service" id="Knp\DoctrineBehaviors\Provider\UserProvider"/>
+      <argument type="service" id="doctrine.orm.default_entity_manager"/>
+      <argument>null</argument>
+    </service>
+    <service id="Knp\DoctrineBehaviors\EventSubscriber\LoggableEventSubscriber" class="Knp\DoctrineBehaviors\EventSubscriber\LoggableEventSubscriber" public="true" autowire="true" autoconfigure="true">
+      <tag name="doctrine.event_subscriber"/>
+      <argument type="service" id="logger"/>
+    </service>
+    <service id="Knp\DoctrineBehaviors\EventSubscriber\SluggableEventSubscriber" class="Knp\DoctrineBehaviors\EventSubscriber\SluggableEventSubscriber" public="true" autowire="true" autoconfigure="true">
+      <tag name="doctrine.event_subscriber"/>
+      <argument type="service" id="doctrine.orm.default_entity_manager"/>
+      <argument type="service" id="Knp\DoctrineBehaviors\Repository\DefaultSluggableRepository"/>
+    </service>
+    <service id="Knp\DoctrineBehaviors\EventSubscriber\SoftDeletableEventSubscriber" class="Knp\DoctrineBehaviors\EventSubscriber\SoftDeletableEventSubscriber" public="true" autowire="true" autoconfigure="true">
+      <tag name="doctrine.event_subscriber"/>
+    </service>
+    <service id="Knp\DoctrineBehaviors\EventSubscriber\TimestampableEventSubscriber" class="Knp\DoctrineBehaviors\EventSubscriber\TimestampableEventSubscriber" public="true" autowire="true" autoconfigure="true">
+      <tag name="doctrine.event_subscriber"/>
+      <argument>datetime</argument>
+    </service>
+    <service id="Knp\DoctrineBehaviors\EventSubscriber\TranslatableEventSubscriber" class="Knp\DoctrineBehaviors\EventSubscriber\TranslatableEventSubscriber" public="true" autowire="true" autoconfigure="true">
+      <tag name="doctrine.event_subscriber"/>
+      <argument type="service" id="Knp\DoctrineBehaviors\Provider\LocaleProvider"/>
+      <argument>LAZY</argument>
+      <argument>LAZY</argument>
+    </service>
+    <service id="Knp\DoctrineBehaviors\EventSubscriber\TreeEventSubscriber" class="Knp\DoctrineBehaviors\EventSubscriber\TreeEventSubscriber" public="true" autowire="true" autoconfigure="true">
+      <tag name="doctrine.event_subscriber"/>
+    </service>
+    <service id="Knp\DoctrineBehaviors\EventSubscriber\UuidableEventSubscriber" class="Knp\DoctrineBehaviors\EventSubscriber\UuidableEventSubscriber" public="true" autowire="true" autoconfigure="true">
+      <tag name="doctrine.event_subscriber"/>
+    </service>
+    <service id="Knp\DoctrineBehaviors\Provider\LocaleProvider" class="Knp\DoctrineBehaviors\Provider\LocaleProvider" public="true" autowire="true" autoconfigure="true">
+      <argument type="service" id="request_stack"/>
+      <argument type="service" id="parameter_bag"/>
+      <argument>null</argument>
+    </service>
+    <service id="Knp\DoctrineBehaviors\Provider\UserProvider" class="Knp\DoctrineBehaviors\Provider\UserProvider" public="true" autowire="true" autoconfigure="true">
+      <argument type="service" id="security.helper"/>
+      <argument>null</argument>
+    </service>
+    <service id="Knp\DoctrineBehaviors\Repository\DefaultSluggableRepository" class="Knp\DoctrineBehaviors\Repository\DefaultSluggableRepository" public="true" autowire="true" autoconfigure="true">
+      <argument type="service" id="doctrine.orm.default_entity_manager"/>
+    </service>
+    <service id="stof_doctrine_extensions.metadata_cache" class="Symfony\Component\Cache\Adapter\ArrayAdapter"/>
     <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\AuthenticationController" class="App\Controller\AuthenticationController" autowire="true" abstract="true"/>
     <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\AuthenticationController" class="App\Controller\AuthenticationController" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Controller\AuthenticationController" class="App\Controller\AuthenticationController" autowire="true" autoconfigure="true" abstract="true"/>
@@ -5704,6 +5794,22 @@
     <service id=".abstract.instanceof.App\Repository\UserRepository" class="App\Repository\UserRepository" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Symfony\Component\EventDispatcher\EventSubscriberInterface.0.App\EventSubscriber\JWTCreatedSubscriber" class="App\EventSubscriber\JWTCreatedSubscriber" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\EventSubscriber\JWTCreatedSubscriber" class="App\EventSubscriber\JWTCreatedSubscriber" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface.0.Knp\DoctrineBehaviors\EventSubscriber\BlameableEventSubscriber" class="Knp\DoctrineBehaviors\EventSubscriber\BlameableEventSubscriber" public="true" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.Knp\DoctrineBehaviors\EventSubscriber\BlameableEventSubscriber" class="Knp\DoctrineBehaviors\EventSubscriber\BlameableEventSubscriber" public="true" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface.0.Knp\DoctrineBehaviors\EventSubscriber\LoggableEventSubscriber" class="Knp\DoctrineBehaviors\EventSubscriber\LoggableEventSubscriber" public="true" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.Knp\DoctrineBehaviors\EventSubscriber\LoggableEventSubscriber" class="Knp\DoctrineBehaviors\EventSubscriber\LoggableEventSubscriber" public="true" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface.0.Knp\DoctrineBehaviors\EventSubscriber\SluggableEventSubscriber" class="Knp\DoctrineBehaviors\EventSubscriber\SluggableEventSubscriber" public="true" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.Knp\DoctrineBehaviors\EventSubscriber\SluggableEventSubscriber" class="Knp\DoctrineBehaviors\EventSubscriber\SluggableEventSubscriber" public="true" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface.0.Knp\DoctrineBehaviors\EventSubscriber\SoftDeletableEventSubscriber" class="Knp\DoctrineBehaviors\EventSubscriber\SoftDeletableEventSubscriber" public="true" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.Knp\DoctrineBehaviors\EventSubscriber\SoftDeletableEventSubscriber" class="Knp\DoctrineBehaviors\EventSubscriber\SoftDeletableEventSubscriber" public="true" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface.0.Knp\DoctrineBehaviors\EventSubscriber\TimestampableEventSubscriber" class="Knp\DoctrineBehaviors\EventSubscriber\TimestampableEventSubscriber" public="true" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.Knp\DoctrineBehaviors\EventSubscriber\TimestampableEventSubscriber" class="Knp\DoctrineBehaviors\EventSubscriber\TimestampableEventSubscriber" public="true" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface.0.Knp\DoctrineBehaviors\EventSubscriber\TranslatableEventSubscriber" class="Knp\DoctrineBehaviors\EventSubscriber\TranslatableEventSubscriber" public="true" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.Knp\DoctrineBehaviors\EventSubscriber\TranslatableEventSubscriber" class="Knp\DoctrineBehaviors\EventSubscriber\TranslatableEventSubscriber" public="true" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface.0.Knp\DoctrineBehaviors\EventSubscriber\TreeEventSubscriber" class="Knp\DoctrineBehaviors\EventSubscriber\TreeEventSubscriber" public="true" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.Knp\DoctrineBehaviors\EventSubscriber\TreeEventSubscriber" class="Knp\DoctrineBehaviors\EventSubscriber\TreeEventSubscriber" public="true" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface.0.Knp\DoctrineBehaviors\EventSubscriber\UuidableEventSubscriber" class="Knp\DoctrineBehaviors\EventSubscriber\UuidableEventSubscriber" public="true" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.Knp\DoctrineBehaviors\EventSubscriber\UuidableEventSubscriber" class="Knp\DoctrineBehaviors\EventSubscriber\UuidableEventSubscriber" public="true" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".service_locator.gSv9zYw" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
@@ -6155,7 +6261,7 @@
         <argument key="em" type="service_closure" id="doctrine.orm.default_entity_manager"/>
       </argument>
     </service>
-    <service id=".service_locator.XK5qmET" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.7pyogEH" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="App\Controller\AuthenticationController::githubLogin" type="service_closure" id=".service_locator.Lg7M_Sj"/>
@@ -6163,6 +6269,9 @@
         <argument key="App\Controller\AuthenticationController::login" type="service_closure" id=".service_locator.Lg7M_Sj"/>
         <argument key="App\Controller\AuthenticationController::register" type="service_closure" id=".service_locator.MkrZLUL"/>
         <argument key="App\Controller\NFTCollectionController::create" type="service_closure" id=".service_locator.5miB8_X"/>
+        <argument key="App\Controller\NFTCollectionController::get" type="service_closure" id=".service_locator.5miB8_X"/>
+        <argument key="App\Controller\NFTCollectionController::getAll" type="service_closure" id=".service_locator.5miB8_X"/>
+        <argument key="App\Controller\NFTCollectionController::search" type="service_closure" id=".service_locator.5miB8_X"/>
         <argument key="App\Kernel::loadRoutes" type="service_closure" id=".service_locator.KfbR3DY"/>
         <argument key="App\Kernel::registerContainerConfiguration" type="service_closure" id=".service_locator.KfbR3DY"/>
         <argument key="kernel::loadRoutes" type="service_closure" id=".service_locator.KfbR3DY"/>
@@ -6172,6 +6281,9 @@
         <argument key="App\Controller\AuthenticationController:login" type="service_closure" id=".service_locator.Lg7M_Sj"/>
         <argument key="App\Controller\AuthenticationController:register" type="service_closure" id=".service_locator.MkrZLUL"/>
         <argument key="App\Controller\NFTCollectionController:create" type="service_closure" id=".service_locator.5miB8_X"/>
+        <argument key="App\Controller\NFTCollectionController:get" type="service_closure" id=".service_locator.5miB8_X"/>
+        <argument key="App\Controller\NFTCollectionController:getAll" type="service_closure" id=".service_locator.5miB8_X"/>
+        <argument key="App\Controller\NFTCollectionController:search" type="service_closure" id=".service_locator.5miB8_X"/>
         <argument key="kernel:loadRoutes" type="service_closure" id=".service_locator.KfbR3DY"/>
         <argument key="kernel:registerContainerConfiguration" type="service_closure" id=".service_locator.KfbR3DY"/>
       </argument>
@@ -6235,12 +6347,21 @@
       <argument type="service" id="debug.argument_resolver.not_tagged_controller.inner"/>
       <argument type="service" id="debug.stopwatch"/>
     </service>
-    <service id=".service_locator.QXcJQkF" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.ypReOeu" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
+        <argument key="Knp\DoctrineBehaviors\EventSubscriber\BlameableEventSubscriber" type="service_closure" id="Knp\DoctrineBehaviors\EventSubscriber\BlameableEventSubscriber"/>
+        <argument key="Knp\DoctrineBehaviors\EventSubscriber\LoggableEventSubscriber" type="service_closure" id="Knp\DoctrineBehaviors\EventSubscriber\LoggableEventSubscriber"/>
+        <argument key="Knp\DoctrineBehaviors\EventSubscriber\SluggableEventSubscriber" type="service_closure" id="Knp\DoctrineBehaviors\EventSubscriber\SluggableEventSubscriber"/>
+        <argument key="Knp\DoctrineBehaviors\EventSubscriber\SoftDeletableEventSubscriber" type="service_closure" id="Knp\DoctrineBehaviors\EventSubscriber\SoftDeletableEventSubscriber"/>
+        <argument key="Knp\DoctrineBehaviors\EventSubscriber\TimestampableEventSubscriber" type="service_closure" id="Knp\DoctrineBehaviors\EventSubscriber\TimestampableEventSubscriber"/>
+        <argument key="Knp\DoctrineBehaviors\EventSubscriber\TranslatableEventSubscriber" type="service_closure" id="Knp\DoctrineBehaviors\EventSubscriber\TranslatableEventSubscriber"/>
+        <argument key="Knp\DoctrineBehaviors\EventSubscriber\TreeEventSubscriber" type="service_closure" id="Knp\DoctrineBehaviors\EventSubscriber\TreeEventSubscriber"/>
+        <argument key="Knp\DoctrineBehaviors\EventSubscriber\UuidableEventSubscriber" type="service_closure" id="Knp\DoctrineBehaviors\EventSubscriber\UuidableEventSubscriber"/>
         <argument key="doctrine.orm.default_listeners.attach_entity_listeners" type="service_closure" id="doctrine.orm.default_listeners.attach_entity_listeners"/>
         <argument key="doctrine.orm.listeners.doctrine_dbal_cache_adapter_schema_subscriber" type="service_closure" id="doctrine.orm.listeners.doctrine_dbal_cache_adapter_schema_subscriber"/>
         <argument key="doctrine.orm.listeners.doctrine_token_provider_schema_subscriber" type="service_closure" id="doctrine.orm.listeners.doctrine_token_provider_schema_subscriber"/>
+        <argument key="gedmo.listener.timestampable" type="service_closure" id="gedmo.listener.timestampable"/>
       </argument>
     </service>
     <service id=".service_locator.lM2jYg." class="Symfony\Component\DependencyInjection\ServiceLocator">
@@ -6504,12 +6625,12 @@
       <argument type="service" id="security.token_storage"/>
     </service>
     <service id="debug.argument_resolver.service.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver">
-      <argument type="service" id=".service_locator.XK5qmET"/>
+      <argument type="service" id=".service_locator.7pyogEH"/>
     </service>
     <service id="debug.argument_resolver.default.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver"/>
     <service id="debug.argument_resolver.variadic.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\VariadicValueResolver"/>
     <service id="debug.argument_resolver.not_tagged_controller.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\NotTaggedControllerValueResolver">
-      <argument type="service" id=".service_locator.XK5qmET"/>
+      <argument type="service" id=".service_locator.7pyogEH"/>
     </service>
     <service id=".doctrine.orm.default_metadata_driver.inner" class="Doctrine\Persistence\Mapping\Driver\MappingDriverChain">
       <call method="addDriver">
@@ -7548,9 +7669,11 @@
     <service id="lexik_jwt_authentication.encoder" alias="lexik_jwt_authentication.encoder.lcobucci" public="true"/>
     <service id="Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface" alias="lexik_jwt_authentication.encoder.lcobucci"/>
     <service id="lexik_jwt_authentication.key_loader" alias="lexik_jwt_authentication.key_loader.raw" public="true"/>
+    <service id="Knp\DoctrineBehaviors\Contract\Provider\LocaleProviderInterface" alias="Knp\DoctrineBehaviors\Provider\LocaleProvider"/>
+    <service id="Knp\DoctrineBehaviors\Contract\Provider\UserProviderInterface" alias="Knp\DoctrineBehaviors\Provider\UserProvider"/>
     <service id="container.env_var_processors_locator" alias=".service_locator.gSv9zYw" public="true"/>
     <service id="twig.loader.filesystem" alias="twig.loader.native_filesystem"/>
-    <service id="argument_resolver.controller_locator" alias=".service_locator.XK5qmET"/>
+    <service id="argument_resolver.controller_locator" alias=".service_locator.7pyogEH"/>
     <service id="doctrine.id_generator_locator" alias=".service_locator.KLVvNIq"/>
     <service id="twig.loader" alias="twig.loader.native_filesystem"/>
     <service id="api_platform.name_converter" alias="serializer.name_converter.metadata_aware"/>
@@ -7559,9 +7682,9 @@
     <service id=".service_locator.Xbsa8iG" alias="api_platform.filter_locator"/>
     <service id=".service_locator.0GV1BZZ" alias=".service_locator.gSv9zYw"/>
     <service id=".service_locator.mreGqg1" alias=".service_locator.Lg7M_Sj"/>
-    <service id=".service_locator.f6h_aI3" alias=".service_locator.XK5qmET"/>
+    <service id=".service_locator.3CPfUca" alias=".service_locator.7pyogEH"/>
     <service id=".service_locator.wKF4yn1" alias=".service_locator.19_mNxd"/>
-    <service id=".service_locator.qBCHs1a" alias=".service_locator.QXcJQkF"/>
+    <service id=".service_locator.O_OCvJd" alias=".service_locator.ypReOeu"/>
     <service id=".service_locator.jkb6XQV" alias=".service_locator.l1ae.Qz"/>
     <service id="validator" alias="debug.validator"/>
     <service id="api_platform.metadata.property.metadata_factory.property_info.legacy.inner" alias="api_platform.metadata.property.metadata_factory.xml.legacy"/>

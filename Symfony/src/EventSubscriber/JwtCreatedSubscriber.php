@@ -5,6 +5,7 @@ namespace App\EventSubscriber;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTCreatedEvent;
 use Symfony\Component\Security\Core\User\UserInterface;
+use App\Entity\User;
 
 class JwtCreatedSubscriber implements EventSubscriberInterface
 {
@@ -26,6 +27,7 @@ class JwtCreatedSubscriber implements EventSubscriberInterface
         }
 
         $payload = $event->getData();
+        $payload['id'] = $user->getId();
         $payload['email'] = $user->getEmail();
         $payload['roles'] = $user->getRoles();
         $payload['image'] = $user->getImage();

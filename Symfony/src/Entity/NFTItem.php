@@ -4,10 +4,13 @@ namespace App\Entity;
 
 use App\Repository\NFTItemRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: NFTItemRepository::class)]
 class NFTItem
 {
+    use TimestampableEntity;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
