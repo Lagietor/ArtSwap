@@ -20,7 +20,6 @@ function GoogleButton() {
     const login = useGoogleLogin({
         onSuccess: (accessResponse) => {
             try {
-                // console.log(credentialResponse);
                 handleSubmitApi({"token": accessResponse["access_token"]});
             } catch (e) {
                 console.log("Error: " + e);
@@ -31,17 +30,13 @@ function GoogleButton() {
         },
     });
 
-    const handleLoginClick = () => {
-        login();
-    };
-
     return (
         <div>
             {!isLoading ? (
                 <div className="google-login-container">
                 <button
                     className="google-login-button"
-                    onClick={handleLoginClick}
+                    onClick={() => login()}
                     disabled={isLoading}
                 >
                     <FontAwesomeIcon icon={faGoogle} className="fa-google" />

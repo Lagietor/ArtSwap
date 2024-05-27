@@ -9,6 +9,18 @@ import './GithubButton.css';
 const GitHubButton = () => {
     const { isLoading, error, response, fetchData: handleSubmitApi } = useApi("http://localhost:1000/api/github-login", "POST");
     const navigate = useNavigate();
+    
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        if (code) {
+            try {
+                handleSubmitApi({ "code": code });
+            } catch (error) {
+                console.error('Error logging in with GitHub:', error);
+            }
+        }
+    }, []);
 
     useEffect(() => {
         if (response) {
@@ -27,22 +39,6 @@ const GitHubButton = () => {
         window.location.href = githubAuthUrl;
     };
 
-    const handleGithubCallback = async (code: string) => {
-        try {
-            handleSubmitApi({ "code": code });
-        } catch (error) {
-            console.error('Error logging in with GitHub:', error);
-        }
-    };
-
-    // Check URL for GitHub OAuth code
-    useEffect(() => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const code = urlParams.get('code');
-        if (code) {
-            handleGithubCallback(code);
-        }
-    }, []);
 
     return (
         <>

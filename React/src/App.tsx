@@ -5,7 +5,7 @@ import Header from "./components/Header/Header";
 import Home from "./pages/Home/Home";
 import Register from "./pages/Register";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import Collection from "./pages/Collection";
+import Collection from "./pages/Collection/Collection";
 
 function App() {
   return (

@@ -39,16 +39,8 @@ function Home() {
         search();
     }, [filter, phrase, navigate]);
 
-    if (isLogged) {
-        console.log(user);
-    }
-
     const search = () => {
         searchCollections(phrase, filter);
-    }
-
-    const changeFilter = (newFilter: string) => {
-        setFilter(newFilter);
     }
 
     const enterCollection = (id: number) => {
@@ -77,10 +69,10 @@ function Home() {
                 </form>
             </div>
             <div className="categories mt-5">
-                <button className={`category-btn ${filter === "Popular" ? "active" : ""}`} onClick={() => changeFilter("Popular")}>Popular</button>
-                <button className={`category-btn ${filter === "Expensive" ? "active" : ""}`} onClick={() => changeFilter("Expensive")}>Expensive</button>
-                <button className={`category-btn ${filter === "Newest" ? "active" : ""}`} onClick={() => changeFilter("Newest")}>Newest</button>
-                <button className={`category-btn ${filter === "Oldest" ? "active" : ""}`} onClick={() => changeFilter("Oldest")}>Oldest</button>
+                <button className={`category-btn ${filter === "Popular" ? "active" : ""}`} onClick={() => setFilter("Popular")}>Popular</button>
+                <button className={`category-btn ${filter === "Expensive" ? "active" : ""}`} onClick={() => setFilter("Expensive")}>Expensive</button>
+                <button className={`category-btn ${filter === "Newest" ? "active" : ""}`} onClick={() => setFilter("Newest")}>Newest</button>
+                <button className={`category-btn ${filter === "Oldest" ? "active" : ""}`} onClick={() => setFilter("Oldest")}>Oldest</button>
                 <button className={`category-btn ${phrase ? "active" : ""}`}>
                     {phrase && (
                         <span className="mx-2">{phrase}</span>
@@ -103,7 +95,7 @@ function Home() {
                                     <div className="col-md-2 mb-4" key={subCollection.id}>
                                         <a href="" onClick={() => enterCollection(subCollection.id)}>
                                             <div className="card rounded mx-2">
-                                                <img className="card-img-top" src="./profileImages/BUBBA.jpg" alt="nft image" />
+                                                <img className="card-img-top" src="./profileImages/BUBBA.jpg" alt="collection image" />
                                                 <div className="card-body">
                                                     <h5 className="card-title">{subCollection.name}</h5>
                                                     <p className="card-text">{subCollection.description}</p>
