@@ -3,10 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\NFTCollection;
+use App\Entity\NFTItem;
 use App\Entity\User;
-use App\Service\SearchCollectionService;
 use Doctrine\ORM\EntityManagerInterface;
-use Google\Service\CloudSourceRepositories\Repo;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,38 +44,8 @@ class NFTCollectionController extends AbstractController
         ]);
     }
 
-    #[Route('/collection', name: 'api_collection_get_all', methods:['GET'])]
-    public function getAll(
-        EntityManagerInterface $em
-    ): JsonResponse
-    {
-        $collections = $em->getRepository(NFTCollection::class)->findAll();
-
-        $result = [];
-        foreach ($collections as $collection) {
-            $result[] = [
-                'id' => $collection->getId(),
-                'user' => [
-                    'id' => $collection->getUser()->getId(),
-                    'email' => $collection->getUser()->getEmail(),
-                    'username' => $collection->getUser()->getUsername(),
-                    'image' => $collection->getUser()->getImage()
-                ],
-                'name' => $collection->getName(),
-                'itemsCount' => $collection->getItemsCount(),
-                'floorPrice' => $collection->getFloorPrice(),
-                'volume' => $collection->getVolume(),
-                'views' => $collection->getViews(),
-                'image' => $collection->getImage(),
-                'description' => $collection->getDescription()
-            ];
-        }
-
-        return $this->json($result);
-    }
-
-    #[Route('/collection/search', name: 'api_collection_search', methods:['GET'])]
-    public function search(
+    #[Route('/collection', name: 'api_collection', methods:['GET'])]
+    public function getCollections(
         Request $request,
         EntityManagerInterface $em
     ) : JsonResponse
@@ -107,6 +76,41 @@ class NFTCollectionController extends AbstractController
                 'views' => $collection->getViews(),
                 'image' => $collection->getImage(),
                 'description' => $collection->getDescription()
+            ];
+        }
+
+        return $this->json($result);
+    }
+
+    #[Route('/collection/{id}/items', name: 'api_collection_items', methods:['GET'])]
+    public function getItems(
+        Request $request,
+        EntityManagerInterface $em,
+        int $id
+    ) : JsonResponse
+    {
+        $phrase = $request->query->get('phrase', '');
+        $filter = $request->query->get('filter', '');
+
+        $items = $em->getRepository(NFTItem::class)->findByFilters($id, $phrase, $filter);
+        $result = [];
+
+        foreach ($items as $item) {
+            $result[] = [
+                'id' => $item->getId(),
+                'collection' => [
+                    'id' => $item->getCollection()->getId()
+                ],
+                'owner' => [
+                    'id' => $item->getOwner()->getId(),
+                    'email' => $item->getOwner()->getEmail(),
+                    'username' => $item->getOwner()->getUsername(),
+                    'image' => $item->getOwner()->getImage()
+                ],
+                'name' => $item->getName(),
+                'views' => $item->getViews(),
+                'value' => $item->getValue(),
+                'image' => $item->getImage(),
             ];
         }
 

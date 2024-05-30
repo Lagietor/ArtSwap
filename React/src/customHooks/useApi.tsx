@@ -26,6 +26,7 @@ const useApi = (url: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE' = 'GET') 
                 default:
                     throw new Error('Unsupported HTTP method');
             }
+
             setResponse(response.data);
         } catch (error: any) {
             setError(error);

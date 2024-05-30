@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\NFTCollectionRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
@@ -40,6 +42,14 @@ class NFTCollection
 
     #[ORM\Column(length: 500, nullable: true)]
     private ?string $description = null;
+
+    #[ORM\OneToMany(mappedBy: 'collection', targetEntity: NFTItem::class)]
+    private Collection $nFTItems;
+
+    public function __construct()
+    {
+        $this->nFTItems = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -138,6 +148,36 @@ class NFTCollection
     public function setDescription(?string $description): static
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, NFTItem>
+     */
+    public function getNFTItems(): Collection
+    {
+        return $this->nFTItems;
+    }
+
+    public function addNFTItem(NFTItem $nFTItem): static
+    {
+        if (!$this->nFTItems->contains($nFTItem)) {
+            $this->nFTItems->add($nFTItem);
+            $nFTItem->setCollection($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNFTItem(NFTItem $nFTItem): static
+    {
+        if ($this->nFTItems->removeElement($nFTItem)) {
+            // set the owning side to null (unless already changed)
+            if ($nFTItem->getCollection() === $this) {
+                $nFTItem->setCollection(null);
+            }
+        }
 
         return $this;
     }

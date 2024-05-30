@@ -18,6 +18,10 @@ class NFTItem
 
     #[ORM\ManyToOne(inversedBy: 'nFTItems')]
     #[ORM\JoinColumn(nullable: false)]
+    private ?NFTCollection $collection = null;
+
+    #[ORM\ManyToOne(inversedBy: 'nFTItems')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?user $owner = null;
 
     #[ORM\Column(length: 255)]
@@ -35,6 +39,18 @@ class NFTItem
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getCollection(): ?NFTCollection
+    {
+        return $this->collection;
+    }
+
+    public function setCollection(?NFTCollection $collection): static
+    {
+        $this->collection = $collection;
+
+        return $this;
     }
 
     public function getOwner(): ?user

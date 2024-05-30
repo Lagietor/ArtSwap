@@ -1,0 +1,9 @@
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr); /* 8 columns of equal width */
+    gap: 16px; /* gap between grid items */
+}
+
+.grid-item {
+    width: 100%; /* Make sure each item takes full column width */
+}

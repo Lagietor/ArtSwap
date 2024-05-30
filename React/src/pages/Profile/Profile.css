@@ -1,0 +1,103 @@
+.container {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+.background-container {
+    width: 100%;
+    height: 300px;
+    overflow: hidden;
+}
+
+.background-container img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+}
+
+.profile-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    margin-top: -180px; /* Aby zdjęcie profilowe nachodziło na tło */
+}
+
+.profile-picture {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 5px solid white; /* Opcjonalnie: biały border dla lepszego wyglądu */
+    margin-bottom: 20px;
+}
+
+.profile-picture img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.overlay-field {
+    position: absolute;
+    top: 50px; /* Możesz dostosować wartość */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(255, 255, 255, 0.8); /* Półprzezroczyste białe tło */
+    padding: 10px 20px;
+    border-radius: 10px;
+    z-index: 0;
+}
+
+.input {
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+    background-color: #f8f9fa;
+    justify-content: center;
+    border-radius: 5px;
+  }
+  
+.value {
+    background-color: transparent;
+    border: none;
+    padding: 10px;
+    color: black;
+    display: flex;
+    position: relative;
+    gap: 5px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+  
+.value:not(:active):hover,
+.value:focus {
+    background-color: #eaebec;
+}
+  
+.value:focus,
+.value:active {
+    background-color: #dadbdc;
+    outline: none;
+}
+  
+.value::before {
+    content: "";
+    position: absolute;
+    top: 5px;
+    left: -10px;
+    width: 5px;
+    height: 80%;
+    background-color: #2f81f7;
+    border-radius: 5px;
+    opacity: 0;
+}
+  
+.value:focus::before,
+.value:active::before {
+    opacity: 1;
+}
+  
+.value svg {
+    width: 15px;
+}

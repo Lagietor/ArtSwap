@@ -12,7 +12,7 @@ function Home() {
     const [ phrase, setPhrase ] = useState("");
     const location = useLocation();
     const navigate = useNavigate();
-    const { isLoading, response, error, fetchData: searchCollections } = useSearch("http://localhost:1000/api/collection/search");
+    const { isLoading, response, error, fetchData: searchCollections } = useSearch("http://localhost:1000/api/collection");
 
     useEffect(() => {
         if (!response) {
@@ -36,12 +36,8 @@ function Home() {
         };
 
         updateURL();
-        search();
-    }, [filter, phrase, navigate]);
-
-    const search = () => {
         searchCollections(phrase, filter);
-    }
+    }, [filter, phrase, navigate]);
 
     const enterCollection = (id: number) => {
         navigate("/collection/" + id);

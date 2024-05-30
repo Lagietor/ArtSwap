@@ -24,7 +24,9 @@ return [
     'api_api_google_login' => [[], ['_controller' => 'App\\Controller\\AuthenticationController::googleLogin'], [], [['text', '/api/google-login']], [], [], []],
     'api_api_github_login' => [[], ['_controller' => 'App\\Controller\\AuthenticationController::githubLogin'], [], [['text', '/api/github-login']], [], [], []],
     'api_api_collection_create' => [[], ['_controller' => 'App\\Controller\\NFTCollectionController::create'], [], [['text', '/api/collection']], [], [], []],
-    'api_api_collection_get_all' => [[], ['_controller' => 'App\\Controller\\NFTCollectionController::getAll'], [], [['text', '/api/collection']], [], [], []],
-    'api_api_collection_search' => [[], ['_controller' => 'App\\Controller\\NFTCollectionController::search'], [], [['text', '/api/collection/search']], [], [], []],
+    'api_api_collection' => [[], ['_controller' => 'App\\Controller\\NFTCollectionController::getCollections'], [], [['text', '/api/collection']], [], [], []],
+    'api_api_collection_items' => [['id'], ['_controller' => 'App\\Controller\\NFTCollectionController::getItems'], [], [['text', '/items'], ['variable', '/', '[^/]++', 'id', true], ['text', '/api/collection']], [], [], []],
     'api_api_collection_get' => [['id'], ['_controller' => 'App\\Controller\\NFTCollectionController::get'], [], [['variable', '/', '[^/]++', 'id', true], ['text', '/api/collection']], [], [], []],
+    'api_app_item' => [[], ['_controller' => 'App\\Controller\\NFTItemController::create'], [], [['text', '/api/item']], [], [], []],
+    'api_api_item_get' => [['id'], ['_controller' => 'App\\Controller\\NFTItemController::get'], [], [['variable', '/', '[^/]++', 'id', true], ['text', '/api/item']], [], [], []],
 ];
