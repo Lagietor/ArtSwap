@@ -30,6 +30,11 @@ function Header() {
         window.location.reload();
     }
 
+    const handleSettings = () => {
+        navigate("/settings");
+        window.location.reload();
+    }
+
     const handleLoginModalClose = () => {
         setShowLoginModal(false);
     };
@@ -61,7 +66,7 @@ function Header() {
                                             <a className="dropdown-item" href="#" onClick={handleProfile}>Profile</a>
                                         </li>
                                         <li>
-                                            <a className="dropdown-item" href="#">Settings</a>
+                                            <a className="dropdown-item" href="#" onClick={handleSettings}>Settings</a>
                                         </li>
                                         <li>
                                             <a className="dropdown-item" href="#" onClick={handleLogout}>Log out</a>

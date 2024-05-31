@@ -7,8 +7,10 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import useSearch from "../../customHooks/useSearch";
 
 function Collection() {
+    const apiUrl = import.meta.env.VITE_API_URL;
+
     const { id } = useParams();
-    const [ filter, setFilter ] = useState("");
+    const [ sort, setsort ] = useState("");
     const [ phrase, setPhrase ] = useState("");
     const navigate = useNavigate()
 
@@ -17,32 +19,32 @@ function Collection() {
         return null;
     }
 
-    const { isLoading, response, error, fetchData: searchItems } = useSearch("http://localhost:1000/api/collection/" + id + "/items");
+    const { isLoading, response, error, fetchData: searchItems } = useSearch(apiUrl + "collection/" + id + "/items");
 
     useEffect(() => {
         if (!response) {
             const params = new URLSearchParams(location.search);
-            const filterFromUrl = params.get('filter') || 'Popular';
+            const sortFromUrl = params.get('sort') || 'Popular';
             const phraseFromUrl = params.get('phrase') || '';
 
-            searchItems(phraseFromUrl, filterFromUrl);
+            searchItems(phraseFromUrl, sortFromUrl);
 
             setPhrase(phraseFromUrl);
-            setFilter(filterFromUrl);
+            setsort(sortFromUrl);
         }
     }, [response])
 
     useEffect(() => {
         const updateURL = () => {
             const params = new URLSearchParams();
-            params.set("filter", filter);
+            params.set("sort", sort);
             params.set("phrase", phrase);
             navigate({ search: params.toString() });
         };
 
         updateURL();
-        searchItems(phrase, filter);
-    }, [filter, phrase, navigate]);
+        searchItems(phrase, sort);
+    }, [sort, phrase, navigate]);
 
     const enterItem = (itemId: number) => {
         navigate("/collection/" + id + "/item/" + itemId);

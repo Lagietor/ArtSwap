@@ -7,7 +7,9 @@ import { faGoogle } from '@fortawesome/free-brands-svg-icons';
 import "./GoogleButton.css";
 
 function GoogleButton() {
-    const { isLoading, response, fetchData: handleSubmitApi } = useApi("http://localhost:1000/api/google-login", "POST");
+    const apiUrl = import.meta.env.VITE_API_URL;
+
+    const { isLoading, response, fetchData: handleSubmitApi } = useApi(apiUrl + "google-login", "POST");
 
     useEffect(() => {
         if (response) {

@@ -7,37 +7,39 @@ import useSearch from "../../customHooks/useSearch";
 import "./Home.css";
 
 function Home() {
+    const apiUrl = import.meta.env.VITE_API_URL;
+
     const { user, isLogged } = useUser();
-    const [ filter, setFilter ] = useState("");
+    const [ sort, setsort ] = useState("");
     const [ phrase, setPhrase ] = useState("");
     const location = useLocation();
     const navigate = useNavigate();
-    const { isLoading, response, error, fetchData: searchCollections } = useSearch("http://localhost:1000/api/collection");
+    const { isLoading, response, error, fetchData: searchCollections } = useSearch(apiUrl + "collection");
 
     useEffect(() => {
         if (!response) {
             const params = new URLSearchParams(location.search);
-            const filterFromUrl = params.get('filter') || 'Popular';
+            const sortFromUrl = params.get('sort') || 'Popular';
             const phraseFromUrl = params.get('phrase') || '';
 
-            searchCollections(phraseFromUrl, filterFromUrl);
+            searchCollections(phraseFromUrl, sortFromUrl);
 
             setPhrase(phraseFromUrl);
-            setFilter(filterFromUrl);
+            setsort(sortFromUrl);
         }
     }, [response])
 
     useEffect(() => {
         const updateURL = () => {
             const params = new URLSearchParams();
-            params.set("filter", filter);
+            params.set("sort", sort);
             params.set("phrase", phrase);
             navigate({ search: params.toString() });
         };
 
         updateURL();
-        searchCollections(phrase, filter);
-    }, [filter, phrase, navigate]);
+        searchCollections(phrase, sort);
+    }, [sort, phrase, navigate]);
 
     const enterCollection = (id: number) => {
         navigate("/collection/" + id);
@@ -65,10 +67,10 @@ function Home() {
                 </form>
             </div>
             <div className="categories mt-5">
-                <button className={`category-btn ${filter === "Popular" ? "active" : ""}`} onClick={() => setFilter("Popular")}>Popular</button>
-                <button className={`category-btn ${filter === "Expensive" ? "active" : ""}`} onClick={() => setFilter("Expensive")}>Expensive</button>
-                <button className={`category-btn ${filter === "Newest" ? "active" : ""}`} onClick={() => setFilter("Newest")}>Newest</button>
-                <button className={`category-btn ${filter === "Oldest" ? "active" : ""}`} onClick={() => setFilter("Oldest")}>Oldest</button>
+                <button className={`category-btn ${sort === "Popular" ? "active" : ""}`} onClick={() => setsort("Popular")}>Popular</button>
+                <button className={`category-btn ${sort === "Expensive" ? "active" : ""}`} onClick={() => setsort("Expensive")}>Expensive</button>
+                <button className={`category-btn ${sort === "Newest" ? "active" : ""}`} onClick={() => setsort("Newest")}>Newest</button>
+                <button className={`category-btn ${sort === "Oldest" ? "active" : ""}`} onClick={() => setsort("Oldest")}>Oldest</button>
                 <button className={`category-btn ${phrase ? "active" : ""}`}>
                     {phrase && (
                         <span className="mx-2">{phrase}</span>

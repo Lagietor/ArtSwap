@@ -8,6 +8,8 @@ import GoogleButton from "../../atomic/GoogleButton/GoogleButton";
 import GithubButton from "../../atomic/GithubButton/GithubButton";
 
 function PopupLogin({ close }: {close: () => void }) {
+    const apiUrl = import.meta.env.VITE_API_URL;
+
     const navigate = useNavigate();
     const cookies = new Cookies();
     const {
@@ -15,7 +17,7 @@ function PopupLogin({ close }: {close: () => void }) {
         handleSubmit,
     } = useForm<{email: string, password: string}>();
 
-    const { isLoading, response, error, fetchData: handleSubmitApi } = useApi("http://localhost:1000/api/login", "POST");
+    const { isLoading, response, error, fetchData: handleSubmitApi } = useApi(apiUrl + "login", "POST");
 
     useEffect(() => {
         if (response) {

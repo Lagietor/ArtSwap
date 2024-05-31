@@ -8,25 +8,29 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import Collection from "./pages/Collection/Collection";
 import Item from "./pages/Item/Item";
 import Profile from "./pages/Profile/Profile";
+import Settings from "./pages/Settings/Settings";
 
 function App() {
-  return (
-    <BrowserRouter>
-        <GoogleOAuthProvider clientId="219657399493-oiv4hv2f5h1f8rrejnb2cl87i02jj7q6.apps.googleusercontent.com">
-            <Header />
-        
-            <div className="container-fluid">
-                <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/register" element={<Register />} />
-                    <Route path="/profile" element={<Profile />} />
-                    <Route path="/collection/:id" element={<Collection />} />
-                    <Route path="/collection/:collectionId/item/:itemId" element={<Item />} />
-                </Routes>
-            </div>
-        </GoogleOAuthProvider>
-    </BrowserRouter>
-  )
+    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
+    return (
+        <BrowserRouter>
+            <GoogleOAuthProvider clientId={clientId}>
+                <Header />
+            
+                <div className="container-fluid">
+                    <Routes>
+                        <Route path="/" element={<Home />} />
+                        <Route path="/register" element={<Register />} />
+                        <Route path="/profile" element={<Profile />} />
+                        <Route path="/settings" element={<Settings />} />
+                        <Route path="/collection/:id" element={<Collection />} />
+                        <Route path="/collection/:collectionId/item/:itemId" element={<Item />} />
+                    </Routes>
+                </div>
+            </GoogleOAuthProvider>
+        </BrowserRouter>
+    )
 }
 
 export default App

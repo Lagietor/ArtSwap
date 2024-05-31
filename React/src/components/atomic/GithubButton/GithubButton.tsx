@@ -7,7 +7,11 @@ import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import './GithubButton.css';
 
 const GitHubButton = () => {
-    const { isLoading, error, response, fetchData: handleSubmitApi } = useApi("http://localhost:1000/api/github-login", "POST");
+    const apiUrl = import.meta.env.VITE_API_URL;
+    const siteUrl = import.meta.env.VITE_SITE_URL;
+    const clientId = import.meta.env.VITE_GITHUB_CLIENT_ID;
+
+    const { isLoading, error, response, fetchData: handleSubmitApi } = useApi(apiUrl + "github-login", "POST");
     const navigate = useNavigate();
     
     useEffect(() => {
@@ -32,8 +36,7 @@ const GitHubButton = () => {
     }, [response, error])
 
     const handleLogin = () => {
-        const clientId = 'Ov23liBPuSRVeVtlU4jx';
-        const redirectUri = 'http://localhost:5173?autoLogin=true';
+        const redirectUri = siteUrl + "?autoLogin=true";
         const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=user`;
 
         window.location.href = githubAuthUrl;

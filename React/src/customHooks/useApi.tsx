@@ -35,7 +35,10 @@ const useApi = (url: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE' = 'GET') 
         }
     };
   
-    return { response, error, isLoading, fetchData };
+    const resetError = () => setError(null);
+    const resetResponse = () => setResponse(null);
+
+    return { response, error, isLoading, fetchData, resetError, resetResponse };
   };
 
 export default useApi;

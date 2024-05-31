@@ -6,9 +6,10 @@ const useSearch = (url: string) => {
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
   
-    const fetchData = async (phrase: string = "", filter: string = "") => {
+    const fetchData = async (phrase: string = "", sort: string = "", filter: string = "") => {
         setIsLoading(true);
-        url += "?phrase=" + phrase + "&filter=" + filter;
+
+        url += "?phrase=" + phrase + "&sort=" + sort + "&filter=" + filter;
         try {
             let response = await axios.get(url);
             setResponse(response.data);

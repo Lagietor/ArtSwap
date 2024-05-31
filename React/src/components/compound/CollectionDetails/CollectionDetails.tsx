@@ -2,7 +2,9 @@ import { useEffect } from "react";
 import useApi from "../../../customHooks/useApi";
 
 function CollectionDetails({ id } : { id: string }) {
-    const { isLoading: collectionIsLoading, response: collectionResponse, error: collectionError, fetchData: getCollection } = useApi("http://localhost:1000/api/collection/" + id);
+    const apiUrl = import.meta.env.VITE_API_URL;
+    
+    const { isLoading: collectionIsLoading, response: collectionResponse, error: collectionError, fetchData: getCollection } = useApi(apiUrl + "collection/" + id);
 
     useEffect(() => {
         if (!collectionResponse) {

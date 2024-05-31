@@ -20,7 +20,6 @@
     flex-direction: column;
     align-items: center;
     position: relative;
-    margin-top: -180px; /* Aby zdjęcie profilowe nachodziło na tło */
 }
 
 .profile-picture {
@@ -28,8 +27,9 @@
     height: 150px;
     border-radius: 50%;
     overflow: hidden;
-    border: 5px solid white; /* Opcjonalnie: biały border dla lepszego wyglądu */
+    border: 5px solid white;
     margin-bottom: 20px;
+    margin-top: -120px;
 }
 
 .profile-picture img {
@@ -40,10 +40,10 @@
 
 .overlay-field {
     position: absolute;
-    top: 50px; /* Możesz dostosować wartość */
+    top: 50px;
     left: 50%;
     transform: translateX(-50%);
-    background-color: rgba(255, 255, 255, 0.8); /* Półprzezroczyste białe tło */
+    background-color: rgba(255, 255, 255, 0.8);
     padding: 10px 20px;
     border-radius: 10px;
     z-index: 0;
@@ -56,7 +56,7 @@
     background-color: #f8f9fa;
     justify-content: center;
     border-radius: 5px;
-  }
+}
   
 .value {
     background-color: transparent;
@@ -76,7 +76,8 @@
 }
   
 .value:focus,
-.value:active {
+.value:active,
+.value.active {
     background-color: #dadbdc;
     outline: none;
 }
@@ -94,7 +95,8 @@
 }
   
 .value:focus::before,
-.value:active::before {
+.value:active::before,
+.value.active::before {
     opacity: 1;
 }
   

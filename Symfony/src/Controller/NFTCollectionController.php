@@ -51,9 +51,9 @@ class NFTCollectionController extends AbstractController
     ) : JsonResponse
     {
         $phrase = $request->query->get('phrase', '');
-        $filter = $request->query->get('filter', '');
+        $sort = $request->query->get('sort', '');
 
-        $collections = $em->getRepository(NFTCollection::class)->findByFilters($phrase, $filter);
+        $collections = $em->getRepository(NFTCollection::class)->findByFilters($phrase, $sort);
         $result = [];
 
         if (!$collections) {
@@ -92,7 +92,7 @@ class NFTCollectionController extends AbstractController
         $phrase = $request->query->get('phrase', '');
         $filter = $request->query->get('filter', '');
 
-        $items = $em->getRepository(NFTItem::class)->findByFilters($id, $phrase, $filter);
+        $items = $em->getRepository(NFTItem::class)->findByCollection($id, $phrase, $filter);
         $result = [];
 
         foreach ($items as $item) {

@@ -49,7 +49,7 @@ class NFTItemRepository extends ServiceEntityRepository
     /**
      * @return NFTItem[]
      */
-    public function findByFilters($collectionId, $phrase = '', $filter = ''): array
+    public function findByCollection($collectionId, $phrase = '', $sort = '', $filter = ''): array
     {
         $queryBuilder = $this->createQueryBuilder('n')
             ->andWhere('n.collection = :collectionId')
@@ -60,19 +60,70 @@ class NFTItemRepository extends ServiceEntityRepository
             ->setParameter('phrase', '%' . $phrase . '%');
         }
 
-        if ($filter === 'Newest') {
+        if ($sort === 'Newest') {
             $queryBuilder->orderBy('n.createdAt', 'DESC');
         }
 
-        if ($filter === 'Oldest') {
+        if ($sort === 'Oldest') {
             $queryBuilder->orderBy('n.createdAt', 'ASC');
         }
 
-        if ($filter === 'Popular') {
+        if ($sort === 'Popular') {
             $queryBuilder->orderBy('n.views', 'DESC');
         }
 
-        if ($filter === 'Expensive') {
+        if ($sort === 'Expensive') {
+            $queryBuilder->orderBy('n.value', 'DESC');
+        }
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+    /**
+     * @return NFTItem[]
+     */
+    public function findByUser($userId, $filter = '', $phrase = '', $sort = ''): array
+    {
+        $queryBuilder = $this->createQueryBuilder('n');
+
+        if ($filter === '' || $filter === 'all') {
+            $queryBuilder->leftJoin('n.collection', 'c')
+                ->andWhere($queryBuilder->expr()->orX(
+                    $queryBuilder->expr()->eq('n.owner', ':userId'),
+                    $queryBuilder->expr()->eq('c.user', ':userId')
+                ))
+                ->setParameter('userId', $userId);
+        }
+
+        if ($filter === 'collected') {
+            $queryBuilder->andWhere('n.owner = :userId')
+                ->setParameter('userId', $userId);
+        }
+
+        if ($filter === 'created') {
+            $queryBuilder->join('n.collection', 'c')
+                ->andWhere('c.user = :userId')
+                ->setParameter('userId', $userId);
+        }
+
+        if (!empty($phrase)) {
+            $queryBuilder->andWhere('n.name LIKE :phrase')
+            ->setParameter('phrase', '%' . $phrase . '%');
+        }
+
+        if ($sort === 'Newest') {
+            $queryBuilder->orderBy('n.createdAt', 'DESC');
+        }
+
+        if ($sort === 'Oldest') {
+            $queryBuilder->orderBy('n.createdAt', 'ASC');
+        }
+
+        if ($sort === 'Popular') {
+            $queryBuilder->orderBy('n.views', 'DESC');
+        }
+
+        if ($sort === 'Expensive') {
             $queryBuilder->orderBy('n.value', 'DESC');
         }
 

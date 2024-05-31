@@ -8,6 +8,8 @@ import useUser from "../../customHooks/useUser";
 import 'react-toastify/dist/ReactToastify.css';
 
 function Register() {
+    const apiUrl = import.meta.env.VITE_API_URL;
+
     const { isLogged } = useUser();
     const navigate = useNavigate();
 
@@ -22,7 +24,7 @@ function Register() {
         watch
     } = useForm<{email: string, username: string, password: string, confirmPassword: string}>();
 
-    const { isLoading, response, error, fetchData: handleSubmitApi } = useApi("http://localhost:1000/api/register", "POST");
+    const { isLoading, response, error, fetchData: handleSubmitApi } = useApi(apiUrl + "register", "POST");
     const password = watch('password', '');
     const cookies = new Cookies();
 
