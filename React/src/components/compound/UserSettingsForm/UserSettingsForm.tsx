@@ -3,17 +3,18 @@ import useApi from "../../../customHooks/useApi";
 import { ToastContainer, toast } from "react-toastify";
 import { useEffect } from "react";
 import { Cookies } from "react-cookie";
+import User from "../../../types/User";
 
-function UserSettingsForm({ user }) {
+function UserSettingsForm({ user }: {user: User}) {
+    console.log(user);
     const apiUrl = import.meta.env.VITE_API_URL;
 
     const {
         register,
         handleSubmit,
         formState: { errors },
-        watch,
-        clearErrors
-    } = useForm<{email: string, username: string, password: string, confirmPassword: string}>();
+        watch
+    } = useForm<{id: string, email: string, username: string, password: string, confirmPassword: string}>();
 
     const { isLoading, response, error, fetchData: editUser, resetError, resetResponse } = useApi(apiUrl + "user/edit", "POST");
     const password = watch("password", "");
@@ -31,7 +32,7 @@ function UserSettingsForm({ user }) {
         }
     }, [error, response])
 
-    const onSubmit: SubmitHandler<{id: string; email: string; usernname: string; password: string}> = async (data) => {
+    const onSubmit: SubmitHandler<{id: string; email: string; username: string; password: string}> = async (data) => {
         resetError();
         resetResponse();
         data.id = user.id;

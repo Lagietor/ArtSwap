@@ -3,6 +3,7 @@ import UserSettingsForm from "../../components/compound/UserSettingsForm/UserSet
 import AdjustmentsSettingsForm from "../../components/compound/AdjustmentsSettingsForm/AdjustmentsSettingsForm";
 import useUser from "../../customHooks/useUser";
 import { useNavigate } from "react-router-dom";
+import User from "../../types/User";
 import "./Settings.css";
 
 function Settings() {
@@ -32,17 +33,16 @@ function Settings() {
                         </div>
                 </div>
                 <div className="col">
-                    {user && (
+                    {user ? (
                         <>
                             {activeTab === "user" && (
-                                <UserSettingsForm user={user}/>
+                                <UserSettingsForm user={user as User}/>
                             )}
-
                             {activeTab === "adjustments" && (
                                 <AdjustmentsSettingsForm />
                             )}
                         </>
-                    )}
+                    ) : null}
                 </div>
             </div>
         </div>

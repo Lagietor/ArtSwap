@@ -1,6 +1,14 @@
 import { useNavigate } from "react-router-dom";
 
-function ProfileCard({ user }) {
+interface User {
+    id: string,
+    email: string,
+    username: string,
+    image: string,
+    roles: []
+}
+
+function ProfileCard({ user }: {user: User}) {
     const navigate = useNavigate();
 
     const enterSettings = () => {
