@@ -1,13 +1,10 @@
 import { useEffect, useState } from "react";
 import useSearch from "../../../customHooks/useSearch";
 
-function ProfileItems($props) {
-    const userId = $props.id;
-    const filter = $props.filter;
-
+function ProfileItems({ id, filter}: {id: string, filter: string}) {
     const apiUrl = import.meta.env.VITE_API_URL;
 
-    const { isLoading, response, error, fetchData: searchItems } = useSearch(apiUrl + "user/" + userId + "/items");
+    const { isLoading, response, error, fetchData: searchItems } = useSearch(apiUrl + "user/" + id + "/items");
     const [ phrase, setPhrase ] = useState("");
     const [ sort, setFilter ] = useState("");
 
@@ -34,7 +31,7 @@ function ProfileItems($props) {
                         {response.map((items: object, index: number) => (
                             index % 4 === 0 && (
                                 <div className="card-group" key={`row-${index}`}>
-                                    {response.slice(index, index + 4).map((subItem: object) => (
+                                    {response.slice(index, index + 4).map((subItem) => (
                                         <div className="col-md-3 mb-4" key={subItem.id}>
                                             <a href="#">
                                                 <div className="card rounded mx-2">

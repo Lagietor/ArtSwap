@@ -3,7 +3,7 @@ import useApi from "../../../customHooks/useApi";
 import { ToastContainer, toast } from "react-toastify";
 import { useEffect } from "react";
 import { Cookies } from "react-cookie";
-import User from "../../../types/User";
+import User from "../../../types/UserType";
 
 function UserSettingsForm({ user }: {user: User}) {
     console.log(user);

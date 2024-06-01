@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import useSearch from "../../customHooks/useSearch";
+import Item from "../../types/ItemType";
 
 function Collection() {
     const apiUrl = import.meta.env.VITE_API_URL;
@@ -83,7 +84,7 @@ function Collection() {
                         {response.map((item: object, index: number) => (
                             index % 6 === 0 && (
                                 <div className="card-group" key={`row-${index}`}>
-                                    {response.slice(index, index + 6).map((subItem: object) => (
+                                    {response.slice(index, index + 6).map((subItem: Item) => (
                                         <div className="col-md-2 mb-4" key={subItem.id}>
                                             <a href="" onClick={() => enterItem(subItem.id)}>
                                                 <div className="card rounded mx-2">

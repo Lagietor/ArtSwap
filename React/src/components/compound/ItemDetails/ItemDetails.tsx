@@ -2,8 +2,9 @@ import { useState } from "react";
 import LoginModal from "../LoginModal/LoginModal";
 import BuyNowModal from "../BuyNowModal/BuyNowModal";
 import useUser from "../../../customHooks/useUser";
+import ItemType from "../../../types/ItemType";
 
-function ItemDetails({ item }) {
+function ItemDetails({ item }: { item: ItemType }) {
     const [showLoginModal, setShowLoginModal] = useState(false);
     const [showBuyNowModal, setShowBuyNowModal] = useState(false);
     const { isLogged, user } = useUser();

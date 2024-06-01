@@ -5,11 +5,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import useSearch from "../../customHooks/useSearch";
 import "./Home.css";
+import CollectionType from "../../types/CollectionType";
 
 function Home() {
     const apiUrl = import.meta.env.VITE_API_URL;
 
-    const { user, isLogged } = useUser();
     const [ sort, setsort ] = useState("");
     const [ phrase, setPhrase ] = useState("");
     const location = useLocation();
@@ -89,7 +89,7 @@ function Home() {
                     {response.map((collection: object, index: number) => (
                         index % 6 === 0 && (
                             <div className="card-group" key={`row-${index}`}>
-                                {response.slice(index, index + 6).map((subCollection: object) => (
+                                {response.slice(index, index + 6).map((subCollection: CollectionType) => (
                                     <div className="col-md-2 mb-4" key={subCollection.id}>
                                         <a href="" onClick={() => enterCollection(subCollection.id)}>
                                             <div className="card rounded mx-2">

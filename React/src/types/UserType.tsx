@@ -1,4 +1,4 @@
-interface User {
+interface UserType {
     id: string,
     email: string,
     username: string,
@@ -6,4 +6,4 @@ interface User {
     roles: []
 }
 
-export default User;
+export default UserType;

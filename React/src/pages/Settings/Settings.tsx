@@ -3,7 +3,7 @@ import UserSettingsForm from "../../components/compound/UserSettingsForm/UserSet
 import AdjustmentsSettingsForm from "../../components/compound/AdjustmentsSettingsForm/AdjustmentsSettingsForm";
 import useUser from "../../customHooks/useUser";
 import { useNavigate } from "react-router-dom";
-import User from "../../types/User";
+import User from "../../types/UserType";
 import "./Settings.css";
 
 function Settings() {

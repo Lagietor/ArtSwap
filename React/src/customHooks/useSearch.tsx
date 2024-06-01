@@ -1,7 +1,12 @@
 import { useState } from 'react';
 import axios from 'axios';
 
-const useSearch = (url: string) => {
+const useSearch = (url: string): {
+    isLoading: boolean;
+    response: Array<any> | null;
+    error: any;
+    fetchData: (phrase?: string, sort?: string, filter?: string) => void
+    } => {
     const [response, setResponse] = useState(null);
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);

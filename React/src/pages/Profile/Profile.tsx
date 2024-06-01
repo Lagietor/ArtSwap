@@ -3,6 +3,7 @@ import useUser from "../../customHooks/useUser";
 import ProfileCard from "../../components/compound/ProfileCard/ProfileCard";
 import { useState } from "react";
 import ProfileItems from "../../components/compound/ProfileItems/ProfileItems";
+import User from "../../types/UserType";
 import "./Profile.css";
 
 function Profile() {
@@ -10,14 +11,14 @@ function Profile() {
     const navigate = useNavigate();
     const [activeButton, setActiveButton] = useState("all");
 
-    if (!isLogged) {
+    if (!isLogged || !user) {
         navigate("/");
-        return;
+        return null;
     }
 
     return (
         <div className="container bg-light">
-            <ProfileCard user={user} />
+            <ProfileCard user={user as User} />
             <hr />
             <div className="row">
                 <div className="col-2 ms-3">
@@ -46,7 +47,7 @@ function Profile() {
                     </div>
                 </div>
                 <div className="col me-5">
-                    <ProfileItems id={user.id} filter={activeButton} />
+                    <ProfileItems id={user.id as string} filter={activeButton} />
                 </div>
             </div>
         </div>
