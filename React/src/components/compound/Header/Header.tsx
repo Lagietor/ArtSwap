@@ -1,3 +1,4 @@
+import "./Header.css";
 import LoginModal from "../LoginModal/LoginModal";
 import { useLocation, useNavigate } from "react-router-dom";
 import useUser from "../../../customHooks/useUser";
@@ -21,7 +22,7 @@ function Header() {
     const handleLogout = () => {
         const cookies = new Cookies();
         cookies.remove("userToken");
-        navigate('/');
+        navigate("/");
         window.location.reload();
     }
 
@@ -35,20 +36,21 @@ function Header() {
         window.location.reload();
     }
 
-    const handleLoginModalClose = () => {
-        setShowLoginModal(false);
-    };
+    const handleCreateCollection = () => {
+        navigate("/collection/create");
+        window.location.reload();
+    }
 
     return(
         <>
-            <LoginModal open={showLoginModal} handleClose={handleLoginModalClose} />
-            <nav className="navbar navbar-expand-lg navbar-light bg-light">
+            <LoginModal open={showLoginModal} handleClose={() => setShowLoginModal(false)} />
+            <nav className="header navbar navbar-expand-lg navbar-light bg-info">
                 <div className="container-fluid p-2 mx-5">
-                    <a className="navbar-brand" href="#" onClick={() => navigate("/")}>Logo</a>
+                    <a className="navbar-brand" href="#" onClick={() => navigate("/")}><img src="/logofull.png" width="60px"></img></a>
                     <div className="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                             <li className="nav-item">
-                                <a className="nav-link" href="#">Link</a>
+                                <a className="nav-link link-primary text-secondary" href="#" onClick={() => navigate("/")}>Home</a>
                             </li>
                         </ul>
                         <div>
@@ -57,21 +59,24 @@ function Header() {
                                     Log in
                                 </button>
                             ) : (
-                                <div className="dropdown">
-                                    <a href="#" className="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
-                                        <img src="/profileImages/BUBBA.jpg" alt="profile-picture" width="45" height="45" className="rounded-circle" />
-                                    </a>
-                                    <ul className="dropdown-menu dropdown-menu-end text-small">
-                                        <li>
-                                            <a className="dropdown-item" href="#" onClick={handleProfile}>Profile</a>
-                                        </li>
-                                        <li>
-                                            <a className="dropdown-item" href="#" onClick={handleSettings}>Settings</a>
-                                        </li>
-                                        <li>
-                                            <a className="dropdown-item" href="#" onClick={handleLogout}>Log out</a>
-                                        </li>
-                                    </ul>
+                                <div className="d-flex justify-content-end">
+                                    <button className="btn btn-primary mx-5" onClick={handleCreateCollection}>Create</button>
+                                    <div className="dropdown">
+                                        <a href="#" className="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
+                                            <img src="/profileImages/BUBBA.jpg" alt="profile-picture" width="45" height="45" className="rounded-circle" />
+                                        </a>
+                                        <ul className="dropdown-menu dropdown-menu-dark dropdown-menu-end text-small">
+                                            <li>
+                                                <a className="dropdown-item" href="#" onClick={handleProfile}>Profile</a>
+                                            </li>
+                                            <li>
+                                                <a className="dropdown-item" href="#" onClick={handleSettings}>Settings</a>
+                                            </li>
+                                            <li>
+                                                <a className="dropdown-item" href="#" onClick={handleLogout}>Log out</a>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
                             )}
                         </div>

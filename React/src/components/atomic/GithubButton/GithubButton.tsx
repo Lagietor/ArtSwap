@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import './GithubButton.css';
+import LoadingAnimation from '../LoadingAnimation/LoadingAnimation';
 
 const GitHubButton = () => {
     const apiUrl = import.meta.env.VITE_API_URL;
@@ -46,8 +47,8 @@ const GitHubButton = () => {
     return (
         <>
             {isLoading ? (
-                <div className="spinner-border text-dark" role="status">
-                    <span className="sr-only"></span>
+                <div className="d-flex justify-content-center">
+                    <LoadingAnimation />
                 </div>
             ) : (
                 <button className="github-login-button" onClick={handleLogin}>

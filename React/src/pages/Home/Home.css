@@ -1,29 +1,41 @@
 body {
-    background-color: #404040;
+    background: linear-gradient(135deg, #1f1f1f, #3a3a3a);
 }
 
 .category-btn {
     padding: 4px;
-    border: 1px solid #a0a0a0;
+    border: 1px solid #FBCA53;
     border-radius: 40px;
     min-width: 5vw;
     text-align: center;
-    color: white;
+    color: #FBCA53;
     margin-left: 0.5vw;
     background-color: transparent;
     transition: 0.5s;
 }
 
 .category-btn.active {
-    background-color: aliceblue;
-    color: #404040;
-    border: 1px solid #a0a0a0;
+    background-color: #FBCA53;
+    color: #2e2e2e;
+    border: 1px solid #2e2e2e;
 }
 
 .category-btn:hover {
-    background-color: #a0a0a0;
+    background-color: #3a3a3a;
 }
 
 a {
     text-decoration: none;
+}
+
+.card {
+    background: #3a3a3a;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    color: #FBCA53;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+  
+.card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
 }

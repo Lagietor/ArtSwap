@@ -1,4 +1,4 @@
-.input {
+.column {
     display: flex;
     flex-direction: column;
     width: 200px;
@@ -12,7 +12,7 @@
     background-color: transparent;
     border: none;
     padding: 10px;
-    color: black;
+    color: white;
     display: flex;
     position: relative;
     gap: 5px;
@@ -22,13 +22,13 @@
   
 .value:not(:active):hover,
 .value:focus {
-    background-color: #eaebec;
+    background-color: #5c5c5c;
 }
   
 .value:focus,
 .value:active,
 .value.active {
-    background-color: #dadbdc;
+    background-color: #7e7e7e;
     outline: none;
 }
   
@@ -39,7 +39,7 @@
     left: -10px;
     width: 5px;
     height: 80%;
-    background-color: #2f81f7;
+    background-color: #FBCA53;
     border-radius: 5px;
     opacity: 0;
 }

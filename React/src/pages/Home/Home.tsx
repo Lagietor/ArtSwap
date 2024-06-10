@@ -1,17 +1,19 @@
+import "./Home.css";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import useUser from "../../customHooks/useUser";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import useSearch from "../../customHooks/useSearch";
-import "./Home.css";
 import CollectionType from "../../types/CollectionType";
+import LoadingAnimation from "../../components/atomic/LoadingAnimation/LoadingAnimation";
+import SearchBar from "../../components/atomic/SearchBar/SearchBar";
 
 function Home() {
     const apiUrl = import.meta.env.VITE_API_URL;
 
     const [ sort, setsort ] = useState("");
     const [ phrase, setPhrase ] = useState("");
+    const { search } = useLocation();
     const location = useLocation();
     const navigate = useNavigate();
     const { isLoading, response, error, fetchData: searchCollections } = useSearch(apiUrl + "collection");
@@ -19,8 +21,8 @@ function Home() {
     useEffect(() => {
         if (!response) {
             const params = new URLSearchParams(location.search);
-            const sortFromUrl = params.get('sort') || 'Popular';
-            const phraseFromUrl = params.get('phrase') || '';
+            const sortFromUrl = params.get("sort") || "Popular";
+            const phraseFromUrl = params.get("phrase") || "";
 
             searchCollections(phraseFromUrl, sortFromUrl);
 
@@ -30,16 +32,21 @@ function Home() {
     }, [response])
 
     useEffect(() => {
-        const updateURL = () => {
-            const params = new URLSearchParams();
-            params.set("sort", sort);
-            params.set("phrase", phrase);
-            navigate({ search: params.toString() });
-        };
+        const params = new URLSearchParams(search);
+        const autoLogin = params.get("autoLogin");
 
-        updateURL();
-        searchCollections(phrase, sort);
-    }, [sort, phrase, navigate]);
+        if (!autoLogin) {
+            updateURL();
+            searchCollections(phrase, sort);
+        }
+    }, [sort, phrase]);
+
+    const updateURL = () => {
+        const params = new URLSearchParams();
+        params.set("sort", sort);
+        params.set("phrase", phrase);
+        navigate({ search: params.toString() });
+    };
 
     const enterCollection = (id: number) => {
         navigate("/collection/" + id);
@@ -51,18 +58,7 @@ function Home() {
             <div className="searchBar d-flex justify-content-center mt-5">
                 <form className="form-inline w-50">
                     <div className="input-group">
-                        <input 
-                            type="search"
-                            value={phrase}
-                            className="form-control rounded" 
-                            placeholder="Search" 
-                            aria-label="Search" 
-                            aria-describedby="search-addon"
-                            onChange={(e) => setPhrase(e.target.value)}
-                        />
-                        <span className="input-group-text border-0" id="search-addon">
-                            <FontAwesomeIcon icon={faSearch} />
-                        </span>
+                        <SearchBar value={phrase} onChange={setPhrase}/>
                     </div>
                 </form>
             </div>
@@ -75,14 +71,14 @@ function Home() {
                     {phrase && (
                         <span className="mx-2">{phrase}</span>
                     )}
-                    <FontAwesomeIcon icon={faSearch} />
+                    <FontAwesomeIcon icon={faSearch} className="text-primary" />
                 </button>
             </div>
             <div className="nft-items mt-5">
             
             {isLoading || !response ? (
-                <div className="spinner-border text-dark" role="status">
-                    <span className="sr-only"></span>
+                <div className="d-flex justify-content-center">
+                    <LoadingAnimation />
                 </div>
             ) : (
                 <>
@@ -96,15 +92,15 @@ function Home() {
                                                 <img className="card-img-top" src="./profileImages/BUBBA.jpg" alt="collection image" />
                                                 <div className="card-body">
                                                     <h5 className="card-title">{subCollection.name}</h5>
-                                                    <p className="card-text">{subCollection.description}</p>
+                                                    <p className="card-text text-light">{subCollection.description}</p>
                                                     <div className="row">
                                                         <div className="col">
-                                                            <h6>Floor</h6>
-                                                            <span>{subCollection.floorPrice}</span>
+                                                            <h6 className="text-light">Floor</h6>
+                                                            <span className="text-light">{subCollection.floorPrice}</span>
                                                         </div>
                                                         <div className="col">
-                                                            <h6>Volume</h6>
-                                                            <span>{subCollection.volume}</span>
+                                                            <h6 className="text-light">Volume</h6>
+                                                            <span className="text-light">{subCollection.volume}</span>
                                                         </div>
                                                     </div>
                                                 </div>

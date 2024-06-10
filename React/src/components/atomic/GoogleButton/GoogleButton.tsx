@@ -5,6 +5,7 @@ import { Cookies } from "react-cookie";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGoogle } from '@fortawesome/free-brands-svg-icons';
 import "./GoogleButton.css";
+import LoadingAnimation from "../LoadingAnimation/LoadingAnimation";
 
 function GoogleButton() {
     const apiUrl = import.meta.env.VITE_API_URL;
@@ -46,8 +47,8 @@ function GoogleButton() {
                 </button>
                 </div>
             ) : (
-                <div className="spinner-border text-dark" role="status">
-                    <span className="sr-only"></span>
+                <div className="d-flex justify-content-center">
+                    <LoadingAnimation />
                 </div>
             )}
         </div>

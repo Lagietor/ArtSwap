@@ -2,15 +2,17 @@ import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import CollectionDetails from "../../components/compound/CollectionDetails/CollectionDetails";
 import { useEffect, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import useSearch from "../../customHooks/useSearch";
 import Item from "../../types/ItemType";
+import useUser from "../../customHooks/useUser";
+import LoadingAnimation from "../../components/atomic/LoadingAnimation/LoadingAnimation";
+import SearchBar from "../../components/atomic/SearchBar/SearchBar";
 
 function Collection() {
     const apiUrl = import.meta.env.VITE_API_URL;
 
     const { id } = useParams();
+    const { isLogged, user } = useUser();
     const [ sort, setsort ] = useState("");
     const [ phrase, setPhrase ] = useState("");
     const navigate = useNavigate()
@@ -52,35 +54,32 @@ function Collection() {
         window.location.reload();
     }
 
+    const enterCreateItem = () => {
+        navigate(`/collection/${id}/item/create`);
+        window.location.reload();
+    }
+
     return (
         <div className="container mt-5">
-            <CollectionDetails id={id}/>
-            <hr />
-            <div className="d-flex justify-content-center">
-                <form className="form-inline w-50">
-                    <div className="input-group">
-                        <input 
-                            type="search"
-                            value={phrase}
-                            className="form-control rounded" 
-                            placeholder="Search" 
-                            aria-label="Search" 
-                            aria-describedby="search-addon"
-                            onChange={(e) => setPhrase(e.target.value)}
-                        />
-                        <span className="input-group-text border-0" id="search-addon">
-                            <FontAwesomeIcon icon={faSearch} />
-                        </span>
+            {isLoading || !response ? (
+                <div className="d-flex justify-content-center">
+                    <LoadingAnimation />
+                </div>
+            ) : (
+                <>
+                    <CollectionDetails id={id}/>
+                    <hr />
+                    <div className="d-flex justify-content-center">
+                        {isLogged && response[0]?.owner?.id && user?.id === response[0].owner.id && (
+                            <button className="btn btn-primary me-3" onClick={enterCreateItem}>+</button>
+                        )}
+                        <form className="form-inline w-50">
+                            <div className="input-group">
+                                <SearchBar value={phrase} onChange={setPhrase}/>
+                            </div>
+                        </form>
                     </div>
-                </form>
-            </div>
-            <div className="mt-5">
-                {isLoading || !response ? (
-                    <div className="spinner-border text-dark" role="status">
-                        <span className="sr-only"></span>
-                    </div>
-                ) : (
-                    <>
+                    <div className="mt-5">
                         {response.map((item: object, index: number) => (
                             index % 6 === 0 && (
                                 <div className="card-group" key={`row-${index}`}>
@@ -91,7 +90,7 @@ function Collection() {
                                                     <img className="card-img-top" src="/profileImages/BUBBA.jpg" alt="collection image" />
                                                     <div className="card-body">
                                                         <h5 className="card-title">{subItem.name}</h5>
-                                                        <p className="card-text h6">{subItem.value} ETH</p>
+                                                        <p className="card-text h6 text-light">{subItem.value} ETH</p>
                                                     </div>
                                                 </div>
                                             </a>
@@ -100,9 +99,9 @@ function Collection() {
                                 </div>
                             )
                         ))}
-                    </>
-                    )}
-            </div>
+                    </div>
+                </>
+            )}
         </div>
     );
 }

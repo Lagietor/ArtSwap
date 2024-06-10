@@ -42,7 +42,6 @@ class NFTItemController extends AbstractController
 
         $name = $request['name'];
         $value = $request['value'];
-        $views = $request['views'];
         $image = $request['image'];
 
         $item = $em->getRepository(NFTItem::class)->findOneBy(['name' => $name]);
@@ -57,14 +56,24 @@ class NFTItemController extends AbstractController
         $item->setOwner($owner);
         $item->setName($name);
         $item->setValue($value);
-        $item->setViews($views);
+        $item->setViews(0);
         $item->setImage($image);
 
         $em->persist($item);
         $em->flush();
 
         return $this->json([
-            'message' => 'item created'
+            'id' => $item->getId(),
+            'owner' => [
+                'id' => $item->getOwner()->getId(),
+                'email' => $item->getOwner()->getEmail(),
+                'username' => $item->getOwner()->getUsername(),
+                'image' => $item->getOwner()->getImage()
+            ],
+            'name' => $item->getName(),
+            'views' => $item->getViews(),
+            'value' => $item->getValue(),
+            'image' => $item->getImage()
         ]);
     }
 

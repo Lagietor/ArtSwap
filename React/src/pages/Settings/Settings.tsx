@@ -17,10 +17,10 @@ function Settings() {
     }
 
     return (
-        <div className="container rounded mt-4 bg-light">
+        <div className="container rounded mt-4 bg-info">
             <div className="row">
                 <div className="col-2 border-end">
-                    <div className="input">
+                    <div className="column bg-info">
                             <button className={`value ${activeTab === "user" ? "active" : ""}`} onClick={() => setActiveTab("user")}>
                                 User
                             </button>
@@ -36,7 +36,7 @@ function Settings() {
                     {user ? (
                         <>
                             {activeTab === "user" && (
-                                <UserSettingsForm user={user as User}/>
+                                <UserSettingsForm user={user as User} />
                             )}
                             {activeTab === "adjustments" && (
                                 <AdjustmentsSettingsForm />

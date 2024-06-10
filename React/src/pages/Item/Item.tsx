@@ -2,6 +2,7 @@ import { useNavigate, useParams } from "react-router-dom"
 import useApi from "../../customHooks/useApi";
 import { useEffect } from "react";
 import ItemDetails from "../../components/compound/ItemDetails/ItemDetails";
+import LoadingAnimation from "../../components/atomic/LoadingAnimation/LoadingAnimation";
 
 function Item() {
     const apiUrl = import.meta.env.VITE_API_URL;
@@ -25,8 +26,8 @@ function Item() {
     return (
         <div className="container mt-5">
             {isLoading || !response ? (
-                <div className="spinner-border text-dark" role="status">
-                    <span className="sr-only"></span>
+                <div className="d-flex justify-content-center">
+                    <LoadingAnimation />
                 </div>
             ) : (
                 <ItemDetails item={response} />

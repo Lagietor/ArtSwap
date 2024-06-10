@@ -9,6 +9,8 @@ import Collection from "./pages/Collection/Collection";
 import Item from "./pages/Item/Item";
 import Profile from "./pages/Profile/Profile";
 import Settings from "./pages/Settings/Settings";
+import CreateCollection from "./pages/CreateCollection/CreateCollection";
+import CreateItem from "./pages/CreateItem/CreateItem";
 
 function App() {
     const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
@@ -24,7 +26,9 @@ function App() {
                         <Route path="/register" element={<Register />} />
                         <Route path="/profile" element={<Profile />} />
                         <Route path="/settings" element={<Settings />} />
+                        <Route path="/collection/create" element={<CreateCollection />} />
                         <Route path="/collection/:id" element={<Collection />} />
+                        <Route path="/collection/:id/item/create" element={<CreateItem />} />
                         <Route path="/collection/:collectionId/item/:itemId" element={<Item />} />
                     </Routes>
                 </div>

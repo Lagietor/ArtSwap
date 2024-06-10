@@ -40,7 +40,20 @@ class NFTCollectionController extends AbstractController
         $em->flush();
 
         return $this->json([
-            'message' => 'Collection was created'
+            'id' => $collection->getId(),
+            'user' => [
+                'id' => $collection->getUser()->getId(),
+                'email' => $collection->getUser()->getEmail(),
+                'username' => $collection->getUser()->getUsername(),
+                'image' => $collection->getUser()->getImage()
+            ],
+            'name' => $collection->getName(),
+            'itemsCount' => $collection->getItemsCount(),
+            'floorPrice' => $collection->getFloorPrice(),
+            'volume' => $collection->getVolume(),
+            'views' => $collection->getViews(),
+            'image' => $collection->getImage(),
+            'description' => $collection->getDescription()
         ]);
     }
 

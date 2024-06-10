@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import useSearch from "../../../customHooks/useSearch";
+import LoadingAnimation from "../../atomic/LoadingAnimation/LoadingAnimation";
+import SearchBar from "../../atomic/SearchBar/SearchBar";
 
 function ProfileItems({ id, filter}: {id: string, filter: string}) {
     const apiUrl = import.meta.env.VITE_API_URL;
@@ -20,11 +22,15 @@ function ProfileItems({ id, filter}: {id: string, filter: string}) {
 
     return (
         <>
-            <input type="search" className="form-control rounded" value={phrase} placeholder="Search" onChange={(e) => setPhrase(e.target.value)}/>
+            <form className="form-inline w-50">
+                <div className="input-group ms-1">
+                    <SearchBar value={phrase} onChange={setPhrase} />
+                </div>
+            </form>
             <div className="mt-3">
                 {isLoading || !response ? (
-                    <div className="spinner-border text-dark" role="status">
-                        <span className="sr-only"></span>
+                    <div className="d-flex justify-content-center">
+                        <LoadingAnimation />
                     </div>
                 ) : (
                     <>

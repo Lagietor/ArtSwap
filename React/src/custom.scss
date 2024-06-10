@@ -1,8 +1,9 @@
 // override theme variables
-// $primary: #E19898;
-// $secondary: #A2678A;
-// $info: #4D3C77;
-// $dark: #3F1D38;
+$primary: #FBCA53;
+$secondary: #A48E65;
+// $light: #3a3a3a;
+$dark: #2e2e2e;
+$info: #3a3a3a;
 
 // $pagination-bg: $dark;
 // $pagination-border-color: $dark;
@@ -29,3 +30,20 @@
 //     background-color: $secondary !important; 
 //     color: $primary !important;
 // }
+
+/* Nadpisuje kolor strzałki dropdown */
+.dropdown-toggle::after {
+    border-top-color: $light; /* Używa koloru primary Bootstrapa */
+}
+
+/* Zmienia kolor tła i tekstu dla listy rozwijanej */
+.dropdown-menu.dropdown-menu-dark {
+    background-color: var(--bs-dark) !important; /* Używa koloru dark Bootstrapa */
+    color: white; /* Tekst w kolorze białym */
+}
+  
+  /* Opcjonalnie zmienia kolor elementów na hover */
+.dropdown-menu.dropdown-menu-dark .dropdown-item:hover {
+    background-color: var(--bs-primary) !important;
+    color: white;
+}

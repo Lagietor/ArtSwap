@@ -6,6 +6,9 @@ import { useEffect } from "react";
 import { Cookies } from "react-cookie";
 import GoogleButton from "../../atomic/GoogleButton/GoogleButton";
 import GithubButton from "../../atomic/GithubButton/GithubButton";
+import FormInput from "../../atomic/FormInput/FormInput";
+import FormPasswordInput from "../../atomic/FormPasswordInput/FormPasswordInput";
+import SubmitButton from "../../atomic/SubmitButton/SubmitButton";
 
 function PopupLogin({ close }: {close: () => void }) {
     const apiUrl = import.meta.env.VITE_API_URL;
@@ -15,11 +18,13 @@ function PopupLogin({ close }: {close: () => void }) {
     const {
         register,
         handleSubmit,
+        formState: { errors },
     } = useForm<{email: string, password: string}>();
 
     const { isLoading, response, error, fetchData: handleSubmitApi } = useApi(apiUrl + "login", "POST");
 
     useEffect(() => {
+        document.documentElement.style.setProperty('--input-width', '100%');
         if (response) {
             cookies.set("userToken", response["token"]);
             window.location.reload();
@@ -40,12 +45,12 @@ function PopupLogin({ close }: {close: () => void }) {
     }
 
     return (
-        <div className="p-2 border rounded">
+        <div className="p-2 border border-info rounded bg-info">
             <div className="d-flex justify-content-end">
                 <button className="btn-close" onClick={close}></button>
             </div>
             <div className="px-5">
-                <div><h2> Log in </h2></div>
+                <h2 className="text-light"> Log in </h2>
                 <div>
                     <form onSubmit={handleSubmit(onSubmit)} className="my-5">
                         {error && (
@@ -53,24 +58,27 @@ function PopupLogin({ close }: {close: () => void }) {
                                 {(error["response"]["data"]["message"])}
                             </p>
                         )}
-                        <div className="">
-                            <label htmlFor="email">Email</label>
-                            <input type="email" className="form-control" id="email" placeholder="Enter email" {...register('email', { required: true })} />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="password">Password</label>
-                            <input type="password" className="form-control" id="password" placeholder="Enter password" {...register('password', { required: true })} />                      
-                        </div>
+
+                        <FormInput
+                            type="email"
+                            id="email"
+                            register={register}
+                            errors={errors}
+                            placeholder="Enter email"
+                        />
+                        <FormPasswordInput
+                            id="password"
+                            register={register}
+                            errors={errors}
+                            placeholder="Enter password"
+                        />
                         <div className="d-grid gap-2">
-                        {isLoading ? (
-                            <button type="submit" className="btn btn-primary disabled">
-                                <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                            </button>
-                        ) : (
-                            <button className="submit btn btn-primary btn-block">Login</button>
-                        )}
+                            <SubmitButton
+                                isLoading={isLoading}
+                                text="login"
+                            />
                         </div>
-                        <small className="text-muted">If you do not have an account <a onClick={handleSignInClick}>Sign In</a></small>
+                        <small className="text-light">If you do not have an account <a onClick={handleSignInClick}>Sign In</a></small>
                     </form>
                 </div>
                 <div className="social-buttons">
@@ -78,7 +86,7 @@ function PopupLogin({ close }: {close: () => void }) {
                     <GithubButton />
                 </div>
                 <div>
-                    <p>Login with MetaMask</p>
+                    <p className="text-light">Login with MetaMask</p>
                 </div>
             </div>
         </div>
