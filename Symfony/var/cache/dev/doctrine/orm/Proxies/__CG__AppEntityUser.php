@@ -67,10 +67,10 @@ class User extends \App\Entity\User implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'App\\Entity\\User' . "\0" . 'id', '' . "\0" . 'App\\Entity\\User' . "\0" . 'email', '' . "\0" . 'App\\Entity\\User' . "\0" . 'roles', '' . "\0" . 'App\\Entity\\User' . "\0" . 'password', '' . "\0" . 'App\\Entity\\User' . "\0" . 'username', '' . "\0" . 'App\\Entity\\User' . "\0" . 'image', '' . "\0" . 'App\\Entity\\User' . "\0" . 'nFTCollections', '' . "\0" . 'App\\Entity\\User' . "\0" . 'nFTItems', 'createdAt', 'updatedAt'];
+            return ['__isInitialized__', '' . "\0" . 'App\\Entity\\User' . "\0" . 'id', '' . "\0" . 'App\\Entity\\User' . "\0" . 'email', '' . "\0" . 'App\\Entity\\User' . "\0" . 'roles', '' . "\0" . 'App\\Entity\\User' . "\0" . 'password', '' . "\0" . 'App\\Entity\\User' . "\0" . 'username', '' . "\0" . 'App\\Entity\\User' . "\0" . 'profileImage', '' . "\0" . 'App\\Entity\\User' . "\0" . 'nFTCollections', '' . "\0" . 'App\\Entity\\User' . "\0" . 'nFTItems', '' . "\0" . 'App\\Entity\\User' . "\0" . 'backgroundImage', 'createdAt', 'updatedAt'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'App\\Entity\\User' . "\0" . 'id', '' . "\0" . 'App\\Entity\\User' . "\0" . 'email', '' . "\0" . 'App\\Entity\\User' . "\0" . 'roles', '' . "\0" . 'App\\Entity\\User' . "\0" . 'password', '' . "\0" . 'App\\Entity\\User' . "\0" . 'username', '' . "\0" . 'App\\Entity\\User' . "\0" . 'image', '' . "\0" . 'App\\Entity\\User' . "\0" . 'nFTCollections', '' . "\0" . 'App\\Entity\\User' . "\0" . 'nFTItems', 'createdAt', 'updatedAt'];
+        return ['__isInitialized__', '' . "\0" . 'App\\Entity\\User' . "\0" . 'id', '' . "\0" . 'App\\Entity\\User' . "\0" . 'email', '' . "\0" . 'App\\Entity\\User' . "\0" . 'roles', '' . "\0" . 'App\\Entity\\User' . "\0" . 'password', '' . "\0" . 'App\\Entity\\User' . "\0" . 'username', '' . "\0" . 'App\\Entity\\User' . "\0" . 'profileImage', '' . "\0" . 'App\\Entity\\User' . "\0" . 'nFTCollections', '' . "\0" . 'App\\Entity\\User' . "\0" . 'nFTItems', '' . "\0" . 'App\\Entity\\User' . "\0" . 'backgroundImage', 'createdAt', 'updatedAt'];
     }
 
     /**
@@ -305,23 +305,23 @@ class User extends \App\Entity\User implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function getImage(): ?string
+    public function getProfileImage(): ?string
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getImage', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getProfileImage', []);
 
-        return parent::getImage();
+        return parent::getProfileImage();
     }
 
     /**
      * {@inheritDoc}
      */
-    public function setImage(?string $image): static
+    public function setProfileImage(?string $profileImage): static
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setImage', [$image]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setProfileImage', [$profileImage]);
 
-        return parent::setImage($image);
+        return parent::setProfileImage($profileImage);
     }
 
     /**
@@ -388,6 +388,28 @@ class User extends \App\Entity\User implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeNFTItem', [$nFTItem]);
 
         return parent::removeNFTItem($nFTItem);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getBackgroundImage(): ?string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getBackgroundImage', []);
+
+        return parent::getBackgroundImage();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setBackgroundImage(string $backgroundImage): static
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setBackgroundImage', [$backgroundImage]);
+
+        return parent::setBackgroundImage($backgroundImage);
     }
 
     /**

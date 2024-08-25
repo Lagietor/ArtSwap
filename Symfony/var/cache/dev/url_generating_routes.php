@@ -29,6 +29,8 @@ return [
     'api_api_collection_get' => [['id'], ['_controller' => 'App\\Controller\\NFTCollectionController::get'], [], [['variable', '/', '[^/]++', 'id', true], ['text', '/api/collection']], [], [], []],
     'api_app_item' => [[], ['_controller' => 'App\\Controller\\NFTItemController::create'], [], [['text', '/api/item']], [], [], []],
     'api_api_item_get' => [['id'], ['_controller' => 'App\\Controller\\NFTItemController::get'], [], [['variable', '/', '[^/]++', 'id', true], ['text', '/api/item']], [], [], []],
+    'api_api_user_get' => [['id'], ['_controller' => 'App\\Controller\\UserController::get'], [], [['variable', '/', '[^/]++', 'id', true], ['text', '/api/user']], [], [], []],
     'api_api_user_edit' => [[], ['_controller' => 'App\\Controller\\UserController::edit'], [], [['text', '/api/user/edit']], [], [], []],
     'api_api_user_items' => [['id'], ['_controller' => 'App\\Controller\\UserController::getItems'], [], [['text', '/items'], ['variable', '/', '[^/]++', 'id', true], ['text', '/api/user']], [], [], []],
+    'api_api_user_image' => [['id'], ['_controller' => 'App\\Controller\\UserController::uploadImages'], [], [['text', '/images'], ['variable', '/', '[^/]++', 'id', true], ['text', '/api/user']], [], [], []],
 ];

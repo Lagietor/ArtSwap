@@ -53,13 +53,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $username = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $image = null;
+    private ?string $profileImage = null;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: NFTCollection::class)]
     private Collection $nFTCollections;
 
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: NFTItem::class)]
     private Collection $nFTItems;
+
+    #[ORM\Column(length: 255)]
+    private ?string $backgroundImage = null;
 
     public function __construct()
     {
@@ -148,14 +151,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getImage(): ?string
+    public function getProfileImage(): ?string
     {
-        return $this->image;
+        return $this->profileImage;
     }
 
-    public function setImage(?string $image): static
+    public function setProfileImage(?string $profileImage): static
     {
-        $this->image = $image;
+        $this->profileImage = $profileImage;
 
         return $this;
     }
@@ -216,6 +219,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $nFTItem->setOwner(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getBackgroundImage(): ?string
+    {
+        return $this->backgroundImage;
+    }
+
+    public function setBackgroundImage(string $backgroundImage): static
+    {
+        $this->backgroundImage = $backgroundImage;
 
         return $this;
     }

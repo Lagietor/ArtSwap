@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\NFTItem;
 use App\Entity\User;
+use App\Service\UploadImageService;
 use Doctrine\ORM\EntityManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,6 +17,39 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 #[Route('/api', name: 'api_')]
 class UserController extends AbstractController
 {
+    private $uploadImageService;
+
+    public function __construct(UploadImageService $uploadImageService)
+    {
+        $this->uploadImageService = $uploadImageService;
+    }
+
+    #[Route('/user/{id}', name: 'api_user_get', methods: ['GET'])]
+    public function get(
+        EntityManagerInterface $em,
+        int $id
+    ): JsonResponse
+    {
+        /**
+         * @var User $user
+         */
+        $user = $em->getRepository(User::class)->find($id);
+
+        if (!$user) {
+            return $this->json([
+                'message' => 'There is no user with id: ' . $id
+            ]);
+        }
+
+        return $this->json([
+            'id' => $user->getId(),
+            'email' => $user->getEmail(),
+            'username' => $user->getUsername(),
+            'profileImage' => $user->getProfileImage(),
+            'backgroundImage' => $user->getBackgroundImage()
+        ]);
+    }
+
     #[Route('/user/edit', name: 'api_user_edit', methods: ['POST'])]
     public function edit(
         Request $request,
@@ -92,7 +126,7 @@ class UserController extends AbstractController
                     'id' => $item->getOwner()->getId(),
                     'email' => $item->getOwner()->getEmail(),
                     'username' => $item->getOwner()->getUsername(),
-                    'image' => $item->getOwner()->getImage()
+                    'image' => $item->getOwner()->getProfileImage()
                 ],
                 'name' => $item->getName(),
                 'views' => $item->getViews(),
@@ -102,5 +136,47 @@ class UserController extends AbstractController
         }
 
         return $this->json($result);
+    }
+
+    #[Route('/user/{id}/images', name: 'api_user_image', methods: ['POST'])]
+    public function uploadImages(
+        Request $request,
+        EntityManagerInterface $em,
+        int $id
+    ): JsonResponse
+    {
+        $profileImage = $request->files->get('profileImage');
+        $backgroundImage = $request->files->get('backgroundImage');
+
+        if (!$profileImage->isValid() || !$backgroundImage->isValid()) {
+            return $this->json([
+                'message' => 'Invalid file'
+            ], 400);
+        }
+
+        /**
+         * @var User $user
+         */
+        $user = $em->getRepository(User::class)->find($id);
+
+        if (!$user) {
+            return $this->json([
+                'message' => 'user with id ' . $id . ' does not exists'
+            ], 400);
+        }
+
+        $profileImageId = $this->uploadImageService->uploadFileToStorage($user->getUsername(), 'profileImage', $profileImage);
+        $backgroundImageId = $this->uploadImageService->uploadFileToStorage($user->getUsername(), 'backgroundImage', $backgroundImage);
+
+        $user->setProfileImage($profileImageId);
+        $user->setBackgroundImage($backgroundImageId);
+
+        $em->persist($user);
+        $em->flush();
+
+        return $this->json([
+            'profileImageId' => $profileImageId,
+            'backgroundImageId' => $backgroundImageId,
+        ]);
     }
 }

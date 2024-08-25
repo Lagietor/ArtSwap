@@ -818,6 +818,15 @@
             'reference' => 'a1733f849b999460c308e66f6392fb09b621fa86',
             'dev_requirement' => true,
         ),
+        'symfony/mime' => array(
+            'pretty_version' => 'v6.0.19',
+            'version' => '6.0.19.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../symfony/mime',
+            'aliases' => array(),
+            'reference' => 'd7052547a0070cbeadd474e172b527a00d657301',
+            'dev_requirement' => false,
+        ),
         'symfony/password-hasher' => array(
             'pretty_version' => 'v6.0.19',
             'version' => '6.0.19.0',
@@ -846,6 +855,15 @@
             'install_path' => __DIR__ . '/../symfony/polyfill-intl-grapheme',
             'aliases' => array(),
             'reference' => '32a9da87d7b3245e09ac426c83d334ae9f06f80f',
+            'dev_requirement' => false,
+        ),
+        'symfony/polyfill-intl-idn' => array(
+            'pretty_version' => 'v1.30.0',
+            'version' => '1.30.0.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../symfony/polyfill-intl-idn',
+            'aliases' => array(),
+            'reference' => 'a6e83bdeb3c84391d1dfe16f42e40727ce524a5c',
             'dev_requirement' => false,
         ),
         'symfony/polyfill-intl-normalizer' => array(

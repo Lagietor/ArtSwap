@@ -68,7 +68,7 @@ class NFTItemController extends AbstractController
                 'id' => $item->getOwner()->getId(),
                 'email' => $item->getOwner()->getEmail(),
                 'username' => $item->getOwner()->getUsername(),
-                'image' => $item->getOwner()->getImage()
+                'image' => $item->getOwner()->getprofileImage()
             ],
             'name' => $item->getName(),
             'views' => $item->getViews(),
@@ -95,7 +95,7 @@ class NFTItemController extends AbstractController
                 'id' => $item->getOwner()->getId(),
                 'email' => $item->getOwner()->getEmail(),
                 'username' => $item->getOwner()->getUsername(),
-                'image' => $item->getOwner()->getImage()
+                'image' => $item->getOwner()->getprofileImage()
             ],
             'name' => $item->getName(),
             'views' => $item->getViews(),

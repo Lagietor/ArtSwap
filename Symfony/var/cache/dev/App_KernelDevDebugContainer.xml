@@ -214,33 +214,45 @@
       <parameter>main</parameter>
     </parameter>
     <parameter key="nelmio_cors.map" type="collection">
-      <parameter key="^/" type="collection">
+      <parameter key="^/api/" type="collection">
+        <parameter key="allow_origin" type="collection">
+          <parameter>http://localhost:5173</parameter>
+        </parameter>
+        <parameter key="allow_headers" type="collection">
+          <parameter>content-type</parameter>
+          <parameter>authorization</parameter>
+        </parameter>
+        <parameter key="allow_methods" type="collection">
+          <parameter>GET</parameter>
+          <parameter>OPTIONS</parameter>
+          <parameter>POST</parameter>
+          <parameter>PUT</parameter>
+          <parameter>DELETE</parameter>
+        </parameter>
+        <parameter key="max_age">3600</parameter>
         <parameter key="skip_same_as_origin">true</parameter>
       </parameter>
     </parameter>
     <parameter key="nelmio_cors.defaults" type="collection">
       <parameter key="allow_origin" type="collection">
-        <parameter>%env(CORS_ALLOW_ORIGIN)%</parameter>
+        <parameter>http://localhost:5173</parameter>
       </parameter>
       <parameter key="allow_credentials">false</parameter>
       <parameter key="allow_headers" type="collection">
         <parameter>content-type</parameter>
         <parameter>authorization</parameter>
       </parameter>
-      <parameter key="expose_headers" type="collection">
-        <parameter>Link</parameter>
-      </parameter>
+      <parameter key="expose_headers" type="collection"/>
       <parameter key="allow_methods" type="collection">
         <parameter>GET</parameter>
         <parameter>OPTIONS</parameter>
         <parameter>POST</parameter>
         <parameter>PUT</parameter>
-        <parameter>PATCH</parameter>
         <parameter>DELETE</parameter>
       </parameter>
       <parameter key="max_age">3600</parameter>
       <parameter key="hosts" type="collection"/>
-      <parameter key="origin_regex">true</parameter>
+      <parameter key="origin_regex">false</parameter>
       <parameter key="forced_allow_origin_value">null</parameter>
       <parameter key="skip_same_as_origin">true</parameter>
     </parameter>
@@ -502,6 +514,7 @@
     <service id="App\Controller\UserController" class="App\Controller\UserController" public="true" autowire="true" autoconfigure="true">
       <tag name="controller.service_arguments"/>
       <tag name="container.service_subscriber"/>
+      <argument type="service" id="App\Service\UploadImageService"/>
       <call method="setContainer">
         <argument type="service" id=".service_locator.l1ae.Qz.App\Controller\UserController"/>
       </call>
@@ -523,6 +536,9 @@
     </service>
     <service id="App\Service\SearchCollectionService" class="App\Service\SearchCollectionService" autowire="true" autoconfigure="true">
       <argument type="service" id="doctrine.orm.default_entity_manager"/>
+    </service>
+    <service id="App\Service\UploadImageService" class="App\Service\UploadImageService" autowire="true" autoconfigure="true">
+      <argument type="service" id="kernel"/>
     </service>
     <service id="App\EventSubscriber\JWTCreatedSubscriber" class="App\EventSubscriber\JWTCreatedSubscriber" autowire="true" autoconfigure="true">
       <tag name="kernel.event_subscriber"/>
@@ -2226,6 +2242,7 @@
         <argument type="service" id="api_platform.serializer.normalizer.item"/>
         <argument type="service" id="serializer.normalizer.datetime"/>
         <argument type="service" id="serializer.normalizer.constraint_violation_list"/>
+        <argument type="service" id="serializer.normalizer.mime_message"/>
         <argument type="service" id="serializer.normalizer.datetimezone"/>
         <argument type="service" id="serializer.normalizer.dateinterval"/>
         <argument type="service" id="serializer.normalizer.form_error"/>
@@ -2253,6 +2270,10 @@
       <argument type="collection"/>
       <argument type="service" id="serializer.name_converter.metadata_aware"/>
     </service>
+    <service id="serializer.normalizer.mime_message" class="Symfony\Component\Serializer\Normalizer\MimeMessageNormalizer">
+      <tag name="serializer.normalizer" priority="-915"/>
+      <argument type="service" id="serializer.normalizer.property"/>
+    </service>
     <service id="serializer.normalizer.datetimezone" class="Symfony\Component\Serializer\Normalizer\DateTimeZoneNormalizer">
       <tag name="serializer.normalizer" priority="-915"/>
     </service>
@@ -2261,7 +2282,7 @@
     </service>
     <service id="serializer.normalizer.data_uri" class="Symfony\Component\Serializer\Normalizer\DataUriNormalizer">
       <tag name="serializer.normalizer" priority="-920"/>
-      <argument>null</argument>
+      <argument type="service" id="mime_types" on-invalid="null"/>
     </service>
     <service id="serializer.normalizer.datetime" class="Symfony\Component\Serializer\Normalizer\DateTimeNormalizer">
       <tag name="serializer.normalizer" priority="-910"/>
@@ -2775,6 +2796,11 @@
     <service id="data_collector.validator" class="Symfony\Component\Validator\DataCollector\ValidatorDataCollector">
       <tag name="data_collector" template="@WebProfiler/Collector/validator.html.twig" id="validator" priority="320"/>
       <argument type="service" id="debug.validator"/>
+    </service>
+    <service id="mime_types" class="Symfony\Component\Mime\MimeTypes">
+      <call method="setDefault">
+        <argument type="service" id="mime_types"/>
+      </call>
     </service>
     <service id="data_collector.doctrine" class="Doctrine\Bundle\DoctrineBundle\DataCollector\DoctrineDataCollector">
       <tag name="data_collector" template="@Doctrine/Collector/db.html.twig" id="db" priority="250"/>
@@ -6281,7 +6307,7 @@
         <argument key="validator" type="service_closure" id="debug.validator"/>
       </argument>
     </service>
-    <service id=".service_locator.8thOh2A" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.DPG_ZDD" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="App\Controller\AuthenticationController::githubLogin" type="service_closure" id=".service_locator.Lg7M_Sj"/>
@@ -6295,7 +6321,9 @@
         <argument key="App\Controller\NFTItemController::create" type="service_closure" id=".service_locator.5miB8_X"/>
         <argument key="App\Controller\NFTItemController::get" type="service_closure" id=".service_locator.5miB8_X"/>
         <argument key="App\Controller\UserController::edit" type="service_closure" id=".service_locator.6l.Xu4."/>
+        <argument key="App\Controller\UserController::get" type="service_closure" id=".service_locator.5miB8_X"/>
         <argument key="App\Controller\UserController::getItems" type="service_closure" id=".service_locator.5miB8_X"/>
+        <argument key="App\Controller\UserController::uploadImages" type="service_closure" id=".service_locator.5miB8_X"/>
         <argument key="App\Kernel::loadRoutes" type="service_closure" id=".service_locator.KfbR3DY"/>
         <argument key="App\Kernel::registerContainerConfiguration" type="service_closure" id=".service_locator.KfbR3DY"/>
         <argument key="kernel::loadRoutes" type="service_closure" id=".service_locator.KfbR3DY"/>
@@ -6311,7 +6339,9 @@
         <argument key="App\Controller\NFTItemController:create" type="service_closure" id=".service_locator.5miB8_X"/>
         <argument key="App\Controller\NFTItemController:get" type="service_closure" id=".service_locator.5miB8_X"/>
         <argument key="App\Controller\UserController:edit" type="service_closure" id=".service_locator.6l.Xu4."/>
+        <argument key="App\Controller\UserController:get" type="service_closure" id=".service_locator.5miB8_X"/>
         <argument key="App\Controller\UserController:getItems" type="service_closure" id=".service_locator.5miB8_X"/>
+        <argument key="App\Controller\UserController:uploadImages" type="service_closure" id=".service_locator.5miB8_X"/>
         <argument key="kernel:loadRoutes" type="service_closure" id=".service_locator.KfbR3DY"/>
         <argument key="kernel:registerContainerConfiguration" type="service_closure" id=".service_locator.KfbR3DY"/>
       </argument>
@@ -6665,12 +6695,12 @@
       <argument type="service" id="security.token_storage"/>
     </service>
     <service id="debug.argument_resolver.service.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver">
-      <argument type="service" id=".service_locator.8thOh2A"/>
+      <argument type="service" id=".service_locator.DPG_ZDD"/>
     </service>
     <service id="debug.argument_resolver.default.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver"/>
     <service id="debug.argument_resolver.variadic.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\VariadicValueResolver"/>
     <service id="debug.argument_resolver.not_tagged_controller.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\NotTaggedControllerValueResolver">
-      <argument type="service" id=".service_locator.8thOh2A"/>
+      <argument type="service" id=".service_locator.DPG_ZDD"/>
     </service>
     <service id=".doctrine.orm.default_metadata_driver.inner" class="Doctrine\Persistence\Mapping\Driver\MappingDriverChain">
       <call method="addDriver">
@@ -7566,6 +7596,8 @@
     <service id="Symfony\Component\Security\Csrf\CsrfTokenManagerInterface" alias="security.csrf.token_manager"/>
     <service id="Symfony\Component\Validator\Validator\ValidatorInterface" alias="debug.validator"/>
     <service id="validator.mapping.class_metadata_factory" alias="debug.validator"/>
+    <service id="Symfony\Component\Mime\MimeTypesInterface" alias="mime_types"/>
+    <service id="Symfony\Component\Mime\MimeTypeGuesserInterface" alias="mime_types"/>
     <service id="Doctrine\DBAL\Connection" alias="doctrine.dbal.default_connection"/>
     <service id="Doctrine\Persistence\ManagerRegistry" alias="doctrine"/>
     <service id="Doctrine\Common\Persistence\ManagerRegistry" alias="doctrine"/>
@@ -7713,7 +7745,7 @@
     <service id="Knp\DoctrineBehaviors\Contract\Provider\UserProviderInterface" alias="Knp\DoctrineBehaviors\Provider\UserProvider"/>
     <service id="container.env_var_processors_locator" alias=".service_locator.gSv9zYw" public="true"/>
     <service id="twig.loader.filesystem" alias="twig.loader.native_filesystem"/>
-    <service id="argument_resolver.controller_locator" alias=".service_locator.8thOh2A"/>
+    <service id="argument_resolver.controller_locator" alias=".service_locator.DPG_ZDD"/>
     <service id="doctrine.id_generator_locator" alias=".service_locator.KLVvNIq"/>
     <service id="twig.loader" alias="twig.loader.native_filesystem"/>
     <service id="api_platform.name_converter" alias="serializer.name_converter.metadata_aware"/>
@@ -7723,7 +7755,7 @@
     <service id=".service_locator.0GV1BZZ" alias=".service_locator.gSv9zYw"/>
     <service id=".service_locator.mreGqg1" alias=".service_locator.Lg7M_Sj"/>
     <service id=".service_locator.MkrZLUL" alias=".service_locator.6l.Xu4."/>
-    <service id=".service_locator.jhQOhUF" alias=".service_locator.8thOh2A"/>
+    <service id=".service_locator.98zf6nQ" alias=".service_locator.DPG_ZDD"/>
     <service id=".service_locator.wKF4yn1" alias=".service_locator.19_mNxd"/>
     <service id=".service_locator.O_OCvJd" alias=".service_locator.ypReOeu"/>
     <service id=".service_locator.jkb6XQV" alias=".service_locator.l1ae.Qz"/>

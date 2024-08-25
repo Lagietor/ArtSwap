@@ -6,7 +6,8 @@ interface User {
     id: string,
     email: string,
     username: string,
-    image: string,
+    profileImage: string,
+    backgroundImage: string,
     roles: []
 }
 

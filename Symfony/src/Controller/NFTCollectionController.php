@@ -45,7 +45,7 @@ class NFTCollectionController extends AbstractController
                 'id' => $collection->getUser()->getId(),
                 'email' => $collection->getUser()->getEmail(),
                 'username' => $collection->getUser()->getUsername(),
-                'image' => $collection->getUser()->getImage()
+                'image' => $collection->getUser()->getprofileImage()
             ],
             'name' => $collection->getName(),
             'itemsCount' => $collection->getItemsCount(),
@@ -80,7 +80,7 @@ class NFTCollectionController extends AbstractController
                     'id' => $collection->getUser()->getId(),
                     'email' => $collection->getUser()->getEmail(),
                     'username' => $collection->getUser()->getUsername(),
-                    'image' => $collection->getUser()->getImage()
+                    'image' => $collection->getUser()->getProfileImage()
                 ],
                 'name' => $collection->getName(),
                 'itemsCount' => $collection->getItemsCount(),
@@ -118,7 +118,7 @@ class NFTCollectionController extends AbstractController
                     'id' => $item->getOwner()->getId(),
                     'email' => $item->getOwner()->getEmail(),
                     'username' => $item->getOwner()->getUsername(),
-                    'image' => $item->getOwner()->getImage()
+                    'image' => $item->getOwner()->getProfileImage()
                 ],
                 'name' => $item->getName(),
                 'views' => $item->getViews(),
@@ -147,7 +147,7 @@ class NFTCollectionController extends AbstractController
                 'id' => $collection->getUser()->getId(),
                 'email' => $collection->getUser()->getEmail(),
                 'username' => $collection->getUser()->getUsername(),
-                'image' => $collection->getUser()->getImage()
+                'image' => $collection->getUser()->getprofileImage()
             ],
             'name' => $collection->getName(),
             'itemsCount' => $collection->getItemsCount(),

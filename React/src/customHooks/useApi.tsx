@@ -34,11 +34,28 @@ const useApi = (url: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE' = 'GET') 
             setIsLoading(false);
         }
     };
-  
+
+    const fetchFile = async (formData: FormData) => {
+        setIsLoading(true);
+        try {
+            const config = { headers: {'Content-Type': 'multipart/form-data' }};
+            console.log(url, config);
+            for (const [key, value] of formData.entries()) {
+                console.log(`${key}:`, value);
+            }
+            const response = await axios.post(url, formData, config);
+            setResponse(response.data);
+        } catch (error: any) {
+            setError(error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     const resetError = () => setError(null);
     const resetResponse = () => setResponse(null);
 
-    return { response, error, isLoading, fetchData, resetError, resetResponse };
+    return { response, error, isLoading, fetchData, fetchFile, resetError, resetResponse };
   };
 
 export default useApi;

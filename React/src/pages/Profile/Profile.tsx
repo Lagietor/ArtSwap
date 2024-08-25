@@ -5,11 +5,19 @@ import ProfileCard from "../../components/compound/ProfileCard/ProfileCard";
 import { useState } from "react";
 import ProfileItems from "../../components/compound/ProfileItems/ProfileItems";
 import User from "../../types/UserType";
+import useUserStore from "../../store/userStore";
 
 function Profile() {
     const { isLogged, user } = useUser();
     const navigate = useNavigate();
     const [activeButton, setActiveButton] = useState("all");
+
+    // const { user: user2, isLogged: isLogged2, isLoading, error } = useUserStore(state => ({
+    //     user: state.user,
+    //     isLogged: state.isLogged,
+    //     isLoading: state.isLoading,
+    //     error: state.error
+    // }));
 
     if (!isLogged || !user) {
         navigate("/");
