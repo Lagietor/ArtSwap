@@ -500,6 +500,7 @@
     <service id="App\Controller\NFTCollectionController" class="App\Controller\NFTCollectionController" public="true" autowire="true" autoconfigure="true">
       <tag name="controller.service_arguments"/>
       <tag name="container.service_subscriber"/>
+      <argument type="service" id="App\Service\UploadImageService"/>
       <call method="setContainer">
         <argument type="service" id=".service_locator.l1ae.Qz.App\Controller\NFTCollectionController"/>
       </call>
@@ -507,6 +508,7 @@
     <service id="App\Controller\NFTItemController" class="App\Controller\NFTItemController" public="true" autowire="true" autoconfigure="true">
       <tag name="controller.service_arguments"/>
       <tag name="container.service_subscriber"/>
+      <argument type="service" id="App\Service\UploadImageService"/>
       <call method="setContainer">
         <argument type="service" id=".service_locator.l1ae.Qz.App\Controller\NFTItemController"/>
       </call>
@@ -519,9 +521,15 @@
         <argument type="service" id=".service_locator.l1ae.Qz.App\Controller\UserController"/>
       </call>
     </service>
+    <service id="App\DTO\CollectionDTO" class="App\DTO\CollectionDTO" autowire="true" autoconfigure="true"/>
+    <service id="App\DTO\ItemDTO" class="App\DTO\ItemDTO" autowire="true" autoconfigure="true"/>
+    <service id="App\DTO\UserDTO" class="App\DTO\UserDTO" autowire="true" autoconfigure="true"/>
     <service id="App\EventSubscriber\JwtCreatedSubscriber" class="App\EventSubscriber\JwtCreatedSubscriber" autowire="true" autoconfigure="true">
       <tag name="kernel.event_subscriber"/>
     </service>
+    <service id="App\Mapper\CollectionMapper" class="App\Mapper\CollectionMapper" autowire="true" autoconfigure="true"/>
+    <service id="App\Mapper\ItemMapper" class="App\Mapper\ItemMapper" autowire="true" autoconfigure="true"/>
+    <service id="App\Mapper\UserMapper" class="App\Mapper\UserMapper" autowire="true" autoconfigure="true"/>
     <service id="App\Repository\NFTCollectionRepository" class="App\Repository\NFTCollectionRepository" autowire="true" autoconfigure="true">
       <tag name="doctrine.repository_service"/>
       <argument type="service" id="doctrine"/>
@@ -6292,10 +6300,36 @@
         <argument key="jwtManager" type="service_closure" id="lexik_jwt_authentication.jwt_manager"/>
       </argument>
     </service>
-    <service id=".service_locator.5miB8_X" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.b1hmT0k" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="collectionMapper" type="service_closure" id="App\Mapper\CollectionMapper"/>
+        <argument key="em" type="service_closure" id="doctrine.orm.default_entity_manager"/>
+        <argument key="userMapper" type="service_closure" id="App\Mapper\UserMapper"/>
+      </argument>
+    </service>
+    <service id=".service_locator.urlnX96" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="collectionMapper" type="service_closure" id="App\Mapper\CollectionMapper"/>
+        <argument key="em" type="service_closure" id="doctrine.orm.default_entity_manager"/>
+        <argument key="itemMapper" type="service_closure" id="App\Mapper\ItemMapper"/>
+        <argument key="userMapper" type="service_closure" id="App\Mapper\UserMapper"/>
+      </argument>
+    </service>
+    <service id=".service_locator.LJ63Pnk" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="em" type="service_closure" id="doctrine.orm.default_entity_manager"/>
+        <argument key="itemMapper" type="service_closure" id="App\Mapper\ItemMapper"/>
+        <argument key="userMapper" type="service_closure" id="App\Mapper\UserMapper"/>
+      </argument>
+    </service>
+    <service id=".service_locator.mquIvqE" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="em" type="service_closure" id="doctrine.orm.default_entity_manager"/>
+        <argument key="userMapper" type="service_closure" id="App\Mapper\UserMapper"/>
       </argument>
     </service>
     <service id=".service_locator.6l.Xu4." class="Symfony\Component\DependencyInjection\ServiceLocator">
@@ -6307,22 +6341,28 @@
         <argument key="validator" type="service_closure" id="debug.validator"/>
       </argument>
     </service>
-    <service id=".service_locator.DPG_ZDD" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.5miB8_X" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="em" type="service_closure" id="doctrine.orm.default_entity_manager"/>
+      </argument>
+    </service>
+    <service id=".service_locator.aavwT82" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="App\Controller\AuthenticationController::githubLogin" type="service_closure" id=".service_locator.Lg7M_Sj"/>
         <argument key="App\Controller\AuthenticationController::googleLogin" type="service_closure" id=".service_locator.Lg7M_Sj"/>
         <argument key="App\Controller\AuthenticationController::login" type="service_closure" id=".service_locator.Lg7M_Sj"/>
         <argument key="App\Controller\AuthenticationController::register" type="service_closure" id=".service_locator.6l.Xu4."/>
-        <argument key="App\Controller\NFTCollectionController::create" type="service_closure" id=".service_locator.5miB8_X"/>
-        <argument key="App\Controller\NFTCollectionController::get" type="service_closure" id=".service_locator.5miB8_X"/>
-        <argument key="App\Controller\NFTCollectionController::getCollections" type="service_closure" id=".service_locator.5miB8_X"/>
-        <argument key="App\Controller\NFTCollectionController::getItems" type="service_closure" id=".service_locator.5miB8_X"/>
-        <argument key="App\Controller\NFTItemController::create" type="service_closure" id=".service_locator.5miB8_X"/>
-        <argument key="App\Controller\NFTItemController::get" type="service_closure" id=".service_locator.5miB8_X"/>
+        <argument key="App\Controller\NFTCollectionController::create" type="service_closure" id=".service_locator.b1hmT0k"/>
+        <argument key="App\Controller\NFTCollectionController::get" type="service_closure" id=".service_locator.b1hmT0k"/>
+        <argument key="App\Controller\NFTCollectionController::getCollections" type="service_closure" id=".service_locator.b1hmT0k"/>
+        <argument key="App\Controller\NFTCollectionController::getItems" type="service_closure" id=".service_locator.urlnX96"/>
+        <argument key="App\Controller\NFTItemController::create" type="service_closure" id=".service_locator.LJ63Pnk"/>
+        <argument key="App\Controller\NFTItemController::get" type="service_closure" id=".service_locator.LJ63Pnk"/>
         <argument key="App\Controller\UserController::edit" type="service_closure" id=".service_locator.6l.Xu4."/>
-        <argument key="App\Controller\UserController::get" type="service_closure" id=".service_locator.5miB8_X"/>
-        <argument key="App\Controller\UserController::getItems" type="service_closure" id=".service_locator.5miB8_X"/>
+        <argument key="App\Controller\UserController::get" type="service_closure" id=".service_locator.mquIvqE"/>
+        <argument key="App\Controller\UserController::getItems" type="service_closure" id=".service_locator.urlnX96"/>
         <argument key="App\Controller\UserController::uploadImages" type="service_closure" id=".service_locator.5miB8_X"/>
         <argument key="App\Kernel::loadRoutes" type="service_closure" id=".service_locator.KfbR3DY"/>
         <argument key="App\Kernel::registerContainerConfiguration" type="service_closure" id=".service_locator.KfbR3DY"/>
@@ -6332,15 +6372,15 @@
         <argument key="App\Controller\AuthenticationController:googleLogin" type="service_closure" id=".service_locator.Lg7M_Sj"/>
         <argument key="App\Controller\AuthenticationController:login" type="service_closure" id=".service_locator.Lg7M_Sj"/>
         <argument key="App\Controller\AuthenticationController:register" type="service_closure" id=".service_locator.6l.Xu4."/>
-        <argument key="App\Controller\NFTCollectionController:create" type="service_closure" id=".service_locator.5miB8_X"/>
-        <argument key="App\Controller\NFTCollectionController:get" type="service_closure" id=".service_locator.5miB8_X"/>
-        <argument key="App\Controller\NFTCollectionController:getCollections" type="service_closure" id=".service_locator.5miB8_X"/>
-        <argument key="App\Controller\NFTCollectionController:getItems" type="service_closure" id=".service_locator.5miB8_X"/>
-        <argument key="App\Controller\NFTItemController:create" type="service_closure" id=".service_locator.5miB8_X"/>
-        <argument key="App\Controller\NFTItemController:get" type="service_closure" id=".service_locator.5miB8_X"/>
+        <argument key="App\Controller\NFTCollectionController:create" type="service_closure" id=".service_locator.b1hmT0k"/>
+        <argument key="App\Controller\NFTCollectionController:get" type="service_closure" id=".service_locator.b1hmT0k"/>
+        <argument key="App\Controller\NFTCollectionController:getCollections" type="service_closure" id=".service_locator.b1hmT0k"/>
+        <argument key="App\Controller\NFTCollectionController:getItems" type="service_closure" id=".service_locator.urlnX96"/>
+        <argument key="App\Controller\NFTItemController:create" type="service_closure" id=".service_locator.LJ63Pnk"/>
+        <argument key="App\Controller\NFTItemController:get" type="service_closure" id=".service_locator.LJ63Pnk"/>
         <argument key="App\Controller\UserController:edit" type="service_closure" id=".service_locator.6l.Xu4."/>
-        <argument key="App\Controller\UserController:get" type="service_closure" id=".service_locator.5miB8_X"/>
-        <argument key="App\Controller\UserController:getItems" type="service_closure" id=".service_locator.5miB8_X"/>
+        <argument key="App\Controller\UserController:get" type="service_closure" id=".service_locator.mquIvqE"/>
+        <argument key="App\Controller\UserController:getItems" type="service_closure" id=".service_locator.urlnX96"/>
         <argument key="App\Controller\UserController:uploadImages" type="service_closure" id=".service_locator.5miB8_X"/>
         <argument key="kernel:loadRoutes" type="service_closure" id=".service_locator.KfbR3DY"/>
         <argument key="kernel:registerContainerConfiguration" type="service_closure" id=".service_locator.KfbR3DY"/>
@@ -6695,12 +6735,12 @@
       <argument type="service" id="security.token_storage"/>
     </service>
     <service id="debug.argument_resolver.service.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver">
-      <argument type="service" id=".service_locator.DPG_ZDD"/>
+      <argument type="service" id=".service_locator.aavwT82"/>
     </service>
     <service id="debug.argument_resolver.default.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver"/>
     <service id="debug.argument_resolver.variadic.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\VariadicValueResolver"/>
     <service id="debug.argument_resolver.not_tagged_controller.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\NotTaggedControllerValueResolver">
-      <argument type="service" id=".service_locator.DPG_ZDD"/>
+      <argument type="service" id=".service_locator.aavwT82"/>
     </service>
     <service id=".doctrine.orm.default_metadata_driver.inner" class="Doctrine\Persistence\Mapping\Driver\MappingDriverChain">
       <call method="addDriver">
@@ -7745,7 +7785,7 @@
     <service id="Knp\DoctrineBehaviors\Contract\Provider\UserProviderInterface" alias="Knp\DoctrineBehaviors\Provider\UserProvider"/>
     <service id="container.env_var_processors_locator" alias=".service_locator.gSv9zYw" public="true"/>
     <service id="twig.loader.filesystem" alias="twig.loader.native_filesystem"/>
-    <service id="argument_resolver.controller_locator" alias=".service_locator.DPG_ZDD"/>
+    <service id="argument_resolver.controller_locator" alias=".service_locator.aavwT82"/>
     <service id="doctrine.id_generator_locator" alias=".service_locator.KLVvNIq"/>
     <service id="twig.loader" alias="twig.loader.native_filesystem"/>
     <service id="api_platform.name_converter" alias="serializer.name_converter.metadata_aware"/>
@@ -7754,8 +7794,10 @@
     <service id=".service_locator.Xbsa8iG" alias="api_platform.filter_locator"/>
     <service id=".service_locator.0GV1BZZ" alias=".service_locator.gSv9zYw"/>
     <service id=".service_locator.mreGqg1" alias=".service_locator.Lg7M_Sj"/>
+    <service id=".service_locator.X4_U9Ap" alias=".service_locator.b1hmT0k"/>
+    <service id=".service_locator.RbMXQOL" alias=".service_locator.urlnX96"/>
     <service id=".service_locator.MkrZLUL" alias=".service_locator.6l.Xu4."/>
-    <service id=".service_locator.98zf6nQ" alias=".service_locator.DPG_ZDD"/>
+    <service id=".service_locator.Uvbfn2w" alias=".service_locator.aavwT82"/>
     <service id=".service_locator.wKF4yn1" alias=".service_locator.19_mNxd"/>
     <service id=".service_locator.O_OCvJd" alias=".service_locator.ypReOeu"/>
     <service id=".service_locator.jkb6XQV" alias=".service_locator.l1ae.Qz"/>
@@ -7815,8 +7857,12 @@
     <service id="api_platform.subresource_operation_factory" alias="api_platform.subresource_operation_factory.cached"/>
     <service id=".service_locator.JBAFp66" alias=".service_locator.KfbR3DY"/>
     <service id=".service_locator.1tGHM8U" alias=".service_locator.Lg7M_Sj"/>
-    <service id=".service_locator.kydi4Ed" alias=".service_locator.5miB8_X"/>
+    <service id=".service_locator.KklEuZN" alias=".service_locator.b1hmT0k"/>
+    <service id=".service_locator.hBKkr2w" alias=".service_locator.urlnX96"/>
+    <service id=".service_locator.pnf_Zh9" alias=".service_locator.LJ63Pnk"/>
+    <service id=".service_locator.E3WJVNE" alias=".service_locator.mquIvqE"/>
     <service id=".service_locator.e8md00c" alias=".service_locator.6l.Xu4."/>
+    <service id=".service_locator.kydi4Ed" alias=".service_locator.5miB8_X"/>
     <service id=".service_locator.bk6HUrh" alias=".service_locator.l1ae.Qz"/>
     <service id=".service_locator.u6DWx23" alias=".service_locator.cXsfP3P"/>
     <service id=".service_locator.aa1PbBb" alias=".service_locator.nLgZj7R"/>

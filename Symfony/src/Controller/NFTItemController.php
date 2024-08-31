@@ -5,6 +5,9 @@ namespace App\Controller;
 use App\Entity\NFTCollection;
 use App\Entity\NFTItem;
 use App\Entity\User;
+use App\Mapper\ItemMapper;
+use App\Mapper\UserMapper;
+use App\Service\UploadImageService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -14,15 +17,24 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/api', name: 'api_')]
 class NFTItemController extends AbstractController
 {
+    private $uploadImageService;
+
+    public function __construct(UploadImageService $uploadImageService)
+    {
+        $this->uploadImageService = $uploadImageService;
+    }
+
     #[Route('/item', name: 'app_item', methods: ['POST'])]
     public function create(
         Request $request,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        ItemMapper $itemMapper,
+        UserMapper $userMapper,
     ): JsonResponse
     {
         $request = json_decode($request->getContent(), true);
 
-        $ownerId = $request['owner'];
+        $ownerId = $request->get('owner');
         $owner = $em->getRepository(User::class)->find($ownerId);
 
         if (!$owner) {
@@ -31,7 +43,7 @@ class NFTItemController extends AbstractController
             ]);
         }
 
-        $collectionId = $request['collection'];
+        $collectionId = $request->get('collection');
         $collection = $em->getRepository(NFTCollection::class)->find($collectionId);
 
         if (!$collection) {
@@ -40,9 +52,9 @@ class NFTItemController extends AbstractController
             ]);
         }
 
-        $name = $request['name'];
-        $value = $request['value'];
-        $image = $request['image'];
+        $name = $request->get('name');
+        $value = $request->get('value');
+        $image = $request->files->get('image');
 
         $item = $em->getRepository(NFTItem::class)->findOneBy(['name' => $name]);
         if ($item) {
@@ -57,23 +69,30 @@ class NFTItemController extends AbstractController
         $item->setName($name);
         $item->setValue($value);
         $item->setViews(0);
-        $item->setImage($image);
+
+        if ($image && $image->isValid()) {
+            $imageId = $this->uploadImageService->uploadFileToStorage($item->getOwner()->getUserName(), 'item', $image);
+            $item->setImage($imageId);
+        }
 
         $em->persist($item);
         $em->flush();
 
+        $itemDTO = $itemMapper->mapToItemDTO($item);
+        $userDTO = $userMapper->mapToUserDTO($item->getOwner());
+
         return $this->json([
-            'id' => $item->getId(),
+            'id' => $itemDTO->getId(),
             'owner' => [
-                'id' => $item->getOwner()->getId(),
-                'email' => $item->getOwner()->getEmail(),
-                'username' => $item->getOwner()->getUsername(),
-                'image' => $item->getOwner()->getprofileImage()
+                'id' => $userDTO->getId(),
+                'email' => $userDTO->getEmail(),
+                'username' => $userDTO->getUsername(),
+                'image' => $userDTO->getprofileImage()
             ],
-            'name' => $item->getName(),
-            'views' => $item->getViews(),
-            'value' => $item->getValue(),
-            'image' => $item->getImage()
+            'name' => $itemDTO->getName(),
+            'views' => $itemDTO->getViews(),
+            'value' => $itemDTO->getValue(),
+            'image' => $itemDTO->getImage()
         ]);
     }
 
@@ -81,6 +100,8 @@ class NFTItemController extends AbstractController
     #[Route('/item/{id}', name: 'api_item_get', methods:['GET'])]
     public function get(
         EntityManagerInterface $em,
+        ItemMapper $itemMapper,
+        UserMapper $userMapper,
         $id
     ): JsonResponse
     {
@@ -89,18 +110,21 @@ class NFTItemController extends AbstractController
          */
         $item = $em->getRepository(NFTItem::class)->findOneBy(['id' => $id]);
 
+        $itemDTO = $itemMapper->mapToItemDTO($item);
+        $userDTO = $userMapper->mapToUserDTO($item->getOwner());
+
         return $this->json([
-            'id' => $item->getId(),
+            'id' => $itemDTO->getId(),
             'owner' => [
-                'id' => $item->getOwner()->getId(),
-                'email' => $item->getOwner()->getEmail(),
-                'username' => $item->getOwner()->getUsername(),
-                'image' => $item->getOwner()->getprofileImage()
+                'id' => $userDTO->getId(),
+                'email' => $userDTO->getEmail(),
+                'username' => $userDTO->getUsername(),
+                'image' => $userDTO->getprofileImage()
             ],
-            'name' => $item->getName(),
-            'views' => $item->getViews(),
-            'value' => $item->getValue(),
-            'image' => $item->getImage()
+            'name' => $itemDTO->getName(),
+            'views' => $itemDTO->getViews(),
+            'value' => $itemDTO->getValue(),
+            'image' => $itemDTO->getImage()
         ]);
     }
 }

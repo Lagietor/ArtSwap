@@ -17,24 +17,20 @@ class UploadImageService
         $this->projectDir = $kernel->getProjectDir();
 
         $this->client = new Client();
-        $this->client->setAuthConfig($this->projectDir . '/google/artswap-e0896939dbd7.json');
+        $this->client->setAuthConfig($this->projectDir . '/google/artswap-933e3f8bce95.json');
         $this->client->addScope(Drive::DRIVE);
         $this->service = new Drive($this->client);
     }
 
     public function uploadFileToStorage(string $userName, string $fileType, $file): int
     {
-        // Ensure the 'ArtSwap' folder exists
         $artSwapFolderId = $this->ensureFolderExists('ArtSwap');
         
-        // Ensure the user's folder exists within 'ArtSwap'
         $userFolderId = $this->ensureFolderExists($userName, $artSwapFolderId);
         
-        // Define subfolders for types of images
         $subFolderName = $this->getSubFolderName($fileType);
         $subFolderId = $this->ensureFolderExists($subFolderName, $userFolderId);
 
-        // Upload the file to the specific subfolder
         $fileMetadata = new Drive\DriveFile([
             'name' => $file->getClientOriginalName(),
             'parents' => [$subFolderId],
@@ -49,7 +45,7 @@ class UploadImageService
             'fields' => 'id'
         ]);
 
-        return (int)$uploadedFile->id;
+        return $uploadedFile->id;
     }
 
     private function ensureFolderExists(string $folderName, ?string $parentId = null): string
@@ -93,7 +89,6 @@ class UploadImageService
 
     private function getSubFolderName(string $fileType): string
     {
-        // Define subfolder names based on file types
         switch ($fileType) {
             case 'profileImage':
                 return 'ProfilePictures';

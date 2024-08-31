@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "artswap",
+  "private_key_id": "933e3f8bce95632a82edf4465f9c26bcabd7b573",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCzJqd5pg2HDJ8V\nQrQlGmD59OwzxcqILQCgoXvezkLJrOCIBirzssnxpY4lVRnmQkHubF/nU4Y01LVJ\nu7/bre00fDrF+cdMA/VF6eW4LKpRHbdI1HWq8k5aFUes0w4IKefrwzd7e/grA6Bn\njKQXMJ16axE1B4kA4R2RZ73yRthpLyWrbVAit+mtocErSiIGBXl+HNmkpzhHzzPn\nFwxYdJauUmQaYmyscnMIPhq8c7KaIZGBkrpJJyad9kk5YoTt78alwmk30v5FeRgD\nbNaEeuinETa2wEy6P2FZtlHIraJkGoe/mXKW1KbO2IREanhDgKs803MLHMDbEnUN\nkQReQ8/rAgMBAAECggEAJEPeYhM5qM1mxKSAmAQrfl3UlLRkx8UoW9vkmdkyDuY2\ne4KYHkXieE61pBwChqiB9TQuA8NWJwqp+heOAnfGTToaoanq7JnehD0RWgN8pLf5\nur37ZdPwBW9KV5NPw1pMTt7xM8eIGJj+1wdSzjjyn+3diVkRpEJtvFn+SvWJaF0i\ndwyGoT1zNpTnHaG4390GuYViK1Pf2+fdK4SsG6866FInepoE1OVLlHUz2NRDe0vk\ngFM6y+sngyni0LVYHJWPNHYho8AYQJr3W+CbXgGTRIQoZDZTqgl6tZLn2n0AQSTx\nm1pcCRVZntk7yoFxZ2V0t/dYS+/AidRCTg7hdJvp2QKBgQDmr19PlnGCfpLI85El\nVyvd51op336bO8OG1P61kS6/oIloYqnPsUAAZLTlqnowbnd9IN2PvyCDI3OG4s0M\naXN6zZ88KkErdcFFFzxlmZdQnhLhNZpbYyJXX2vFwwbFaZCPMjsXca/rFKp0bCtg\ngMUMWisORbau3N3CsU6i0Bwm+QKBgQDGz4mOPRlYmsLKvohb8wSDKIkXg9GwEXa0\nMYXYb5T72gor5YqQF7mN5nOZRwnbQLNCVCaUj+mRxIZ72uh4LmPQEx76HKe3Lyy7\n2zzakxcNj2CYPqXByUAz10ZrOrYBpjfUXXmJocr69XPf75w67ptQ0m2SeE6u4il2\no/tNI7nzAwKBgQCHaxvAVMh9mmAApzrleK6/rTg4rIJeDk9Rr2d2nquawlrndEPL\nMHopwPSQfesM00xBoDFwWPp1ATKoVCuaxayMwnhfkU6AfLfgHyvNWMSDBsh+fEEI\ntMFMGS/jAAHRkY7TAOG/eXWTwqXtgjJUjEMgZS4xSqtbKzzjNcK7wP9FwQKBgQCg\nQEVmi8VUcFq3ReFwDHEEr7XhaHWq8Ei4cnqqvTZf058DRyDriNQelzVyxZoiSwKz\nYlU+xsnEn56vUwKzbOEzpVYA0Pw3YiUyv0NMA+g/G+UGkujVTT0dDFdMs6Rlq++w\nlDAVSn7sztC6Hs/ViONUwGll+Oeje9VkNkWoJjYKtQKBgHQlbD+N5pM7Zb0BdiC+\n8IMnvpLEe5usGW8NIOSgaNwjBjwGNAekXOwRYhS15I47bCFIYp/9hVgkllUbFItr\nwotZy8l2bM95htY/9xzlXwlVxOEBN8ZyzoCwGlHBM8sPFpJFgYX16PHea8onBuTv\nklDJlgsHiI42ph2ZgMU4TVc2\n-----END PRIVATE KEY-----\n",
+  "client_email": "artswapimagemanager@artswap.iam.gserviceaccount.com",
+  "client_id": "112779569947931802050",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/artswapimagemanager%40artswap.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

@@ -5,6 +5,10 @@ namespace App\Controller;
 use App\Entity\NFTCollection;
 use App\Entity\NFTItem;
 use App\Entity\User;
+use App\Mapper\CollectionMapper;
+use App\Mapper\ItemMapper;
+use App\Mapper\UserMapper;
+use App\Service\UploadImageService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -14,53 +18,73 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/api', name: 'api_')]
 class NFTCollectionController extends AbstractController
 {
+    private $uploadImageService;
+
+    public function __construct(UploadImageService $uploadImageService)
+    {
+        $this->uploadImageService = $uploadImageService;
+    }
+
     #[Route('/collection', name: 'api_collection_create', methods:['POST'])]
     public function create(
         Request $request,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        CollectionMapper $collectionMapper,
+        UserMapper $userMapper,
     ): JsonResponse
     {
         // TODO dodać walidacje
         $request = json_decode($request->getContent(), true);
 
-        $userId = $request['userId'];
+        $userId = $request->get('userId');
         $user = $em->getRepository(User::class)->findOneBy(['id' => $userId]);
+
+        $image = $request->files->get('image');
 
         $collection = new NFTCollection();
         $collection->setUser($user);
-        $collection->setName($request['name']);
-        $collection->setDescription($request['desc']);
+        $collection->setName($request->get('name'));
+        $collection->setDescription($request->get('desc'));
         $collection->setItemsCount(0);
         $collection->setFloorPrice(0);
         $collection->setVolume(0);
         $collection->setViews(0);
-        $collection->setImage($request['image']);
+
+        if ($image && $image->isValid()) {
+            $imageId = $this->uploadImageService->uploadFileToStorage($collection->getUser()->getUserName(), 'collection', $image);
+            $collection->setImage($imageId);
+        }
 
         $em->persist($collection);
         $em->flush();
 
+        $collectionDTO = $collectionMapper->mapToCollectionDTO($collection);
+        $userDTO = $userMapper->mapToUserDTO($collection->getUser());
+
         return $this->json([
-            'id' => $collection->getId(),
+            'id' => $collectionDTO->getId(),
             'user' => [
-                'id' => $collection->getUser()->getId(),
-                'email' => $collection->getUser()->getEmail(),
-                'username' => $collection->getUser()->getUsername(),
-                'image' => $collection->getUser()->getprofileImage()
+                'id' => $userDTO->getId(),
+                'email' => $userDTO->getEmail(),
+                'username' => $userDTO->getUsername(),
+                'image' => $userDTO->getprofileImage()
             ],
-            'name' => $collection->getName(),
-            'itemsCount' => $collection->getItemsCount(),
-            'floorPrice' => $collection->getFloorPrice(),
-            'volume' => $collection->getVolume(),
-            'views' => $collection->getViews(),
-            'image' => $collection->getImage(),
-            'description' => $collection->getDescription()
+            'name' => $collectionDTO->getName(),
+            'itemsCount' => $collectionDTO->getItemsCount(),
+            'floorPrice' => $collectionDTO->getFloorPrice(),
+            'volume' => $collectionDTO->getVolume(),
+            'views' => $collectionDTO->getViews(),
+            'image' => $collectionDTO->getImage(),
+            'description' => $collectionDTO->getDescription()
         ]);
     }
 
     #[Route('/collection', name: 'api_collection', methods:['GET'])]
     public function getCollections(
         Request $request,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        CollectionMapper $collectionMapper,
+        UserMapper $userMapper,
     ) : JsonResponse
     {
         $phrase = $request->query->get('phrase', '');
@@ -74,21 +98,24 @@ class NFTCollectionController extends AbstractController
         }
 
         foreach ($collections as $collection) {
+            $collectionDTO = $collectionMapper->mapToCollectionDTO($collection);
+            $userDTO = $userMapper->mapToUserDTO($collection->getUser());
+
             $result[] = [
-                'id' => $collection->getId(),
+                'id' => $collectionDTO->getId(),
                 'user' => [
-                    'id' => $collection->getUser()->getId(),
-                    'email' => $collection->getUser()->getEmail(),
-                    'username' => $collection->getUser()->getUsername(),
-                    'image' => $collection->getUser()->getProfileImage()
+                    'id' => $userDTO->getId(),
+                    'email' => $userDTO->getEmail(),
+                    'username' => $userDTO->getUsername(),
+                    'image' => $userDTO->getProfileImage()
                 ],
-                'name' => $collection->getName(),
-                'itemsCount' => $collection->getItemsCount(),
-                'floorPrice' => $collection->getFloorPrice(),
-                'volume' => $collection->getVolume(),
-                'views' => $collection->getViews(),
-                'image' => $collection->getImage(),
-                'description' => $collection->getDescription()
+                'name' => $collectionDTO->getName(),
+                'itemsCount' => $collectionDTO->getItemsCount(),
+                'floorPrice' => $collectionDTO->getFloorPrice(),
+                'volume' => $collectionDTO->getVolume(),
+                'views' => $collectionDTO->getViews(),
+                'image' => $collectionDTO->getImage(),
+                'description' => $collectionDTO->getDescription()
             ];
         }
 
@@ -99,6 +126,9 @@ class NFTCollectionController extends AbstractController
     public function getItems(
         Request $request,
         EntityManagerInterface $em,
+        CollectionMapper $collectionMapper,
+        UserMapper $userMapper,
+        ItemMapper $itemMapper,
         int $id
     ) : JsonResponse
     {
@@ -109,21 +139,25 @@ class NFTCollectionController extends AbstractController
         $result = [];
 
         foreach ($items as $item) {
+            $collectionDTO = $collectionMapper->mapToCollectionDTO($item->getCollection());
+            $itemDTO = $itemMapper->mapToItemDTO($item);
+            $userDTO = $userMapper->mapToUserDTO($item->getOwner());
+
             $result[] = [
-                'id' => $item->getId(),
+                'id' => $itemDTO->getId(),
                 'collection' => [
-                    'id' => $item->getCollection()->getId()
+                    'id' => $collectionDTO->getId()
                 ],
                 'owner' => [
-                    'id' => $item->getOwner()->getId(),
-                    'email' => $item->getOwner()->getEmail(),
-                    'username' => $item->getOwner()->getUsername(),
-                    'image' => $item->getOwner()->getProfileImage()
+                    'id' => $userDTO->getId(),
+                    'email' => $userDTO->getEmail(),
+                    'username' => $userDTO->getUsername(),
+                    'image' => $userDTO->getProfileImage()
                 ],
-                'name' => $item->getName(),
-                'views' => $item->getViews(),
-                'value' => $item->getValue(),
-                'image' => $item->getImage(),
+                'name' => $itemDTO->getName(),
+                'views' => $itemDTO->getViews(),
+                'value' => $itemDTO->getValue(),
+                'image' => $itemDTO->getImage(),
             ];
         }
 
@@ -133,6 +167,8 @@ class NFTCollectionController extends AbstractController
     #[Route('/collection/{id}', name: 'api_collection_get', methods:['GET'])]
     public function get(
         EntityManagerInterface $em,
+        CollectionMapper $collectionMapper,
+        UserMapper $userMapper,
         $id
     ): JsonResponse
     {
@@ -140,22 +176,25 @@ class NFTCollectionController extends AbstractController
          * @var NFTCollection collection
          */
         $collection = $em->getRepository(NFTCollection::class)->findOneBy(['id' => $id]);
+        $collectionDTO = $collectionMapper->mapToCollectionDTO($collection);
+        $userDTO = $userMapper->mapToUserDTO($collection->getUser());
 
         return $this->json([
-            'id' => $collection->getId(),
+            'id' => $collectionDTO->getId(),
             'user' => [
-                'id' => $collection->getUser()->getId(),
-                'email' => $collection->getUser()->getEmail(),
-                'username' => $collection->getUser()->getUsername(),
-                'image' => $collection->getUser()->getprofileImage()
+                'id' => $userDTO->getId(),
+                'email' => $userDTO->getEmail(),
+                'username' => $userDTO->getUsername(),
+                'profileImageLink' => $userDTO->getProfileImage()
             ],
-            'name' => $collection->getName(),
-            'itemsCount' => $collection->getItemsCount(),
-            'floorPrice' => $collection->getFloorPrice(),
-            'volume' => $collection->getVolume(),
-            'views' => $collection->getViews(),
-            'image' => $collection->getImage(),
-            'description' => $collection->getDescription()
+            'name' => $collectionDTO->getName(),
+            'itemsCount' => $collectionDTO->getItemsCount(),
+            'floorPrice' => $collectionDTO->getFloorPrice(),
+            'volume' => $collectionDTO->getVolume(),
+            'views' => $collectionDTO->getViews(),
+            'image' => $collectionDTO->getImage(),
+            'description' => $collectionDTO->getDescription(),
+            'shortDescription' => $collectionDTO->getShortDescription()
         ]);
     }
 }

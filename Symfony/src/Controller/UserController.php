@@ -4,6 +4,9 @@ namespace App\Controller;
 
 use App\Entity\NFTItem;
 use App\Entity\User;
+use App\Mapper\CollectionMapper;
+use App\Mapper\ItemMapper;
+use App\Mapper\UserMapper;
 use App\Service\UploadImageService;
 use Doctrine\ORM\EntityManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
@@ -27,6 +30,7 @@ class UserController extends AbstractController
     #[Route('/user/{id}', name: 'api_user_get', methods: ['GET'])]
     public function get(
         EntityManagerInterface $em,
+        UserMapper $userMapper,
         int $id
     ): JsonResponse
     {
@@ -41,12 +45,14 @@ class UserController extends AbstractController
             ]);
         }
 
+        $userDTO = $userMapper->mapToUserDTO($user);
+
         return $this->json([
-            'id' => $user->getId(),
-            'email' => $user->getEmail(),
-            'username' => $user->getUsername(),
-            'profileImage' => $user->getProfileImage(),
-            'backgroundImage' => $user->getBackgroundImage()
+            'id' => $userDTO->getId(),
+            'email' => $userDTO->getEmail(),
+            'username' => $userDTO->getUsername(),
+            'profileImage' => $userDTO->getProfileImage(),
+            'backgroundImage' => $userDTO->getBackgroundImage()
         ]);
     }
 
@@ -106,6 +112,9 @@ class UserController extends AbstractController
     public function getItems(
         Request $request,
         EntityManagerInterface $em,
+        CollectionMapper $collectionMapper,
+        UserMapper $userMapper,
+        ItemMapper $itemMapper,
         int $id
     ): JsonResponse
     {
@@ -117,21 +126,25 @@ class UserController extends AbstractController
         $result = [];
 
         foreach ($items as $item) {
+            $collectionDTO = $collectionMapper->mapToCollectionDTO($item->getCollection());
+            $itemDTO = $itemMapper->mapToItemDTO($item);
+            $userDTO = $userMapper->mapToUserDTO($item->getOwner());
+
             $result[] = [
-                'id' => $item->getId(),
+                'id' => $itemDTO->getId(),
                 'collection' => [
-                    'id' => $item->getCollection()->getId()
+                    'id' => $collectionDTO->getId()
                 ],
                 'owner' => [
-                    'id' => $item->getOwner()->getId(),
-                    'email' => $item->getOwner()->getEmail(),
-                    'username' => $item->getOwner()->getUsername(),
-                    'image' => $item->getOwner()->getProfileImage()
+                    'id' => $userDTO->getId(),
+                    'email' => $userDTO->getEmail(),
+                    'username' => $userDTO->getUsername(),
+                    'image' => $userDTO->getProfileImage()
                 ],
-                'name' => $item->getName(),
-                'views' => $item->getViews(),
-                'value' => $item->getValue(),
-                'image' => $item->getImage(),
+                'name' => $itemDTO->getName(),
+                'views' => $itemDTO->getViews(),
+                'value' => $itemDTO->getValue(),
+                'image' => $itemDTO->getImage(),
             ];
         }
 
@@ -148,12 +161,6 @@ class UserController extends AbstractController
         $profileImage = $request->files->get('profileImage');
         $backgroundImage = $request->files->get('backgroundImage');
 
-        if (!$profileImage->isValid() || !$backgroundImage->isValid()) {
-            return $this->json([
-                'message' => 'Invalid file'
-            ], 400);
-        }
-
         /**
          * @var User $user
          */
@@ -165,18 +172,23 @@ class UserController extends AbstractController
             ], 400);
         }
 
-        $profileImageId = $this->uploadImageService->uploadFileToStorage($user->getUsername(), 'profileImage', $profileImage);
-        $backgroundImageId = $this->uploadImageService->uploadFileToStorage($user->getUsername(), 'backgroundImage', $backgroundImage);
+        $response = [];
 
-        $user->setProfileImage($profileImageId);
-        $user->setBackgroundImage($backgroundImageId);
+        if ($profileImage && $profileImage->isValid()) {
+            $profileImageId = $this->uploadImageService->uploadFileToStorage($user->getUsername(), 'profileImage', $profileImage);
+            $user->setProfileImage($profileImageId);
+            $response['profileImageId'] = $profileImageId;
+        }
+
+        if ($backgroundImage && $backgroundImage->isValid()) {
+            $backgroundImageId = $this->uploadImageService->uploadFileToStorage($user->getUsername(), 'profileImage', $profileImage);
+            $user->setBackgroundImage($backgroundImageId);
+            $response['backgroundImageId'] = $backgroundImageId;
+        }
 
         $em->persist($user);
         $em->flush();
 
-        return $this->json([
-            'profileImageId' => $profileImageId,
-            'backgroundImageId' => $backgroundImageId,
-        ]);
+        return $this->json($response);
     }
 }

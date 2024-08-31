@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 import { useEffect, useState } from 'react'
-=======
-import { useEffect } from 'react'
->>>>>>> abaed7c59c6df70ac2f869cac4e74f293032e48e
 import useApi from '../../../../customHooks/useApi';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { toast, ToastContainer } from 'react-toastify';
@@ -12,14 +8,9 @@ import FormPasswordInput from '../../../atomic/FormPasswordInput/FormPasswordInp
 import FormConfirmPasswordInput from '../../../atomic/FormConfirmPasswordInput/FormConfirmPasswordInput';
 import SubmitButton from '../../../atomic/SubmitButton/SubmitButton';
 import UserType from '../../../../types/UserType';
-<<<<<<< HEAD
 import fetchUserData from '../../../../utils/fetchUserData';
 
 const UserCredentialsForm = ({ user, setUser}:  {user: UserType, setUser: Function}) => {
-=======
-
-const UserCredentialsForm = ({ user }:  {user: UserType}) => {
->>>>>>> abaed7c59c6df70ac2f869cac4e74f293032e48e
     const apiUrl = import.meta.env.VITE_API_URL;
 
     const {
@@ -29,16 +20,10 @@ const UserCredentialsForm = ({ user }:  {user: UserType}) => {
         watch
     } = useForm<{id: string, email: string, username: string, password: string, confirmPassword: string}>();
 
-<<<<<<< HEAD
     const password = watch("password", "");
     const cookies = new Cookies();
     const { isLoading, response, error, fetchData: editUser, resetError, resetResponse } = useApi(apiUrl + "user/edit", "POST");
     const [isInitializingUser, setIsInitializingUser] = useState(false);
-=======
-    const { isLoading, response, error, fetchData: editUser, resetError, resetResponse } = useApi(apiUrl + "user/edit", "POST");
-    const password = watch("password", "");
-    const cookies = new Cookies();
->>>>>>> abaed7c59c6df70ac2f869cac4e74f293032e48e
 
     useEffect(() => {
         if (error) {
@@ -46,7 +31,6 @@ const UserCredentialsForm = ({ user }:  {user: UserType}) => {
             toast.error(errorMessage);
         }
 
-<<<<<<< HEAD
         const fetchUser = async () => {
             if (response) {
                 try {
@@ -64,11 +48,6 @@ const UserCredentialsForm = ({ user }:  {user: UserType}) => {
 
         if (response) {
             fetchUser();
-=======
-        if (response) {
-            cookies.set("userToken", response["token"]);
-            toast.success("Changes updated!");
->>>>>>> abaed7c59c6df70ac2f869cac4e74f293032e48e
         }
     }, [error, response])
 
@@ -113,13 +92,8 @@ const UserCredentialsForm = ({ user }:  {user: UserType}) => {
             />
             <div className="d-flex justify-content-center">
                 <SubmitButton 
-<<<<<<< HEAD
                     isLoading={isLoading || isInitializingUser}
                     text="Save"
-=======
-                    isLoading={isLoading}
-                    text="Save"    
->>>>>>> abaed7c59c6df70ac2f869cac4e74f293032e48e
                 />
             </div>
         </form>

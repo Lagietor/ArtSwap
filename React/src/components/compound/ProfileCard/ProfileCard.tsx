@@ -3,20 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGear } from "@fortawesome/free-solid-svg-icons";
 import UserType from "../../../types/UserType";
 
-<<<<<<< HEAD
 function ProfileCard({ user }: {user: UserType}) {
-=======
-interface User {
-    id: string,
-    email: string,
-    username: string,
-    profileImage: string,
-    backgroundImage: string,
-    roles: []
-}
-
-function ProfileCard({ user }: {user: User}) {
->>>>>>> abaed7c59c6df70ac2f869cac4e74f293032e48e
     const navigate = useNavigate();
 
     const enterSettings = () => {
