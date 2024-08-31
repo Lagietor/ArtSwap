@@ -1,5 +1,4 @@
 import { ToastContainer, toast } from "react-toastify";
-import useUser from "../../customHooks/useUser";
 import { useNavigate } from "react-router-dom";
 import { SubmitHandler, useForm } from "react-hook-form";
 import useApi from "../../customHooks/useApi";
@@ -8,33 +7,33 @@ import SubmitButton from "../../components/atomic/SubmitButton/SubmitButton";
 import FormInput from "../../components/atomic/FormInput/FormInput";
 import FormTextarea from "../../components/atomic/FormTextArea/FormTextArea";
 import FormFileInput from "../../components/atomic/FormFileInput/FormFileInput";
+import isUserLogged from "../../utils/isUserLogged";
+import useUserStore from "../../store/useUserStore";
 
 function CreateCollection() {
     const apiUrl = import.meta.env.VITE_API_URL;
 
-    const { isLogged, user } = useUser();
+    const isLogged = isUserLogged();
+    const { user } = useUserStore();
     const navigate = useNavigate();
 
     const {
         register,
         handleSubmit,
         formState: { errors }
-    } = useForm<{userId: string; name: string, desc: string, image: string}>();
+    } = useForm<{userId: string; name: string, desc: string, image: File}>();
 
-    const { isLoading, response, error, fetchData: createCollection } = useApi(apiUrl + "collection", "POST");
+    const { isLoading, response, error, fetchFile: createCollection } = useApi(apiUrl + "collection", "POST");
 
-    const onSubmit: SubmitHandler<{userId: string; name: string; desc: string; image: string}> = async (data) => {
-        if (!user) {
-            toast.error("User not found!");
-            return;
-        }
-
+    const onSubmit: SubmitHandler<{userId: string; name: string; desc: string; image: File}> = async (data) => {
         try {
-            data.userId = user.id;
-            // TODO: change in future
-            data.image = data.image[0].name;
+            const formData = new FormData();
+            formData.append("userId", user.id);
+            formData.append("name", data.name);
+            formData.append("desc", data.desc);
+            formData.append("image", data.image[0]);
 
-            await createCollection(data);
+            await createCollection(formData);
         } catch (error) {
             toast.error("Something went wrong!");
         }

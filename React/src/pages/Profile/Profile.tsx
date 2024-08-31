@@ -1,17 +1,25 @@
 import "./Profile.css";
 import { useNavigate } from "react-router-dom";
-import useUser from "../../customHooks/useUser";
 import ProfileCard from "../../components/compound/ProfileCard/ProfileCard";
 import { useState } from "react";
 import ProfileItems from "../../components/compound/ProfileItems/ProfileItems";
 import User from "../../types/UserType";
+<<<<<<< HEAD
+import useUserStore from "../../store/useUserStore";
+import isUserLogged from "../../utils/isUserLogged";
+=======
 import useUserStore from "../../store/userStore";
+>>>>>>> abaed7c59c6df70ac2f869cac4e74f293032e48e
 
 function Profile() {
-    const { isLogged, user } = useUser();
+    const isLogged = isUserLogged();
+    const { user } = useUserStore();
     const navigate = useNavigate();
     const [activeButton, setActiveButton] = useState("all");
 
+<<<<<<< HEAD
+    if (!isLogged) {
+=======
     // const { user: user2, isLogged: isLogged2, isLoading, error } = useUserStore(state => ({
     //     user: state.user,
     //     isLogged: state.isLogged,
@@ -20,6 +28,7 @@ function Profile() {
     // }));
 
     if (!isLogged || !user) {
+>>>>>>> abaed7c59c6df70ac2f869cac4e74f293032e48e
         navigate("/");
         return null;
     }

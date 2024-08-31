@@ -1,15 +1,17 @@
 import "./Header.css";
 import LoginModal from "../LoginModal/LoginModal";
 import { useLocation, useNavigate } from "react-router-dom";
-import useUser from "../../../customHooks/useUser";
 import { Cookies } from "react-cookie";
 import { useEffect, useState } from "react";
+import isUserLogged from "../../../utils/isUserLogged";
+import useUserStore from "../../../store/useUserStore";
 
 function Header() {
     const navigate = useNavigate();
-    const { user, isLogged } = useUser();
+    const isLogged = isUserLogged();
     const { search } = useLocation();
     const [showLoginModal, setShowLoginModal] = useState(false);
+    const { clearUser, user } = useUserStore();
 
     useEffect(() => {
         const params = new URLSearchParams(search);
@@ -22,6 +24,7 @@ function Header() {
     const handleLogout = () => {
         const cookies = new Cookies();
         cookies.remove("userToken");
+        clearUser();
         navigate("/");
         window.location.reload();
     }
@@ -63,7 +66,7 @@ function Header() {
                                     <button className="btn btn-primary mx-5" onClick={handleCreateCollection}>Create</button>
                                     <div className="dropdown">
                                         <a href="#" className="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
-                                            <img src="/profileImages/BUBBA.jpg" alt="profile-picture" width="45" height="45" className="rounded-circle" />
+                                            <img src={user.profileImage || "/defaultImages/profile_default.jpg"} alt="profile image" width="45" height="45" className="rounded-circle" />
                                         </a>
                                         <ul className="dropdown-menu dropdown-menu-dark dropdown-menu-end text-small">
                                             <li>

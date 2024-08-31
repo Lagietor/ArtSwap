@@ -4,17 +4,27 @@ import CollectionDetails from "../../components/compound/CollectionDetails/Colle
 import { useEffect, useState } from "react";
 import useSearch from "../../customHooks/useSearch";
 import Item from "../../types/ItemType";
-import useUser from "../../customHooks/useUser";
 import LoadingAnimation from "../../components/atomic/LoadingAnimation/LoadingAnimation";
 import SearchBar from "../../components/atomic/SearchBar/SearchBar";
+import isUserLogged from "../../utils/isUserLogged";
+import useUserStore from "../../store/useUserStore";
+import useCollectionStore from "../../store/useCollectionStore";
+
+// TODO: trzeba przebudować całą kolekcję, żeby nie wczytywać osobno obiektów z kolekcji i osobno samej kolekcji
+// skoro w symfony jest funkcja $collection->getItems(), trzeba tylko zrobić system pod filtry
+// jak będzie jeden input API to będzie można zapisać dane o kolekcji po pierwszym przeładowaniu w CollectionStore
+// ALBO poukładać jakoś ten kod żeby przy wpisywaniu frazy wyszukiwania nie przeładowywała się cała strona tylko lista obiektów nft
 
 function Collection() {
     const apiUrl = import.meta.env.VITE_API_URL;
 
     const { id } = useParams();
-    const { isLogged, user } = useUser();
+    const isLogged = isUserLogged();
+    const { user } = useUserStore();
+    const { collection, setCollection } = useCollectionStore();
     const [ sort, setsort ] = useState("");
     const [ phrase, setPhrase ] = useState("");
+    const [ owner, setOwner ] = useState(null);
     const navigate = useNavigate()
 
     if (!id) {
@@ -27,8 +37,8 @@ function Collection() {
     useEffect(() => {
         if (!response) {
             const params = new URLSearchParams(location.search);
-            const sortFromUrl = params.get('sort') || 'Popular';
-            const phraseFromUrl = params.get('phrase') || '';
+            const sortFromUrl = params.get("sort") || "Popular";
+            const phraseFromUrl = params.get("phrase") || "";
 
             searchItems(phraseFromUrl, sortFromUrl);
 
@@ -67,10 +77,10 @@ function Collection() {
                 </div>
             ) : (
                 <>
-                    <CollectionDetails id={id}/>
+                    <CollectionDetails id={id} setOwner={setOwner}/>
                     <hr />
                     <div className="d-flex justify-content-center">
-                        {isLogged && response[0]?.owner?.id && user?.id === response[0].owner.id && (
+                        {isLogged && owner?.id && user?.id === owner?.id && (
                             <button className="btn btn-primary me-3" onClick={enterCreateItem}>+</button>
                         )}
                         <form className="form-inline w-50">
@@ -87,7 +97,7 @@ function Collection() {
                                         <div className="col-md-2 mb-4" key={subItem.id}>
                                             <a href="" onClick={() => enterItem(subItem.id)}>
                                                 <div className="card rounded mx-2">
-                                                    <img className="card-img-top" src="/profileImages/BUBBA.jpg" alt="collection image" />
+                                                    <img className="card-img-top card-img" src={subItem.image || "/defaultImages/item_default.jpg"} alt="item image" />
                                                     <div className="card-body">
                                                         <h5 className="card-title">{subItem.name}</h5>
                                                         <p className="card-text h6 text-light">{subItem.value} ETH</p>

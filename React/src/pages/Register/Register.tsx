@@ -4,17 +4,17 @@ import { useNavigate } from "react-router-dom";
 import { Cookies } from "react-cookie";
 import { useEffect } from "react";
 import useApi from "../../customHooks/useApi";
-import useUser from "../../customHooks/useUser";
 import "react-toastify/dist/ReactToastify.css";
 import FormInput from "../../components/atomic/FormInput/FormInput";
 import FormPasswordInput from "../../components/atomic/FormPasswordInput/FormPasswordInput";
 import FormConfirmPasswordInput from "../../components/atomic/FormConfirmPasswordInput/FormConfirmPasswordInput";
 import SubmitButton from "../../components/atomic/SubmitButton/SubmitButton";
+import isUserLogged from "../../utils/isUserLogged";
 
 function Register() {
     const apiUrl = import.meta.env.VITE_API_URL;
 
-    const { isLogged } = useUser();
+    const isLogged = isUserLogged();
     const navigate = useNavigate();
 
     if (isLogged) {

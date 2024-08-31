@@ -2,19 +2,23 @@ import "./popupLogin.css";
 import useApi from "../../../customHooks/useApi";
 import { useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Cookies } from "react-cookie";
 import GoogleButton from "../../atomic/GoogleButton/GoogleButton";
 import GithubButton from "../../atomic/GithubButton/GithubButton";
 import FormInput from "../../atomic/FormInput/FormInput";
 import FormPasswordInput from "../../atomic/FormPasswordInput/FormPasswordInput";
 import SubmitButton from "../../atomic/SubmitButton/SubmitButton";
+import fetchUserData from "../../../utils/fetchUserData";
+import useUserStore from "../../../store/useUserStore";
 
 function PopupLogin({ close }: {close: () => void }) {
     const apiUrl = import.meta.env.VITE_API_URL;
 
     const navigate = useNavigate();
     const cookies = new Cookies();
+    const { setUser } = useUserStore();
+    const [isInitializingUser, setIsInitializingUser] = useState(false);
     const {
         register,
         handleSubmit,
@@ -24,12 +28,26 @@ function PopupLogin({ close }: {close: () => void }) {
     const { isLoading, response, error, fetchData: handleSubmitApi } = useApi(apiUrl + "login", "POST");
 
     useEffect(() => {
-        document.documentElement.style.setProperty('--input-width', '100%');
-        if (response) {
-            cookies.set("userToken", response["token"]);
-            window.location.reload();
-        }
-    }, [response, error]);
+        document.documentElement.style.setProperty("--input-width", "100%");
+
+        const fetchUser = async () => {
+            if (response) {
+                try {
+                    setIsInitializingUser(true);
+                    const userData = await fetchUserData(response.token);
+                    setUser(userData);
+                    cookies.set("userToken", response.token);
+                    
+                    setIsInitializingUser(false);
+                    window.location.reload();
+                } catch (error) {
+                    console.error("Error fetching user data:", error);
+                }
+            }
+        };
+
+        fetchUser();
+    }, [response]);
 
     const onSubmit: SubmitHandler<{ email: string, password: string}> = async(data) => {
         try {
@@ -74,7 +92,7 @@ function PopupLogin({ close }: {close: () => void }) {
                         />
                         <div className="d-grid gap-2">
                             <SubmitButton
-                                isLoading={isLoading}
+                                isLoading={isLoading || isInitializingUser}
                                 text="login"
                             />
                         </div>

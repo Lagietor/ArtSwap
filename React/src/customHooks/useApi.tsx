@@ -39,10 +39,6 @@ const useApi = (url: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE' = 'GET') 
         setIsLoading(true);
         try {
             const config = { headers: {'Content-Type': 'multipart/form-data' }};
-            console.log(url, config);
-            for (const [key, value] of formData.entries()) {
-                console.log(`${key}:`, value);
-            }
             const response = await axios.post(url, formData, config);
             setResponse(response.data);
         } catch (error: any) {

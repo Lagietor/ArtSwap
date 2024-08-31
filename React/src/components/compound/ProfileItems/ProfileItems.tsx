@@ -41,7 +41,7 @@ function ProfileItems({ id, filter}: {id: string, filter: string}) {
                                         <div className="col-md-3 mb-4" key={subItem.id}>
                                             <a href="#">
                                                 <div className="card rounded mx-2">
-                                                    <img className="card-img-top" src="/profileImages/BUBBA.jpg" alt="item image" />
+                                                    <img className="card-img-top card-img" src="/defaultImages/item_default.jpg" alt="item image" />
                                                     <div className="card-body">
                                                         <h5 className="card-title">{subItem.name}</h5>
                                                     </div>

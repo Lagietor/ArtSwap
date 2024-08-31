@@ -1,13 +1,15 @@
 import { useState } from "react";
 import UserSettingsForm from "../../components/compound/UserSettingsForm/UserSettingsForm";
 import AdjustmentsSettingsForm from "../../components/compound/AdjustmentsSettingsForm/AdjustmentsSettingsForm";
-import useUser from "../../customHooks/useUser";
 import { useNavigate } from "react-router-dom";
 import User from "../../types/UserType";
 import "./Settings.css";
+import isUserLogged from "../../utils/isUserLogged";
+import useUserStore from "../../store/useUserStore";
 
 function Settings() {
-    const { isLogged, user } = useUser();
+    const isLogged = isUserLogged();
+    const { user, setUser } = useUserStore();
     const [ activeTab, setActiveTab ] = useState("user");
     const navigate = useNavigate();
 
@@ -36,7 +38,7 @@ function Settings() {
                     {user ? (
                         <>
                             {activeTab === "user" && (
-                                <UserSettingsForm user={user as User} />
+                                <UserSettingsForm user={user as User} setUser={setUser} />
                             )}
                             {activeTab === "adjustments" && (
                                 <AdjustmentsSettingsForm />

@@ -1,23 +1,40 @@
+import "./GoogleButton.css";
 import { useGoogleLogin } from "@react-oauth/google";
 import useApi from "../../../customHooks/useApi";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Cookies } from "react-cookie";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGoogle } from '@fortawesome/free-brands-svg-icons';
-import "./GoogleButton.css";
 import LoadingAnimation from "../LoadingAnimation/LoadingAnimation";
+import useUserStore from "../../../store/useUserStore";
+import fetchUserData from "../../../utils/fetchUserData";
 
 function GoogleButton() {
     const apiUrl = import.meta.env.VITE_API_URL;
 
     const { isLoading, response, fetchData: handleSubmitApi } = useApi(apiUrl + "google-login", "POST");
+    const cookies = new Cookies();
+    const { setUser } = useUserStore();
+    const [isInitializingUser, setIsInitializingUser] = useState(false);
 
     useEffect(() => {
-        if (response) {
-            const cookie = new Cookies();
-            cookie.set("userToken", response["token"]);
-            window.location.reload();
-        }
+        const fetchUser = async () => {
+            if (response) {
+                setIsInitializingUser(true);
+                try {
+                    const userData = await fetchUserData(response.token);
+                    setUser(userData);
+                    cookies.set("userToken", response.token);
+                    
+                    setIsInitializingUser(false);
+                    window.location.reload();
+                } catch (error) {
+                    console.error("Error fetching user data:", error);
+                }
+            }
+        };
+
+        fetchUser();
     }, [response]);
 
     const login = useGoogleLogin({
@@ -35,7 +52,11 @@ function GoogleButton() {
 
     return (
         <div>
-            {!isLoading ? (
+            {isLoading || isInitializingUser ? (
+                <div className="d-flex justify-content-center">
+                    <LoadingAnimation />
+                </div>
+            ) : (
                 <div className="google-login-container">
                 <button
                     className="google-login-button"
@@ -45,10 +66,6 @@ function GoogleButton() {
                     <FontAwesomeIcon icon={faGoogle} className="fa-google" />
                     Login with Google
                 </button>
-                </div>
-            ) : (
-                <div className="d-flex justify-content-center">
-                    <LoadingAnimation />
                 </div>
             )}
         </div>

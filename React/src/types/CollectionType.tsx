@@ -9,7 +9,8 @@ interface CollectionType {
     "volume": number,
     "views": number,
     "image": string,
-    "description": string
+    "description": string,
+    "shortDescription": string
 }
 
 export default CollectionType;

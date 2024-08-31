@@ -58,7 +58,7 @@ function Home() {
             <div className="searchBar d-flex justify-content-center mt-5">
                 <form className="form-inline w-50">
                     <div className="input-group">
-                        <SearchBar value={phrase} onChange={setPhrase}/>
+                        <SearchBar value={phrase} onChange={setPhrase} />
                     </div>
                 </form>
             </div>
@@ -82,17 +82,17 @@ function Home() {
                 </div>
             ) : (
                 <>
-                    {response.map((collection: object, index: number) => (
+                    {response.map((collection: CollectionType, index: number) => (
                         index % 6 === 0 && (
                             <div className="card-group" key={`row-${index}`}>
                                 {response.slice(index, index + 6).map((subCollection: CollectionType) => (
                                     <div className="col-md-2 mb-4" key={subCollection.id}>
                                         <a href="" onClick={() => enterCollection(subCollection.id)}>
                                             <div className="card rounded mx-2">
-                                                <img className="card-img-top" src="./profileImages/BUBBA.jpg" alt="collection image" />
+                                                <img className="card-img-top card-img" src={subCollection.image || "/defaultImages/collection_default.jpg"} alt="collection image" />
                                                 <div className="card-body">
                                                     <h5 className="card-title">{subCollection.name}</h5>
-                                                    <p className="card-text text-light">{subCollection.description}</p>
+                                                    <p className="card-text text-light">{subCollection.shortDescription}</p>
                                                     <div className="row">
                                                         <div className="col">
                                                             <h6 className="text-light">Floor</h6>

@@ -1,7 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGear } from "@fortawesome/free-solid-svg-icons";
+import UserType from "../../../types/UserType";
 
+<<<<<<< HEAD
+function ProfileCard({ user }: {user: UserType}) {
+=======
 interface User {
     id: string,
     email: string,
@@ -12,6 +16,7 @@ interface User {
 }
 
 function ProfileCard({ user }: {user: User}) {
+>>>>>>> abaed7c59c6df70ac2f869cac4e74f293032e48e
     const navigate = useNavigate();
 
     const enterSettings = () => {
@@ -22,11 +27,11 @@ function ProfileCard({ user }: {user: User}) {
     return (
         <>
             <div className="background-container">
-                <img src="/backgroundImages/maze.jpg" alt="Background" />
+                <img src={user.backgroundImage || "/defaultImages/background_default.avif"} alt="Background" />
             </div>
             <div className="profile-header">
                 <div className="profile-picture">
-                    <img src="/profileImages/BUBBA.jpg" alt="Profile Image" />
+                    <img src={user.profileImage || "/defaultImages/profile_default.jpg"} alt="Profile Image" />
                 </div>
                 <div className="w-100 text-center pb-4">
                     <span className="h1 text-light">{user.username}</span>

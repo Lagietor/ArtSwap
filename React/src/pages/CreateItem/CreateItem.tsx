@@ -1,5 +1,4 @@
 import { ToastContainer, toast } from "react-toastify";
-import useUser from "../../customHooks/useUser";
 import { useNavigate, useParams } from "react-router-dom";
 import { SubmitHandler, useForm } from "react-hook-form";
 import useApi from "../../customHooks/useApi";
@@ -7,11 +6,14 @@ import { useEffect } from "react";
 import FormInput from "../../components/atomic/FormInput/FormInput";
 import FormFileInput from "../../components/atomic/FormFileInput/FormFileInput";
 import SubmitButton from "../../components/atomic/SubmitButton/SubmitButton";
+import isUserLogged from "../../utils/isUserLogged";
+import useUserStore from "../../store/useUserStore";
 
 function CreateItem() {
     const apiUrl = import.meta.env.VITE_API_URL;
 
-    const { isLogged, user } = useUser();
+    const isLogged = isUserLogged();
+    const { user } = useUserStore();
     const { id } = useParams();
     const navigate = useNavigate();
 
@@ -19,24 +21,20 @@ function CreateItem() {
         register,
         handleSubmit,
         formState: { errors }
-    } = useForm<{owner: string, collection: string; name: string, value: string, image: string}>();
+    } = useForm<{collection: string; name: string, value: string, image: string}>();
 
-    const { isLoading, response, error, fetchData: createItem } = useApi(apiUrl + "item", "POST");
+    const { isLoading, response, error, fetchFile: createItem } = useApi(apiUrl + "item", "POST");
 
-    const onSubmit: SubmitHandler<{owner: string; collection: string; name: string; value: string; image: string}> = async (data) => {
-        if (!user) {
-            toast.error("User not found!");
-            return;
-        }
-
+    const onSubmit: SubmitHandler<{collection: string; name: string; value: string; image: string}> = async (data) => {
         try {
-            data.owner = user.id;
-            data.collection = parseInt(id);
-            data.value = parseFloat(data.value);
-            // TODO: change in future
-            data.image = data.image[0].name;
+            const formData = new FormData();
+            formData.append("owner", user.id)
+            formData.append("collection", id);
+            formData.append("name", data.name);
+            formData.append("value", data.value);
+            formData.append("image", data.image[0]);
 
-            await createItem(data);
+            await createItem(formData);
         } catch (error) {
             toast.error("Something went wrong!");
         }

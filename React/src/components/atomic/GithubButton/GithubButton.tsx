@@ -1,11 +1,13 @@
-import { useEffect} from 'react';
+import './GithubButton.css';
+import { useEffect, useState} from 'react';
 import { Cookies } from 'react-cookie';
 import useApi from '../../../customHooks/useApi';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
-import './GithubButton.css';
 import LoadingAnimation from '../LoadingAnimation/LoadingAnimation';
+import fetchUserData from '../../../utils/fetchUserData';
+import useUserStore from '../../../store/useUserStore';
 
 const GitHubButton = () => {
     const apiUrl = import.meta.env.VITE_API_URL;
@@ -13,7 +15,10 @@ const GitHubButton = () => {
     const clientId = import.meta.env.VITE_GITHUB_CLIENT_ID;
 
     const { isLoading, error, response, fetchData: handleSubmitApi } = useApi(apiUrl + "github-login", "POST");
+    const cookies = new Cookies();
+    const { setUser } = useUserStore();
     const navigate = useNavigate();
+    const [ isInitializingUser, setIsInitializingUser ] = useState(false);
     
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
@@ -28,12 +33,30 @@ const GitHubButton = () => {
     }, []);
 
     useEffect(() => {
-        if (response) {
-            const cookie = new Cookies();
-            cookie.set("userToken", response["token"]);
-            navigate("/");
-            window.location.reload();
-        }
+        // if (response) {
+        //     const cookie = new Cookies();
+        //     cookie.set("userToken", response["token"]);
+        //     navigate("/");
+        //     window.location.reload();
+        // }
+        const fetchUser = async () => {
+            if (response) {
+                try {
+                    setIsInitializingUser(true);
+                    const userData = await fetchUserData(response.token);
+                    setUser(userData);
+                    cookies.set("userToken", response.token);
+                    
+                    setIsInitializingUser(false);
+                    navigate("/");
+                    window.location.reload();
+                } catch (error) {
+                    console.error("Error fetching user data:", error);
+                }
+            }
+        };
+
+        fetchUser();
     }, [response, error])
 
     const handleLogin = () => {
@@ -46,7 +69,7 @@ const GitHubButton = () => {
 
     return (
         <>
-            {isLoading ? (
+            {isLoading || isInitializingUser ? (
                 <div className="d-flex justify-content-center">
                     <LoadingAnimation />
                 </div>
