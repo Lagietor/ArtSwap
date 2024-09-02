@@ -22,7 +22,7 @@ class UploadImageService
         $this->service = new Drive($this->client);
     }
 
-    public function uploadFileToStorage(string $userName, string $fileType, $file): int
+    public function uploadFileToStorage(string $userName, string $fileType, $file)
     {
         $artSwapFolderId = $this->ensureFolderExists('ArtSwap');
         

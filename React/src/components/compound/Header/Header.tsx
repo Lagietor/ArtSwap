@@ -66,7 +66,7 @@ function Header() {
                                     <button className="btn btn-primary mx-5" onClick={handleCreateCollection}>Create</button>
                                     <div className="dropdown">
                                         <a href="#" className="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
-                                            <img src={user.profileImage || "/defaultImages/profile_default.jpg"} alt="profile image" width="45" height="45" className="rounded-circle" />
+                                            <img src={user.profileImage || "/defaultImages/profile_default.jpg"} alt="profile image" className="rounded-circle profile-img-header" />
                                         </a>
                                         <ul className="dropdown-menu dropdown-menu-dark dropdown-menu-end text-small">
                                             <li>

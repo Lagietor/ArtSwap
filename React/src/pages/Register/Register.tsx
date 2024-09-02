@@ -2,7 +2,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { Cookies } from "react-cookie";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useApi from "../../customHooks/useApi";
 import "react-toastify/dist/ReactToastify.css";
 import FormInput from "../../components/atomic/FormInput/FormInput";
@@ -10,12 +10,16 @@ import FormPasswordInput from "../../components/atomic/FormPasswordInput/FormPas
 import FormConfirmPasswordInput from "../../components/atomic/FormConfirmPasswordInput/FormConfirmPasswordInput";
 import SubmitButton from "../../components/atomic/SubmitButton/SubmitButton";
 import isUserLogged from "../../utils/isUserLogged";
+import useUserStore from "../../store/useUserStore";
+import fetchUserData from "../../utils/fetchUserData";
 
 function Register() {
     const apiUrl = import.meta.env.VITE_API_URL;
 
     const isLogged = isUserLogged();
     const navigate = useNavigate();
+    const [isInitializingUser, setIsInitializingUser] = useState(false);
+    const { setUser } = useUserStore();
 
     if (isLogged) {
         navigate("/");
@@ -33,10 +37,23 @@ function Register() {
     const cookies = new Cookies();
 
     useEffect(() => {
-        if (response) {
-            cookies.set("userToken", response["token"]);
-            window.location.reload();
-        }
+        const fetchUser = async () => {
+            if (response) {
+                try {
+                    setIsInitializingUser(true);
+                    const userData = await fetchUserData(response.token);
+                    setUser(userData);
+                    cookies.set("userToken", response.token);
+                    
+                    setIsInitializingUser(false);
+                    window.location.reload();
+                } catch (error) {
+                    console.error("Error fetching user data:", error);
+                }
+            }
+        };
+
+        fetchUser();
     }, [response]);
 
     const onSubmit: SubmitHandler<{ email: string; password: string}> = async (data) => {
@@ -81,7 +98,7 @@ function Register() {
                 />
                 <div className="d-flex justify-content-center">
                     <SubmitButton
-                        isLoading={isLoading}
+                        isLoading={isLoading || isInitializingUser}
                         text="Register"
                     />
                 </div>

@@ -53,3 +53,15 @@
 .value svg {
     width: 15px;
 }
+
+.profile-img-settings
+{
+    height: 150px;
+    object-fit: cover;
+}
+
+.background-img-settings
+{
+    height: 250px;
+    object-fit: cover;
+}

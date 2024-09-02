@@ -44,3 +44,10 @@ a {
     height: 250px;
     object-fit: cover;
 }
+
+.profile-img-header
+{
+    width: 45px;
+    height: 45px;
+    object-fit: cover;
+}

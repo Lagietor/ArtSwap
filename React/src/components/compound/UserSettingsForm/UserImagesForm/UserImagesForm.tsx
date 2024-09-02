@@ -67,7 +67,7 @@ const UserImagesForm = ({ user, setUser }: {user: UserType, setUser: Function}) 
             <form onSubmit={handleSubmit(onSubmit)} className="my-5">
                 <div className="form-group">
                     <div className="d-flex justify-content-center">
-                        <img src={user.profileImage || "/defaultImages/profile_default.jpg"} className="rounded-circle" width="150px" height="150px"/>
+                        <img src={user.profileImage || "/defaultImages/profile_default.jpg"} className="rounded-circle profile-img-settings" width="150px"/>
                     </div>
                     <h5 className="text-center text-light mt-4">Profile image</h5>
                     <FormFileInput
@@ -80,7 +80,7 @@ const UserImagesForm = ({ user, setUser }: {user: UserType, setUser: Function}) 
                 </div>
                 <div className="form-group align-items-center">
                 <div className="col d-flex justify-content-center">
-                    <img src={user.backgroundImage || "/defaultImages/background_default.avif"} className="rounded" width="400px" height="200px"/>
+                    <img src={user.backgroundImage || "/defaultImages/background_default.avif"} className="rounded background-img-settings" width="500px"/>
                 </div>
                 <h5 className="text-center text-light mt-4">Background image</h5>
                 </div>
