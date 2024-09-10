@@ -11,12 +11,16 @@ class UserMapper
     {
         $profileImageLink = $this->getGoogleDriveLink($user->getProfileImage());
         $backgroundImageLink = $this->getGoogleDriveLink($user->getBackgroundImage());
+        $collectionsCount = count($user->getNFTCollections());
+        $itemsCount = count($user->getNFTItems());
 
         return new UserDTO(
             $user->getId(),
             $user->getEmail(),
             $user->getRoles(),
             $user->getUsername(),
+            $collectionsCount,
+            $itemsCount,
             $profileImageLink,
             $backgroundImageLink,
             $user->getNFTCollections(),

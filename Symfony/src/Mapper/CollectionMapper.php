@@ -17,12 +17,21 @@ class CollectionMapper
             $shortDesc = $description;
         }
 
+        $itemsCount = count($collection->getNFTItems());
+        $floorPrice = array_reduce($collection->getNFTItems()->toArray(), function ($carry, $item) {
+            if ($carry === null || $item->getValue() < $carry) {
+                return $item->getValue();
+            }
+
+            return $carry;
+        }, null);
+
         return new CollectionDTO(
             $collection->getId(),
             $collection->getUser(),
             $collection->getName(),
-            $collection->getItemsCount(),
-            $collection->getFloorPrice(),
+            $itemsCount,
+            $floorPrice,
             $collection->getVolume(),
             $collection->getViews(),
             $collection->getDescription(),

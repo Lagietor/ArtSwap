@@ -8,6 +8,8 @@ class UserDTO
     private $email;
     private $roles;
     private $username;
+    private $collectionCount;
+    private $itemCount;
     private $profileImage;
     private $backgroundImage;
     private $nftCollections;
@@ -18,6 +20,8 @@ class UserDTO
         $email, 
         $roles, 
         $username, 
+        $collectionCount,
+        $itemCount,
         $profileImageLink, 
         $backgroundImageLink,
         $nftCollections,
@@ -28,6 +32,8 @@ class UserDTO
         $this->email = $email;
         $this->roles = $roles;
         $this->username = $username;
+        $this->collectionCount = $collectionCount;
+        $this->itemCount = $itemCount;
         $this->profileImage = $profileImageLink;
         $this->backgroundImage = $backgroundImageLink;
         $this->nftCollections = $nftCollections;
@@ -52,6 +58,16 @@ class UserDTO
     public function getUsername()
     {
         return $this->username;
+    }
+
+    public function getCollectionCount()
+    {
+        return $this->collectionCount;
+    }
+
+    public function getItemCount()
+    {
+        return $this->itemCount;
     }
 
     public function getProfileImage()

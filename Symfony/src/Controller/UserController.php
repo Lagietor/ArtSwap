@@ -175,13 +175,13 @@ class UserController extends AbstractController
         $response = [];
 
         if ($profileImage && $profileImage->isValid()) {
-            $profileImageId = $this->uploadImageService->uploadFileToStorage($user->getUsername(), 'profileImage', $profileImage);
+            $profileImageId = $this->uploadImageService->uploadFileToStorage($user->getId(), 'profile', $profileImage);
             $user->setProfileImage($profileImageId);
             $response['profileImageId'] = $profileImageId;
         }
 
         if ($backgroundImage && $backgroundImage->isValid()) {
-            $backgroundImageId = $this->uploadImageService->uploadFileToStorage($user->getUsername(), 'profileImage', $profileImage);
+            $backgroundImageId = $this->uploadImageService->uploadFileToStorage($user->getId(), 'background', $profileImage);
             $user->setBackgroundImage($backgroundImageId);
             $response['backgroundImageId'] = $backgroundImageId;
         }

@@ -34,7 +34,6 @@ class NFTCollectionController extends AbstractController
     ): JsonResponse
     {
         // TODO dodać walidacje
-        $request = json_decode($request->getContent(), true);
 
         $userId = $request->get('userId');
         $user = $em->getRepository(User::class)->findOneBy(['id' => $userId]);
@@ -51,7 +50,7 @@ class NFTCollectionController extends AbstractController
         $collection->setViews(0);
 
         if ($image && $image->isValid()) {
-            $imageId = $this->uploadImageService->uploadFileToStorage($collection->getUser()->getUserName(), 'collection', $image);
+            $imageId = $this->uploadImageService->uploadFileToStorage($collection->getUser()->getId(), 'collection', $image);
             $collection->setImage($imageId);
         }
 

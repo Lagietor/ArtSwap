@@ -71,7 +71,7 @@ class NFTItemController extends AbstractController
         $item->setViews(0);
 
         if ($image && $image->isValid()) {
-            $imageId = $this->uploadImageService->uploadFileToStorage($item->getOwner()->getUserName(), 'item', $image);
+            $imageId = $this->uploadImageService->uploadFileToStorage($item->getOwner()->getId(), 'item', $image);
             $item->setImage($imageId);
         }
 

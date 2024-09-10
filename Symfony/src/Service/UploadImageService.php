@@ -22,11 +22,11 @@ class UploadImageService
         $this->service = new Drive($this->client);
     }
 
-    public function uploadFileToStorage(string $userName, string $fileType, $file)
+    public function uploadFileToStorage(string $userId, string $fileType, $file)
     {
         $artSwapFolderId = $this->ensureFolderExists('ArtSwap');
         
-        $userFolderId = $this->ensureFolderExists($userName, $artSwapFolderId);
+        $userFolderId = $this->ensureFolderExists($userId, $artSwapFolderId);
         
         $subFolderName = $this->getSubFolderName($fileType);
         $subFolderId = $this->ensureFolderExists($subFolderName, $userFolderId);
@@ -90,10 +90,14 @@ class UploadImageService
     private function getSubFolderName(string $fileType): string
     {
         switch ($fileType) {
-            case 'profileImage':
+            case 'profile':
                 return 'ProfilePictures';
-            case 'backgroundImage':
+            case 'background':
                 return 'Backgrounds';
+            case 'collection':
+                return 'CollectionsImage';
+            case 'item':
+                return 'ItemsImage';
             default:
                 throw new \InvalidArgumentException("Unsupported file type: $fileType");
         }
