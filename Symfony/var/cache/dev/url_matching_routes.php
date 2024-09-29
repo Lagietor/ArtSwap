@@ -37,30 +37,36 @@ return [
                                 .'|(*:192)'
                             .')'
                         .')'
-                        .'|item/([^/]++)(*:215)'
+                        .'|item/(?'
+                            .'|([^/]++)(*:218)'
+                            .'|edit/([^/]++)(*:239)'
+                        .')'
                         .'|user/(?'
-                            .'|([^/]++)(*:239)'
-                            .'|edit(*:251)'
-                            .'|([^/]++)/i(?'
-                                .'|tems(*:276)'
-                                .'|mages(*:289)'
+                            .'|([^/]++)(*:264)'
+                            .'|edit(*:276)'
+                            .'|([^/]++)/(?'
+                                .'|i(?'
+                                    .'|tems(*:304)'
+                                    .'|mages(*:317)'
+                                .')'
+                                .'|collections(*:337)'
                             .')'
                         .')'
                     .')'
                 .')'
                 .'|/_(?'
-                    .'|error/(\\d+)(?:\\.([^/]++))?(*:332)'
-                    .'|wdt/([^/]++)(*:352)'
+                    .'|error/(\\d+)(?:\\.([^/]++))?(*:380)'
+                    .'|wdt/([^/]++)(*:400)'
                     .'|profiler/([^/]++)(?'
                         .'|/(?'
-                            .'|search/results(*:398)'
-                            .'|router(*:412)'
+                            .'|search/results(*:446)'
+                            .'|router(*:460)'
                             .'|exception(?'
-                                .'|(*:432)'
-                                .'|\\.css(*:445)'
+                                .'|(*:480)'
+                                .'|\\.css(*:493)'
                             .')'
                         .')'
-                        .'|(*:455)'
+                        .'|(*:503)'
                     .')'
                 .')'
             .')/?$}sDu',
@@ -72,18 +78,20 @@ return [
         150 => [[['_route' => 'api_jsonld_context', '_controller' => 'api_platform.jsonld.action.context', '_format' => 'jsonld', '_api_respond' => 'true'], ['shortName', '_format'], null, null, false, true, null]],
         184 => [[['_route' => 'api_api_collection_items', '_controller' => 'App\\Controller\\NFTCollectionController::getItems'], ['id'], ['GET' => 0], null, false, false, null]],
         192 => [[['_route' => 'api_api_collection_get', '_controller' => 'App\\Controller\\NFTCollectionController::get'], ['id'], ['GET' => 0], null, false, true, null]],
-        215 => [[['_route' => 'api_api_item_get', '_controller' => 'App\\Controller\\NFTItemController::get'], ['id'], ['GET' => 0], null, false, true, null]],
-        239 => [[['_route' => 'api_api_user_get', '_controller' => 'App\\Controller\\UserController::get'], ['id'], ['GET' => 0], null, false, true, null]],
-        251 => [[['_route' => 'api_api_user_edit', '_controller' => 'App\\Controller\\UserController::edit'], [], ['POST' => 0], null, false, false, null]],
-        276 => [[['_route' => 'api_api_user_items', '_controller' => 'App\\Controller\\UserController::getItems'], ['id'], ['GET' => 0], null, false, false, null]],
-        289 => [[['_route' => 'api_api_user_image', '_controller' => 'App\\Controller\\UserController::uploadImages'], ['id'], ['POST' => 0], null, false, false, null]],
-        332 => [[['_route' => '_preview_error', '_controller' => 'error_controller::preview', '_format' => 'html'], ['code', '_format'], null, null, false, true, null]],
-        352 => [[['_route' => '_wdt', '_controller' => 'web_profiler.controller.profiler::toolbarAction'], ['token'], null, null, false, true, null]],
-        398 => [[['_route' => '_profiler_search_results', '_controller' => 'web_profiler.controller.profiler::searchResultsAction'], ['token'], null, null, false, false, null]],
-        412 => [[['_route' => '_profiler_router', '_controller' => 'web_profiler.controller.router::panelAction'], ['token'], null, null, false, false, null]],
-        432 => [[['_route' => '_profiler_exception', '_controller' => 'web_profiler.controller.exception_panel::body'], ['token'], null, null, false, false, null]],
-        445 => [[['_route' => '_profiler_exception_css', '_controller' => 'web_profiler.controller.exception_panel::stylesheet'], ['token'], null, null, false, false, null]],
-        455 => [
+        218 => [[['_route' => 'api_api_item_get', '_controller' => 'App\\Controller\\NFTItemController::get'], ['id'], ['GET' => 0], null, false, true, null]],
+        239 => [[['_route' => 'api_api_item_edit', '_controller' => 'App\\Controller\\NFTItemController::edit'], ['id'], ['GET' => 0], null, false, true, null]],
+        264 => [[['_route' => 'api_api_user_get', '_controller' => 'App\\Controller\\UserController::get'], ['id'], ['GET' => 0], null, false, true, null]],
+        276 => [[['_route' => 'api_api_user_edit', '_controller' => 'App\\Controller\\UserController::edit'], [], ['POST' => 0], null, false, false, null]],
+        304 => [[['_route' => 'api_api_user_items', '_controller' => 'App\\Controller\\UserController::getItems'], ['id'], ['GET' => 0], null, false, false, null]],
+        317 => [[['_route' => 'api_api_user_image', '_controller' => 'App\\Controller\\UserController::uploadImages'], ['id'], ['POST' => 0], null, false, false, null]],
+        337 => [[['_route' => 'api_api_user_collections', '_controller' => 'App\\Controller\\UserController::getCollections'], ['id'], ['GET' => 0], null, false, false, null]],
+        380 => [[['_route' => '_preview_error', '_controller' => 'error_controller::preview', '_format' => 'html'], ['code', '_format'], null, null, false, true, null]],
+        400 => [[['_route' => '_wdt', '_controller' => 'web_profiler.controller.profiler::toolbarAction'], ['token'], null, null, false, true, null]],
+        446 => [[['_route' => '_profiler_search_results', '_controller' => 'web_profiler.controller.profiler::searchResultsAction'], ['token'], null, null, false, false, null]],
+        460 => [[['_route' => '_profiler_router', '_controller' => 'web_profiler.controller.router::panelAction'], ['token'], null, null, false, false, null]],
+        480 => [[['_route' => '_profiler_exception', '_controller' => 'web_profiler.controller.exception_panel::body'], ['token'], null, null, false, false, null]],
+        493 => [[['_route' => '_profiler_exception_css', '_controller' => 'web_profiler.controller.exception_panel::stylesheet'], ['token'], null, null, false, false, null]],
+        503 => [
             [['_route' => '_profiler', '_controller' => 'web_profiler.controller.profiler::panelAction'], ['token'], null, null, false, true, null],
             [null, null, null, null, false, false, 0],
         ],

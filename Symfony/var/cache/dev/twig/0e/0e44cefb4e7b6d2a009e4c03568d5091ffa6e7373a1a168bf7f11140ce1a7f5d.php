@@ -249,7 +249,7 @@ class __TwigTemplate_0139159db19704f467b299544ec4805ccbc84ee02c986fbf71b8993a0e7
                 } else {
                     // line 149
                     echo "                                            ";
-                    echo twig_var_dump($this->env, $context, ...[$context["filter"]]);
+                    echo twig_escape_filter($this->env, twig_var_dump($this->env, $context, ...[$context["filter"]]), "html", null, true);
                     echo "
                                         ";
                 }
