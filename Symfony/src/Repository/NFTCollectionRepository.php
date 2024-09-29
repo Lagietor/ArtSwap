@@ -77,4 +77,51 @@ class NFTCollectionRepository extends ServiceEntityRepository
 
         return $queryBuilder->getQuery()->getResult();
     }
+
+    /**
+     * @return NFTCollection[]
+     */
+    public function findByUser($userId, $filter = '', $phrase = '', $sort = ''): array
+    {
+        $queryBuilder = $this->createQueryBuilder('n');
+
+        if ($filter === '' || $filter === 'all') {
+            $queryBuilder->andWhere('n.user = :userId')
+                ->setParameter('userId', $userId);
+        }
+
+        // if ($filter === 'collected') {
+        //     $queryBuilder->andWhere('n.owner = :userId')
+        //         ->setParameter('userId', $userId);
+        // }
+
+        // if ($filter === 'created') {
+        //     $queryBuilder->join('n.collection', 'c')
+        //         ->andWhere('c.user = :userId')
+        //         ->setParameter('userId', $userId);
+        // }
+
+        if (!empty($phrase)) {
+            $queryBuilder->andWhere('n.name LIKE :phrase')
+            ->setParameter('phrase', '%' . $phrase . '%');
+        }
+
+        // if ($sort === 'Newest') {
+        //     $queryBuilder->orderBy('n.createdAt', 'DESC');
+        // }
+
+        // if ($sort === 'Oldest') {
+        //     $queryBuilder->orderBy('n.createdAt', 'ASC');
+        // }
+
+        // if ($sort === 'Popular') {
+        //     $queryBuilder->orderBy('n.views', 'DESC');
+        // }
+
+        // if ($sort === 'Expensive') {
+        //     $queryBuilder->orderBy('n.value', 'DESC');
+        // }
+
+        return $queryBuilder->getQuery()->getResult();
+    }
 }

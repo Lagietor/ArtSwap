@@ -25,6 +25,7 @@ class CollectionMapper
 
             return $carry;
         }, null);
+        $floorPrice = $floorPrice || 0;
 
         return new CollectionDTO(
             $collection->getId(),

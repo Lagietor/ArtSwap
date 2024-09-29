@@ -7,6 +7,7 @@ import useSearch from "../../customHooks/useSearch";
 import CollectionType from "../../types/CollectionType";
 import LoadingAnimation from "../../components/atomic/LoadingAnimation/LoadingAnimation";
 import SearchBar from "../../components/atomic/SearchBar/SearchBar";
+import useCollectionStore from "../../store/useCollectionStore";
 
 function Home() {
     const apiUrl = import.meta.env.VITE_API_URL;
@@ -16,6 +17,7 @@ function Home() {
     const { search } = useLocation();
     const location = useLocation();
     const navigate = useNavigate();
+    const { setCollection } = useCollectionStore();
     const { isLoading, response, error, fetchData: searchCollections } = useSearch(apiUrl + "collection");
 
     useEffect(() => {
@@ -48,8 +50,9 @@ function Home() {
         navigate({ search: params.toString() });
     };
 
-    const enterCollection = (id: number) => {
-        navigate("/collection/" + id);
+    const enterCollection = (collection: CollectionType) => {
+        setCollection(collection);
+        navigate("/collection/" + collection.id);
         window.location.reload();
     }
 
@@ -87,7 +90,7 @@ function Home() {
                             <div className="card-group" key={`row-${index}`}>
                                 {response.slice(index, index + 6).map((subCollection: CollectionType) => (
                                     <div className="col-md-2 mb-4" key={subCollection.id}>
-                                        <a href="" onClick={() => enterCollection(subCollection.id)}>
+                                        <a href="" onClick={() => enterCollection(subCollection)}>
                                             <div className="card rounded mx-2">
                                                 <img className="card-img-top card-img" src={subCollection.image || "/defaultImages/collection_default.jpg"} alt="collection image" />
                                                 <div className="card-body">

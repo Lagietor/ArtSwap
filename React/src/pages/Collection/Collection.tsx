@@ -9,6 +9,8 @@ import SearchBar from "../../components/atomic/SearchBar/SearchBar";
 import isUserLogged from "../../utils/isUserLogged";
 import useUserStore from "../../store/useUserStore";
 import useCollectionStore from "../../store/useCollectionStore";
+import useItemStore from "../../store/useItemStore";
+import ItemType from "../../types/ItemType";
 
 // TODO: trzeba przebudować całą kolekcję, żeby nie wczytywać osobno obiektów z kolekcji i osobno samej kolekcji
 // skoro w symfony jest funkcja $collection->getItems(), trzeba tylko zrobić system pod filtry
@@ -21,10 +23,10 @@ function Collection() {
     const { id } = useParams();
     const isLogged = isUserLogged();
     const { user } = useUserStore();
-    const { collection, setCollection } = useCollectionStore();
+    const { setItem } = useItemStore();
+    const { collection } = useCollectionStore();
     const [ sort, setsort ] = useState("");
     const [ phrase, setPhrase ] = useState("");
-    const [ owner, setOwner ] = useState(null);
     const navigate = useNavigate()
 
     if (!id) {
@@ -59,8 +61,9 @@ function Collection() {
         searchItems(phrase, sort);
     }, [sort, phrase, navigate]);
 
-    const enterItem = (itemId: number) => {
-        navigate("/collection/" + id + "/item/" + itemId);
+    const enterItem = (item: ItemType) => {
+        setItem(item);
+        navigate("/collection/" + id + "/item/" + item.id);
         window.location.reload();
     }
 
@@ -71,46 +74,44 @@ function Collection() {
 
     return (
         <div className="container mt-5">
+            <CollectionDetails collection={collection} />
+            <hr />
+            <div className="d-flex justify-content-center">
+                {isLogged && collection.user.id && user?.id === collection.user.id && (
+                    <button className="btn btn-primary me-3" onClick={enterCreateItem}>+</button>
+                )}
+                <form className="form-inline w-50">
+                    <div className="input-group">
+                        <SearchBar value={phrase} onChange={setPhrase}/>
+                    </div>
+                </form>
+            </div>
             {isLoading || !response ? (
                 <div className="d-flex justify-content-center">
                     <LoadingAnimation />
                 </div>
             ) : (
-                <>
-                    <CollectionDetails id={id} setOwner={setOwner}/>
-                    <hr />
-                    <div className="d-flex justify-content-center">
-                        {isLogged && owner?.id && user?.id === owner?.id && (
-                            <button className="btn btn-primary me-3" onClick={enterCreateItem}>+</button>
-                        )}
-                        <form className="form-inline w-50">
-                            <div className="input-group">
-                                <SearchBar value={phrase} onChange={setPhrase}/>
-                            </div>
-                        </form>
-                    </div>
-                    <div className="mt-5">
-                        {response.map((item: object, index: number) => (
-                            index % 6 === 0 && (
-                                <div className="card-group" key={`row-${index}`}>
-                                    {response.slice(index, index + 6).map((subItem: Item) => (
-                                        <div className="col-md-2 mb-4" key={subItem.id}>
-                                            <a href="" onClick={() => enterItem(subItem.id)}>
-                                                <div className="card rounded mx-2">
-                                                    <img className="card-img-top card-img" src={subItem.image || "/defaultImages/item_default.jpg"} alt="item image" />
-                                                    <div className="card-body">
-                                                        <h5 className="card-title">{subItem.name}</h5>
-                                                        <p className="card-text h6 text-light">{subItem.value} ETH</p>
-                                                    </div>
+                <div className="mt-5">
+                    {response.map((item: object, index: number) => (
+                        index % 6 === 0 && (
+                            <div className="card-group" key={`row-${index}`}>
+                                {response.slice(index, index + 6).map((subItem: Item) => (
+                                    <div className="col-md-2 mb-4" key={subItem.id}>
+                                        <a href="" onClick={() => enterItem(subItem)}>
+                                            <div className="card rounded mx-2">
+                                                <img className="card-img-top card-img" src={subItem.image || "/defaultImages/item_default.jpg"} alt="item image" />
+                                                <div className="card-body">
+                                                    <h5 className="card-title">{subItem.name}</h5>
+                                                    <p className="card-text h6 text-light">{subItem.value} ETH</p>
                                                 </div>
-                                            </a>
-                                        </div>
-                                    ))}
-                                </div>
-                            )
-                        ))}
-                    </div>
-                </>
+                                            </div>
+                                        </a>
+                                    </div>
+                                ))}
+                            </div>
+                        )
+                    ))}
+                </div>
             )}
         </div>
     );

@@ -79,7 +79,7 @@ class NFTCollectionController extends AbstractController
     }
 
     #[Route('/collection', name: 'api_collection', methods:['GET'])]
-    public function getCollections(
+    public function getAll(
         Request $request,
         EntityManagerInterface $em,
         CollectionMapper $collectionMapper,
@@ -121,8 +121,42 @@ class NFTCollectionController extends AbstractController
         return $this->json($result);
     }
 
+    #[Route('/collection/{id}', name: 'api_collection_get', methods:['GET'])]
+    public function get(
+        EntityManagerInterface $em,
+        CollectionMapper $collectionMapper,
+        UserMapper $userMapper,
+        $id
+    ): JsonResponse
+    {
+        /**
+         * @var NFTCollection collection
+         */
+        $collection = $em->getRepository(NFTCollection::class)->findOneBy(['id' => $id]);
+        $collectionDTO = $collectionMapper->mapToCollectionDTO($collection);
+        $userDTO = $userMapper->mapToUserDTO($collection->getUser());
+
+        return $this->json([
+            'id' => $collectionDTO->getId(),
+            'user' => [
+                'id' => $userDTO->getId(),
+                'email' => $userDTO->getEmail(),
+                'username' => $userDTO->getUsername(),
+                'profileImageLink' => $userDTO->getProfileImage()
+            ],
+            'name' => $collectionDTO->getName(),
+            'itemsCount' => $collectionDTO->getItemsCount(),
+            'floorPrice' => $collectionDTO->getFloorPrice(),
+            'volume' => $collectionDTO->getVolume(),
+            'views' => $collectionDTO->getViews(),
+            'image' => $collectionDTO->getImage(),
+            'description' => $collectionDTO->getDescription(),
+            'shortDescription' => $collectionDTO->getShortDescription()
+        ]);
+    }
+
     #[Route('/collection/{id}/items', name: 'api_collection_items', methods:['GET'])]
-    public function getItems(
+    public function getCollectionItems(
         Request $request,
         EntityManagerInterface $em,
         CollectionMapper $collectionMapper,
@@ -163,20 +197,43 @@ class NFTCollectionController extends AbstractController
         return $this->json($result);
     }
 
-    #[Route('/collection/{id}', name: 'api_collection_get', methods:['GET'])]
-    public function get(
+    #[Route('/collection/edit/{id}', name: 'api_collection_edit', methods:['POST'])]
+    public function edit(
+        Request $request,
         EntityManagerInterface $em,
         CollectionMapper $collectionMapper,
         UserMapper $userMapper,
         $id
-    ): JsonResponse
+    )
     {
+        $newName = $request->get('name');
+        $newDesc = $request->get('desc');
+        $newImage = $request->files->get('image');
+
         /**
          * @var NFTCollection collection
          */
         $collection = $em->getRepository(NFTCollection::class)->findOneBy(['id' => $id]);
+
+        if (!$collection) {
+            return $this->json([
+                'error' => 'there is no collection with ' . $id . ' id'
+            ], 400);
+        }
+
+        $collection->setName($newName);
+        $collection->setDescription($newDesc);
+
         $collectionDTO = $collectionMapper->mapToCollectionDTO($collection);
         $userDTO = $userMapper->mapToUserDTO($collection->getUser());
+
+        if ($newImage && $newImage->isValid()) {
+            $imageId = $this->uploadImageService->uploadFileToStorage($collection->getUser()->getId(), 'item', $newImage);
+            $collection->setImage($imageId);
+        }
+
+        $em->persist($collection);
+        $em->flush();
 
         return $this->json([
             'id' => $collectionDTO->getId(),

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\NFTCollection;
 use App\Entity\NFTItem;
 use App\Entity\User;
 use App\Mapper\CollectionMapper;
@@ -145,6 +146,47 @@ class UserController extends AbstractController
                 'views' => $itemDTO->getViews(),
                 'value' => $itemDTO->getValue(),
                 'image' => $itemDTO->getImage(),
+            ];
+        }
+
+        return $this->json($result);
+    }
+
+    #[Route('/user/{id}/collections', name: 'api_user_collections', methods: ['GET'])]
+    public function getCollections(
+        Request $request,
+        EntityManagerInterface $em,
+        CollectionMapper $collectionMapper,
+        UserMapper $userMapper,
+        int $id
+    ): JsonResponse
+    {
+        $phrase = $request->query->get('phrase', '');
+        $sort = $request->query->get('sort', '');
+        $filter = $request->query->get('filter', '');
+
+        $collections = $em->getRepository(NFTCollection::class)->findByUser($id, $filter, $phrase, $sort);
+        $result = [];
+
+        foreach ($collections as $collection) {
+            $collectionDTO = $collectionMapper->mapToCollectionDTO($collection);
+            $userDTO = $userMapper->mapToUserDTO($collection->getUser());
+
+            $result[] = [
+                'id' => $collectionDTO->getId(),
+                'user' => [
+                    'id' => $userDTO->getId(),
+                    'email' => $userDTO->getEmail(),
+                    'username' => $userDTO->getUsername(),
+                    'image' => $userDTO->getProfileImage()
+                ],
+                'name' => $collectionDTO->getName(),
+                'itemsCount' => $collectionDTO->getItemsCount(),
+                'floorPrice' => $collectionDTO->getFloorPrice(),
+                'volume' => $collectionDTO->getVolume(),
+                'views' => $collectionDTO->getViews(),
+                'image' => $collectionDTO->getImage(),
+                'description' => $collectionDTO->getDescription()
             ];
         }
 

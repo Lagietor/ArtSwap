@@ -32,8 +32,6 @@ class NFTItemController extends AbstractController
         UserMapper $userMapper,
     ): JsonResponse
     {
-        $request = json_decode($request->getContent(), true);
-
         $ownerId = $request->get('owner');
         $owner = $em->getRepository(User::class)->find($ownerId);
 
@@ -54,7 +52,7 @@ class NFTItemController extends AbstractController
 
         $name = $request->get('name');
         $value = $request->get('value');
-        $image = $request->files->get('image');
+        $image = ($request->files) ? $request->files->get('image') : NULL;
 
         $item = $em->getRepository(NFTItem::class)->findOneBy(['name' => $name]);
         if ($item) {
@@ -96,7 +94,6 @@ class NFTItemController extends AbstractController
         ]);
     }
 
-
     #[Route('/item/{id}', name: 'api_item_get', methods:['GET'])]
     public function get(
         EntityManagerInterface $em,
@@ -110,8 +107,67 @@ class NFTItemController extends AbstractController
          */
         $item = $em->getRepository(NFTItem::class)->findOneBy(['id' => $id]);
 
+        if (!$item) {
+            return $this->json([
+                'error' => 'there is no item with ' . $id . ' id',
+            ]);
+        }
+
         $itemDTO = $itemMapper->mapToItemDTO($item);
         $userDTO = $userMapper->mapToUserDTO($item->getOwner());
+
+        return $this->json([
+            'id' => $itemDTO->getId(),
+            'owner' => [
+                'id' => $userDTO->getId(),
+                'email' => $userDTO->getEmail(),
+                'username' => $userDTO->getUsername(),
+                'image' => $userDTO->getprofileImage()
+            ],
+            'name' => $itemDTO->getName(),
+            'views' => $itemDTO->getViews(),
+            'value' => $itemDTO->getValue(),
+            'image' => $itemDTO->getImage()
+        ]);
+    }
+
+    #[Route('/item/edit/{id}', name: 'api_item_edit', methods:['GET'])]
+    public function edit(
+        Request $request,
+        EntityManagerInterface $em,
+        ItemMapper $itemMapper,
+        UserMapper $userMapper,
+        $id
+    )
+    {
+        $newName = $request->get('name');
+        $newValue = $request->get('value');
+        $newImage = $request->files->get('image');
+
+        /**
+         * @var NFTItem item
+         */
+        $item = $em->getRepository(NFTItem::class)->findOneBy(['id' => $id]);
+
+        if (!$item) {
+            return $this->json([
+                'error' => 'there is no item with ' . $id . ' id'
+            ], 400);
+        }
+
+        $item->setName($newName);
+        $item->setValue($newValue);
+
+        $itemDTO = $itemMapper->mapToItemDTO($item);
+        $userDTO = $userMapper->mapToUserDTO($item->getOwner());
+
+        if ($newImage && $newImage->isValid()) {
+            $imageId = $this->uploadImageService->uploadFileToStorage($item->getOwner()->getId(), 'item', $newImage);
+            $item->setImage($imageId);
+        }
+
+        $em->persist($item);
+        $em->flush();
 
         return $this->json([
             'id' => $itemDTO->getId(),

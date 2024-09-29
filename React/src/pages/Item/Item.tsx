@@ -1,13 +1,11 @@
 import { useNavigate, useParams } from "react-router-dom"
-import useApi from "../../customHooks/useApi";
-import { useEffect } from "react";
 import ItemDetails from "../../components/compound/ItemDetails/ItemDetails";
-import LoadingAnimation from "../../components/atomic/LoadingAnimation/LoadingAnimation";
+import useItemStore from "../../store/useItemStore";
 
 function Item() {
-    const apiUrl = import.meta.env.VITE_API_URL;
 
     const { itemId } = useParams();
+    const { item } = useItemStore();
     const navigate = useNavigate();
 
     if (!itemId) {
@@ -15,23 +13,9 @@ function Item() {
         return null;
     }
 
-    const { isLoading, response, error, fetchData: getItem } = useApi(apiUrl + "item/" + itemId);
-
-    useEffect(() => {
-        if (!response) {
-            getItem();
-        }
-    }, [response])
-
     return (
         <div className="container mt-5">
-            {isLoading || !response ? (
-                <div className="d-flex justify-content-center">
-                    <LoadingAnimation />
-                </div>
-            ) : (
-                <ItemDetails item={response} />
-            )}
+            <ItemDetails item={item} />
         </div>
     )
 }

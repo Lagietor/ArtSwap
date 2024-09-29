@@ -8,6 +8,7 @@ const useApi = (url: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE' = 'GET') 
   
     const fetchData = async (body: object = {}) => {
         setIsLoading(true);
+
         try {
             let response;
             switch (method.toUpperCase()) {

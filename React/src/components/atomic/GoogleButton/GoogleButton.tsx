@@ -24,7 +24,7 @@ function GoogleButton() {
                 try {
                     const userData = await fetchUserData(response.token);
                     setUser(userData);
-                    cookies.set("userToken", response.token);
+                    cookies.set("userToken", response.token, { path: '/' });
                     
                     setIsInitializingUser(false);
                     window.location.reload();

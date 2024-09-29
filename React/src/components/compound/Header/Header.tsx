@@ -23,7 +23,7 @@ function Header() {
 
     const handleLogout = () => {
         const cookies = new Cookies();
-        cookies.remove("userToken");
+        cookies.remove("userToken", { path: "/" });
         clearUser();
         navigate("/");
         window.location.reload();

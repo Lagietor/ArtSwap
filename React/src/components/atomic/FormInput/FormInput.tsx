@@ -1,7 +1,7 @@
 
 import "./FormInput.css";
 
-const FormInput = ({ id, register, errors, type = "text", placeholder, require = true}) => {
+const FormInput = ({ id, register, errors, type = "text", placeholder, value = null, require = true}) => {
     return (
         <div className="input-wrapper">
             <input
@@ -9,6 +9,7 @@ const FormInput = ({ id, register, errors, type = "text", placeholder, require =
                 id={id}
                 className="input-box"
                 placeholder={placeholder}
+                value={value}
                 {...register(id, { required: require })}
             />
             <span className="underline"></span>

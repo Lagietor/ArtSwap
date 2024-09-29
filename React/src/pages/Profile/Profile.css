@@ -103,3 +103,19 @@
 .value svg {
     width: 15px;
 }
+
+.edit-button {
+    display: flex;
+    padding: 7px 7px;
+    font-size: 16px;
+    color: #FBCA53;
+    background-color: #333;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+    
+.edit-button:hover {
+    background-color: #444;
+}

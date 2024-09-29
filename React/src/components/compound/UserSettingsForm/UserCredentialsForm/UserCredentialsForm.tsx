@@ -68,6 +68,7 @@ const UserCredentialsForm = ({ user, setUser}:  {user: UserType, setUser: Functi
                 errors={errors}
                 placeholder="Enter email"
                 require={false}
+                value={user.email}
             />
             <FormInput
                 id="username"
@@ -75,6 +76,7 @@ const UserCredentialsForm = ({ user, setUser}:  {user: UserType, setUser: Functi
                 errors={errors}
                 placeholder="Enter username"
                 require={false}
+                value={user.username}
             />
             <FormPasswordInput
                 id="password"

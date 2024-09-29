@@ -72,6 +72,7 @@ function CreateItem() {
                     id="image"
                     register={register}
                     errors={errors}
+                    require={false}
                 />
                 <div className="d-flex justify-content-center">
                     <SubmitButton 
