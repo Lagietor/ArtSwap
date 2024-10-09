@@ -22,7 +22,7 @@ class PaginationConfig
     private $itemsPerPageParameterName;
     private $partialParameterName;
     private $_usedProperties = [];
-
+    
     /**
      * To enable or disable pagination for all resource collections by default.
      * @default true
@@ -34,10 +34,10 @@ class PaginationConfig
     {
         $this->_usedProperties['enabled'] = true;
         $this->enabled = $value;
-
+    
         return $this;
     }
-
+    
     /**
      * To enable or disable partial pagination for all resource collections by default when pagination is enabled.
      * @default false
@@ -49,10 +49,10 @@ class PaginationConfig
     {
         $this->_usedProperties['partial'] = true;
         $this->partial = $value;
-
+    
         return $this;
     }
-
+    
     /**
      * To allow the client to enable or disable the pagination.
      * @default false
@@ -64,10 +64,10 @@ class PaginationConfig
     {
         $this->_usedProperties['clientEnabled'] = true;
         $this->clientEnabled = $value;
-
+    
         return $this;
     }
-
+    
     /**
      * To allow the client to set the number of items per page.
      * @default false
@@ -79,10 +79,10 @@ class PaginationConfig
     {
         $this->_usedProperties['clientItemsPerPage'] = true;
         $this->clientItemsPerPage = $value;
-
+    
         return $this;
     }
-
+    
     /**
      * To allow the client to enable or disable partial pagination.
      * @default false
@@ -94,10 +94,10 @@ class PaginationConfig
     {
         $this->_usedProperties['clientPartial'] = true;
         $this->clientPartial = $value;
-
+    
         return $this;
     }
-
+    
     /**
      * The default number of items per page.
      * @default 30
@@ -109,10 +109,10 @@ class PaginationConfig
     {
         $this->_usedProperties['itemsPerPage'] = true;
         $this->itemsPerPage = $value;
-
+    
         return $this;
     }
-
+    
     /**
      * The maximum number of items per page.
      * @default null
@@ -124,10 +124,10 @@ class PaginationConfig
     {
         $this->_usedProperties['maximumItemsPerPage'] = true;
         $this->maximumItemsPerPage = $value;
-
+    
         return $this;
     }
-
+    
     /**
      * The default name of the parameter handling the page number.
      * @default 'page'
@@ -138,10 +138,10 @@ class PaginationConfig
     {
         $this->_usedProperties['pageParameterName'] = true;
         $this->pageParameterName = $value;
-
+    
         return $this;
     }
-
+    
     /**
      * The name of the query parameter to enable or disable pagination.
      * @default 'pagination'
@@ -152,10 +152,10 @@ class PaginationConfig
     {
         $this->_usedProperties['enabledParameterName'] = true;
         $this->enabledParameterName = $value;
-
+    
         return $this;
     }
-
+    
     /**
      * The name of the query parameter to set the number of items per page.
      * @default 'itemsPerPage'
@@ -166,10 +166,10 @@ class PaginationConfig
     {
         $this->_usedProperties['itemsPerPageParameterName'] = true;
         $this->itemsPerPageParameterName = $value;
-
+    
         return $this;
     }
-
+    
     /**
      * The name of the query parameter to enable or disable partial pagination.
      * @default 'partial'
@@ -180,10 +180,10 @@ class PaginationConfig
     {
         $this->_usedProperties['partialParameterName'] = true;
         $this->partialParameterName = $value;
-
+    
         return $this;
     }
-
+    
     public function __construct(array $value = [])
     {
         if (array_key_exists('enabled', $value)) {
@@ -191,72 +191,72 @@ class PaginationConfig
             $this->enabled = $value['enabled'];
             unset($value['enabled']);
         }
-
+    
         if (array_key_exists('partial', $value)) {
             $this->_usedProperties['partial'] = true;
             $this->partial = $value['partial'];
             unset($value['partial']);
         }
-
+    
         if (array_key_exists('client_enabled', $value)) {
             $this->_usedProperties['clientEnabled'] = true;
             $this->clientEnabled = $value['client_enabled'];
             unset($value['client_enabled']);
         }
-
+    
         if (array_key_exists('client_items_per_page', $value)) {
             $this->_usedProperties['clientItemsPerPage'] = true;
             $this->clientItemsPerPage = $value['client_items_per_page'];
             unset($value['client_items_per_page']);
         }
-
+    
         if (array_key_exists('client_partial', $value)) {
             $this->_usedProperties['clientPartial'] = true;
             $this->clientPartial = $value['client_partial'];
             unset($value['client_partial']);
         }
-
+    
         if (array_key_exists('items_per_page', $value)) {
             $this->_usedProperties['itemsPerPage'] = true;
             $this->itemsPerPage = $value['items_per_page'];
             unset($value['items_per_page']);
         }
-
+    
         if (array_key_exists('maximum_items_per_page', $value)) {
             $this->_usedProperties['maximumItemsPerPage'] = true;
             $this->maximumItemsPerPage = $value['maximum_items_per_page'];
             unset($value['maximum_items_per_page']);
         }
-
+    
         if (array_key_exists('page_parameter_name', $value)) {
             $this->_usedProperties['pageParameterName'] = true;
             $this->pageParameterName = $value['page_parameter_name'];
             unset($value['page_parameter_name']);
         }
-
+    
         if (array_key_exists('enabled_parameter_name', $value)) {
             $this->_usedProperties['enabledParameterName'] = true;
             $this->enabledParameterName = $value['enabled_parameter_name'];
             unset($value['enabled_parameter_name']);
         }
-
+    
         if (array_key_exists('items_per_page_parameter_name', $value)) {
             $this->_usedProperties['itemsPerPageParameterName'] = true;
             $this->itemsPerPageParameterName = $value['items_per_page_parameter_name'];
             unset($value['items_per_page_parameter_name']);
         }
-
+    
         if (array_key_exists('partial_parameter_name', $value)) {
             $this->_usedProperties['partialParameterName'] = true;
             $this->partialParameterName = $value['partial_parameter_name'];
             unset($value['partial_parameter_name']);
         }
-
+    
         if ([] !== $value) {
             throw new InvalidConfigurationException(sprintf('The following keys are not supported by "%s": ', __CLASS__).implode(', ', array_keys($value)));
         }
     }
-
+    
     public function toArray(): array
     {
         $output = [];
@@ -293,7 +293,7 @@ class PaginationConfig
         if (isset($this->_usedProperties['partialParameterName'])) {
             $output['partial_parameter_name'] = $this->partialParameterName;
         }
-
+    
         return $output;
     }
 

@@ -25,7 +25,7 @@ class StofDoctrineExtensionsConfig implements \Symfony\Component\Config\Builder\
     private $skipTranslationOnLoad;
     private $metadataCachePool;
     private $_usedProperties = [];
-
+    
     public function orm(string $id, array $value = []): \Symfony\Config\StofDoctrineExtensions\OrmConfig
     {
         if (!isset($this->orm[$id])) {
@@ -34,10 +34,10 @@ class StofDoctrineExtensionsConfig implements \Symfony\Component\Config\Builder\
         } elseif (1 < \func_num_args()) {
             throw new InvalidConfigurationException('The node created by "orm()" has already been initialized. You cannot pass values the second time you call orm().');
         }
-
+    
         return $this->orm[$id];
     }
-
+    
     public function mongodb(string $id, array $value = []): \Symfony\Config\StofDoctrineExtensions\MongodbConfig
     {
         if (!isset($this->mongodb[$id])) {
@@ -46,10 +46,10 @@ class StofDoctrineExtensionsConfig implements \Symfony\Component\Config\Builder\
         } elseif (1 < \func_num_args()) {
             throw new InvalidConfigurationException('The node created by "mongodb()" has already been initialized. You cannot pass values the second time you call mongodb().');
         }
-
+    
         return $this->mongodb[$id];
     }
-
+    
     public function class(array $value = []): \Symfony\Config\StofDoctrineExtensions\ClassConfig
     {
         if (null === $this->class) {
@@ -58,10 +58,10 @@ class StofDoctrineExtensionsConfig implements \Symfony\Component\Config\Builder\
         } elseif (0 < \func_num_args()) {
             throw new InvalidConfigurationException('The node created by "class()" has already been initialized. You cannot pass values the second time you call class().');
         }
-
+    
         return $this->class;
     }
-
+    
     public function uploadable(array $value = []): \Symfony\Config\StofDoctrineExtensions\UploadableConfig
     {
         if (null === $this->uploadable) {
@@ -70,10 +70,10 @@ class StofDoctrineExtensionsConfig implements \Symfony\Component\Config\Builder\
         } elseif (0 < \func_num_args()) {
             throw new InvalidConfigurationException('The node created by "uploadable()" has already been initialized. You cannot pass values the second time you call uploadable().');
         }
-
+    
         return $this->uploadable;
     }
-
+    
     /**
      * @default 'en'
      * @param ParamConfigurator|mixed $value
@@ -83,10 +83,10 @@ class StofDoctrineExtensionsConfig implements \Symfony\Component\Config\Builder\
     {
         $this->_usedProperties['defaultLocale'] = true;
         $this->defaultLocale = $value;
-
+    
         return $this;
     }
-
+    
     /**
      * @default false
      * @param ParamConfigurator|bool $value
@@ -96,10 +96,10 @@ class StofDoctrineExtensionsConfig implements \Symfony\Component\Config\Builder\
     {
         $this->_usedProperties['translationFallback'] = true;
         $this->translationFallback = $value;
-
+    
         return $this;
     }
-
+    
     /**
      * @default false
      * @param ParamConfigurator|bool $value
@@ -109,10 +109,10 @@ class StofDoctrineExtensionsConfig implements \Symfony\Component\Config\Builder\
     {
         $this->_usedProperties['persistDefaultTranslation'] = true;
         $this->persistDefaultTranslation = $value;
-
+    
         return $this;
     }
-
+    
     /**
      * @default false
      * @param ParamConfigurator|bool $value
@@ -122,10 +122,10 @@ class StofDoctrineExtensionsConfig implements \Symfony\Component\Config\Builder\
     {
         $this->_usedProperties['skipTranslationOnLoad'] = true;
         $this->skipTranslationOnLoad = $value;
-
+    
         return $this;
     }
-
+    
     /**
      * @default null
      * @param ParamConfigurator|mixed $value
@@ -135,15 +135,15 @@ class StofDoctrineExtensionsConfig implements \Symfony\Component\Config\Builder\
     {
         $this->_usedProperties['metadataCachePool'] = true;
         $this->metadataCachePool = $value;
-
+    
         return $this;
     }
-
+    
     public function getExtensionAlias(): string
     {
         return 'stof_doctrine_extensions';
     }
-
+    
     public function __construct(array $value = [])
     {
         if (array_key_exists('orm', $value)) {
@@ -151,60 +151,60 @@ class StofDoctrineExtensionsConfig implements \Symfony\Component\Config\Builder\
             $this->orm = array_map(function ($v) { return new \Symfony\Config\StofDoctrineExtensions\OrmConfig($v); }, $value['orm']);
             unset($value['orm']);
         }
-
+    
         if (array_key_exists('mongodb', $value)) {
             $this->_usedProperties['mongodb'] = true;
             $this->mongodb = array_map(function ($v) { return new \Symfony\Config\StofDoctrineExtensions\MongodbConfig($v); }, $value['mongodb']);
             unset($value['mongodb']);
         }
-
+    
         if (array_key_exists('class', $value)) {
             $this->_usedProperties['class'] = true;
             $this->class = new \Symfony\Config\StofDoctrineExtensions\ClassConfig($value['class']);
             unset($value['class']);
         }
-
+    
         if (array_key_exists('uploadable', $value)) {
             $this->_usedProperties['uploadable'] = true;
             $this->uploadable = new \Symfony\Config\StofDoctrineExtensions\UploadableConfig($value['uploadable']);
             unset($value['uploadable']);
         }
-
+    
         if (array_key_exists('default_locale', $value)) {
             $this->_usedProperties['defaultLocale'] = true;
             $this->defaultLocale = $value['default_locale'];
             unset($value['default_locale']);
         }
-
+    
         if (array_key_exists('translation_fallback', $value)) {
             $this->_usedProperties['translationFallback'] = true;
             $this->translationFallback = $value['translation_fallback'];
             unset($value['translation_fallback']);
         }
-
+    
         if (array_key_exists('persist_default_translation', $value)) {
             $this->_usedProperties['persistDefaultTranslation'] = true;
             $this->persistDefaultTranslation = $value['persist_default_translation'];
             unset($value['persist_default_translation']);
         }
-
+    
         if (array_key_exists('skip_translation_on_load', $value)) {
             $this->_usedProperties['skipTranslationOnLoad'] = true;
             $this->skipTranslationOnLoad = $value['skip_translation_on_load'];
             unset($value['skip_translation_on_load']);
         }
-
+    
         if (array_key_exists('metadata_cache_pool', $value)) {
             $this->_usedProperties['metadataCachePool'] = true;
             $this->metadataCachePool = $value['metadata_cache_pool'];
             unset($value['metadata_cache_pool']);
         }
-
+    
         if ([] !== $value) {
             throw new InvalidConfigurationException(sprintf('The following keys are not supported by "%s": ', __CLASS__).implode(', ', array_keys($value)));
         }
     }
-
+    
     public function toArray(): array
     {
         $output = [];
@@ -235,7 +235,7 @@ class StofDoctrineExtensionsConfig implements \Symfony\Component\Config\Builder\
         if (isset($this->_usedProperties['metadataCachePool'])) {
             $output['metadata_cache_pool'] = $this->metadataCachePool;
         }
-
+    
         return $output;
     }
 

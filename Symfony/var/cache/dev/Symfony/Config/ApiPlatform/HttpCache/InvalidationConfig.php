@@ -19,7 +19,7 @@ class InvalidationConfig
     private $purger;
     private $xkey;
     private $_usedProperties = [];
-
+    
     /**
      * @default false
      * @param ParamConfigurator|bool $value
@@ -29,10 +29,10 @@ class InvalidationConfig
     {
         $this->_usedProperties['enabled'] = true;
         $this->enabled = $value;
-
+    
         return $this;
     }
-
+    
     /**
      * @param ParamConfigurator|list<ParamConfigurator|mixed> $value
      *
@@ -42,10 +42,10 @@ class InvalidationConfig
     {
         $this->_usedProperties['varnishUrls'] = true;
         $this->varnishUrls = $value;
-
+    
         return $this;
     }
-
+    
     /**
      * Max header length supported by the server
      * @default 7500
@@ -56,10 +56,10 @@ class InvalidationConfig
     {
         $this->_usedProperties['maxHeaderLength'] = true;
         $this->maxHeaderLength = $value;
-
+    
         return $this;
     }
-
+    
     /**
      * To pass options to the client charged with the request.
      * @default array (
@@ -73,10 +73,10 @@ class InvalidationConfig
     {
         $this->_usedProperties['requestOptions'] = true;
         $this->requestOptions = $value;
-
+    
         return $this;
     }
-
+    
     /**
      * Specify a varnish purger to use (available values: "api_platform.http_cache.purger.varnish.ban" or "api_platform.http_cache.purger.varnish.xkey").
      * @default 'api_platform.http_cache.purger.varnish'
@@ -87,10 +87,10 @@ class InvalidationConfig
     {
         $this->_usedProperties['purger'] = true;
         $this->purger = $value;
-
+    
         return $this;
     }
-
+    
     public function xkey(array $value = []): \Symfony\Config\ApiPlatform\HttpCache\Invalidation\XkeyConfig
     {
         if (null === $this->xkey) {
@@ -99,10 +99,10 @@ class InvalidationConfig
         } elseif (0 < \func_num_args()) {
             throw new InvalidConfigurationException('The node created by "xkey()" has already been initialized. You cannot pass values the second time you call xkey().');
         }
-
+    
         return $this->xkey;
     }
-
+    
     public function __construct(array $value = [])
     {
         if (array_key_exists('enabled', $value)) {
@@ -110,42 +110,42 @@ class InvalidationConfig
             $this->enabled = $value['enabled'];
             unset($value['enabled']);
         }
-
+    
         if (array_key_exists('varnish_urls', $value)) {
             $this->_usedProperties['varnishUrls'] = true;
             $this->varnishUrls = $value['varnish_urls'];
             unset($value['varnish_urls']);
         }
-
+    
         if (array_key_exists('max_header_length', $value)) {
             $this->_usedProperties['maxHeaderLength'] = true;
             $this->maxHeaderLength = $value['max_header_length'];
             unset($value['max_header_length']);
         }
-
+    
         if (array_key_exists('request_options', $value)) {
             $this->_usedProperties['requestOptions'] = true;
             $this->requestOptions = $value['request_options'];
             unset($value['request_options']);
         }
-
+    
         if (array_key_exists('purger', $value)) {
             $this->_usedProperties['purger'] = true;
             $this->purger = $value['purger'];
             unset($value['purger']);
         }
-
+    
         if (array_key_exists('xkey', $value)) {
             $this->_usedProperties['xkey'] = true;
             $this->xkey = new \Symfony\Config\ApiPlatform\HttpCache\Invalidation\XkeyConfig($value['xkey']);
             unset($value['xkey']);
         }
-
+    
         if ([] !== $value) {
             throw new InvalidConfigurationException(sprintf('The following keys are not supported by "%s": ', __CLASS__).implode(', ', array_keys($value)));
         }
     }
-
+    
     public function toArray(): array
     {
         $output = [];
@@ -167,7 +167,7 @@ class InvalidationConfig
         if (isset($this->_usedProperties['xkey'])) {
             $output['xkey'] = $this->xkey->toArray();
         }
-
+    
         return $output;
     }
 

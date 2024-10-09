@@ -19,7 +19,7 @@ class HttpCacheConfig
     private $public;
     private $invalidation;
     private $_usedProperties = [];
-
+    
     /**
      * Automatically generate etags for API responses.
      * @default true
@@ -31,10 +31,10 @@ class HttpCacheConfig
     {
         $this->_usedProperties['etag'] = true;
         $this->etag = $value;
-
+    
         return $this;
     }
-
+    
     /**
      * Default value for the response max age.
      * @default null
@@ -46,10 +46,10 @@ class HttpCacheConfig
     {
         $this->_usedProperties['maxAge'] = true;
         $this->maxAge = $value;
-
+    
         return $this;
     }
-
+    
     /**
      * Default value for the response shared (proxy) max age.
      * @default null
@@ -61,10 +61,10 @@ class HttpCacheConfig
     {
         $this->_usedProperties['sharedMaxAge'] = true;
         $this->sharedMaxAge = $value;
-
+    
         return $this;
     }
-
+    
     /**
      * @param ParamConfigurator|list<ParamConfigurator|mixed> $value
      *
@@ -74,10 +74,10 @@ class HttpCacheConfig
     {
         $this->_usedProperties['vary'] = true;
         $this->vary = $value;
-
+    
         return $this;
     }
-
+    
     /**
      * To make all responses public by default.
      * @default null
@@ -88,10 +88,10 @@ class HttpCacheConfig
     {
         $this->_usedProperties['public'] = true;
         $this->public = $value;
-
+    
         return $this;
     }
-
+    
     /**
      * @return \Symfony\Config\ApiPlatform\HttpCache\InvalidationConfig|$this
      */
@@ -100,20 +100,20 @@ class HttpCacheConfig
         if (!\is_array($value)) {
             $this->_usedProperties['invalidation'] = true;
             $this->invalidation = $value;
-
+    
             return $this;
         }
-
+    
         if (!$this->invalidation instanceof \Symfony\Config\ApiPlatform\HttpCache\InvalidationConfig) {
             $this->_usedProperties['invalidation'] = true;
             $this->invalidation = new \Symfony\Config\ApiPlatform\HttpCache\InvalidationConfig($value);
         } elseif (0 < \func_num_args()) {
             throw new InvalidConfigurationException('The node created by "invalidation()" has already been initialized. You cannot pass values the second time you call invalidation().');
         }
-
+    
         return $this->invalidation;
     }
-
+    
     public function __construct(array $value = [])
     {
         if (array_key_exists('etag', $value)) {
@@ -121,42 +121,42 @@ class HttpCacheConfig
             $this->etag = $value['etag'];
             unset($value['etag']);
         }
-
+    
         if (array_key_exists('max_age', $value)) {
             $this->_usedProperties['maxAge'] = true;
             $this->maxAge = $value['max_age'];
             unset($value['max_age']);
         }
-
+    
         if (array_key_exists('shared_max_age', $value)) {
             $this->_usedProperties['sharedMaxAge'] = true;
             $this->sharedMaxAge = $value['shared_max_age'];
             unset($value['shared_max_age']);
         }
-
+    
         if (array_key_exists('vary', $value)) {
             $this->_usedProperties['vary'] = true;
             $this->vary = $value['vary'];
             unset($value['vary']);
         }
-
+    
         if (array_key_exists('public', $value)) {
             $this->_usedProperties['public'] = true;
             $this->public = $value['public'];
             unset($value['public']);
         }
-
+    
         if (array_key_exists('invalidation', $value)) {
             $this->_usedProperties['invalidation'] = true;
             $this->invalidation = \is_array($value['invalidation']) ? new \Symfony\Config\ApiPlatform\HttpCache\InvalidationConfig($value['invalidation']) : $value['invalidation'];
             unset($value['invalidation']);
         }
-
+    
         if ([] !== $value) {
             throw new InvalidConfigurationException(sprintf('The following keys are not supported by "%s": ', __CLASS__).implode(', ', array_keys($value)));
         }
     }
-
+    
     public function toArray(): array
     {
         $output = [];
@@ -178,7 +178,7 @@ class HttpCacheConfig
         if (isset($this->_usedProperties['invalidation'])) {
             $output['invalidation'] = $this->invalidation instanceof \Symfony\Config\ApiPlatform\HttpCache\InvalidationConfig ? $this->invalidation->toArray() : $this->invalidation;
         }
-
+    
         return $output;
     }
 

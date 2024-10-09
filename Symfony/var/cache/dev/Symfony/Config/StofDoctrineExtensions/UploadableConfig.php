@@ -15,7 +15,7 @@ class UploadableConfig
     private $defaultFileInfoClass;
     private $validateWritableDirectory;
     private $_usedProperties = [];
-
+    
     /**
      * @default null
      * @param ParamConfigurator|mixed $value
@@ -25,10 +25,10 @@ class UploadableConfig
     {
         $this->_usedProperties['defaultFilePath'] = true;
         $this->defaultFilePath = $value;
-
+    
         return $this;
     }
-
+    
     /**
      * @default 'Stof\\DoctrineExtensionsBundle\\Uploadable\\MimeTypeGuesserAdapter'
      * @param ParamConfigurator|mixed $value
@@ -38,10 +38,10 @@ class UploadableConfig
     {
         $this->_usedProperties['mimeTypeGuesserClass'] = true;
         $this->mimeTypeGuesserClass = $value;
-
+    
         return $this;
     }
-
+    
     /**
      * @default 'Stof\\DoctrineExtensionsBundle\\Uploadable\\UploadedFileInfo'
      * @param ParamConfigurator|mixed $value
@@ -51,10 +51,10 @@ class UploadableConfig
     {
         $this->_usedProperties['defaultFileInfoClass'] = true;
         $this->defaultFileInfoClass = $value;
-
+    
         return $this;
     }
-
+    
     /**
      * @default true
      * @param ParamConfigurator|bool $value
@@ -64,10 +64,10 @@ class UploadableConfig
     {
         $this->_usedProperties['validateWritableDirectory'] = true;
         $this->validateWritableDirectory = $value;
-
+    
         return $this;
     }
-
+    
     public function __construct(array $value = [])
     {
         if (array_key_exists('default_file_path', $value)) {
@@ -75,30 +75,30 @@ class UploadableConfig
             $this->defaultFilePath = $value['default_file_path'];
             unset($value['default_file_path']);
         }
-
+    
         if (array_key_exists('mime_type_guesser_class', $value)) {
             $this->_usedProperties['mimeTypeGuesserClass'] = true;
             $this->mimeTypeGuesserClass = $value['mime_type_guesser_class'];
             unset($value['mime_type_guesser_class']);
         }
-
+    
         if (array_key_exists('default_file_info_class', $value)) {
             $this->_usedProperties['defaultFileInfoClass'] = true;
             $this->defaultFileInfoClass = $value['default_file_info_class'];
             unset($value['default_file_info_class']);
         }
-
+    
         if (array_key_exists('validate_writable_directory', $value)) {
             $this->_usedProperties['validateWritableDirectory'] = true;
             $this->validateWritableDirectory = $value['validate_writable_directory'];
             unset($value['validate_writable_directory']);
         }
-
+    
         if ([] !== $value) {
             throw new InvalidConfigurationException(sprintf('The following keys are not supported by "%s": ', __CLASS__).implode(', ', array_keys($value)));
         }
     }
-
+    
     public function toArray(): array
     {
         $output = [];
@@ -114,7 +114,7 @@ class UploadableConfig
         if (isset($this->_usedProperties['validateWritableDirectory'])) {
             $output['validate_writable_directory'] = $this->validateWritableDirectory;
         }
-
+    
         return $output;
     }
 

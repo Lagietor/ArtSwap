@@ -17,7 +17,7 @@ class ProfilerConfig
     private $onlyMainRequests;
     private $dsn;
     private $_usedProperties = [];
-
+    
     /**
      * @default false
      * @param ParamConfigurator|bool $value
@@ -27,10 +27,10 @@ class ProfilerConfig
     {
         $this->_usedProperties['enabled'] = true;
         $this->enabled = $value;
-
+    
         return $this;
     }
-
+    
     /**
      * @default true
      * @param ParamConfigurator|bool $value
@@ -40,10 +40,10 @@ class ProfilerConfig
     {
         $this->_usedProperties['collect'] = true;
         $this->collect = $value;
-
+    
         return $this;
     }
-
+    
     /**
      * The name of the parameter to use to enable or disable collection on a per request basis
      * @default null
@@ -54,10 +54,10 @@ class ProfilerConfig
     {
         $this->_usedProperties['collectParameter'] = true;
         $this->collectParameter = $value;
-
+    
         return $this;
     }
-
+    
     /**
      * @default false
      * @param ParamConfigurator|bool $value
@@ -67,10 +67,10 @@ class ProfilerConfig
     {
         $this->_usedProperties['onlyExceptions'] = true;
         $this->onlyExceptions = $value;
-
+    
         return $this;
     }
-
+    
     /**
      * @default false
      * @param ParamConfigurator|bool $value
@@ -80,10 +80,10 @@ class ProfilerConfig
     {
         $this->_usedProperties['onlyMainRequests'] = true;
         $this->onlyMainRequests = $value;
-
+    
         return $this;
     }
-
+    
     /**
      * @default 'file:%kernel.cache_dir%/profiler'
      * @param ParamConfigurator|mixed $value
@@ -93,10 +93,10 @@ class ProfilerConfig
     {
         $this->_usedProperties['dsn'] = true;
         $this->dsn = $value;
-
+    
         return $this;
     }
-
+    
     public function __construct(array $value = [])
     {
         if (array_key_exists('enabled', $value)) {
@@ -104,42 +104,42 @@ class ProfilerConfig
             $this->enabled = $value['enabled'];
             unset($value['enabled']);
         }
-
+    
         if (array_key_exists('collect', $value)) {
             $this->_usedProperties['collect'] = true;
             $this->collect = $value['collect'];
             unset($value['collect']);
         }
-
+    
         if (array_key_exists('collect_parameter', $value)) {
             $this->_usedProperties['collectParameter'] = true;
             $this->collectParameter = $value['collect_parameter'];
             unset($value['collect_parameter']);
         }
-
+    
         if (array_key_exists('only_exceptions', $value)) {
             $this->_usedProperties['onlyExceptions'] = true;
             $this->onlyExceptions = $value['only_exceptions'];
             unset($value['only_exceptions']);
         }
-
+    
         if (array_key_exists('only_main_requests', $value)) {
             $this->_usedProperties['onlyMainRequests'] = true;
             $this->onlyMainRequests = $value['only_main_requests'];
             unset($value['only_main_requests']);
         }
-
+    
         if (array_key_exists('dsn', $value)) {
             $this->_usedProperties['dsn'] = true;
             $this->dsn = $value['dsn'];
             unset($value['dsn']);
         }
-
+    
         if ([] !== $value) {
             throw new InvalidConfigurationException(sprintf('The following keys are not supported by "%s": ', __CLASS__).implode(', ', array_keys($value)));
         }
     }
-
+    
     public function toArray(): array
     {
         $output = [];
@@ -161,7 +161,7 @@ class ProfilerConfig
         if (isset($this->_usedProperties['dsn'])) {
             $output['dsn'] = $this->dsn;
         }
-
+    
         return $output;
     }
 

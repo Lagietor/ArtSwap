@@ -21,7 +21,7 @@ class ClassConfig
     private $uploadable;
     private $referenceIntegrity;
     private $_usedProperties = [];
-
+    
     /**
      * @default 'Gedmo\\Translatable\\TranslatableListener'
      * @param ParamConfigurator|mixed $value
@@ -31,10 +31,10 @@ class ClassConfig
     {
         $this->_usedProperties['translatable'] = true;
         $this->translatable = $value;
-
+    
         return $this;
     }
-
+    
     /**
      * @default 'Gedmo\\Timestampable\\TimestampableListener'
      * @param ParamConfigurator|mixed $value
@@ -44,10 +44,10 @@ class ClassConfig
     {
         $this->_usedProperties['timestampable'] = true;
         $this->timestampable = $value;
-
+    
         return $this;
     }
-
+    
     /**
      * @default 'Gedmo\\Blameable\\BlameableListener'
      * @param ParamConfigurator|mixed $value
@@ -57,10 +57,10 @@ class ClassConfig
     {
         $this->_usedProperties['blameable'] = true;
         $this->blameable = $value;
-
+    
         return $this;
     }
-
+    
     /**
      * @default 'Gedmo\\Sluggable\\SluggableListener'
      * @param ParamConfigurator|mixed $value
@@ -70,10 +70,10 @@ class ClassConfig
     {
         $this->_usedProperties['sluggable'] = true;
         $this->sluggable = $value;
-
+    
         return $this;
     }
-
+    
     /**
      * @default 'Gedmo\\Tree\\TreeListener'
      * @param ParamConfigurator|mixed $value
@@ -83,10 +83,10 @@ class ClassConfig
     {
         $this->_usedProperties['tree'] = true;
         $this->tree = $value;
-
+    
         return $this;
     }
-
+    
     /**
      * @default 'Gedmo\\Loggable\\LoggableListener'
      * @param ParamConfigurator|mixed $value
@@ -96,10 +96,10 @@ class ClassConfig
     {
         $this->_usedProperties['loggable'] = true;
         $this->loggable = $value;
-
+    
         return $this;
     }
-
+    
     /**
      * @default 'Gedmo\\Sortable\\SortableListener'
      * @param ParamConfigurator|mixed $value
@@ -109,10 +109,10 @@ class ClassConfig
     {
         $this->_usedProperties['sortable'] = true;
         $this->sortable = $value;
-
+    
         return $this;
     }
-
+    
     /**
      * @default 'Gedmo\\SoftDeleteable\\SoftDeleteableListener'
      * @param ParamConfigurator|mixed $value
@@ -122,10 +122,10 @@ class ClassConfig
     {
         $this->_usedProperties['softdeleteable'] = true;
         $this->softdeleteable = $value;
-
+    
         return $this;
     }
-
+    
     /**
      * @default 'Gedmo\\Uploadable\\UploadableListener'
      * @param ParamConfigurator|mixed $value
@@ -135,10 +135,10 @@ class ClassConfig
     {
         $this->_usedProperties['uploadable'] = true;
         $this->uploadable = $value;
-
+    
         return $this;
     }
-
+    
     /**
      * @default 'Gedmo\\ReferenceIntegrity\\ReferenceIntegrityListener'
      * @param ParamConfigurator|mixed $value
@@ -148,10 +148,10 @@ class ClassConfig
     {
         $this->_usedProperties['referenceIntegrity'] = true;
         $this->referenceIntegrity = $value;
-
+    
         return $this;
     }
-
+    
     public function __construct(array $value = [])
     {
         if (array_key_exists('translatable', $value)) {
@@ -159,66 +159,66 @@ class ClassConfig
             $this->translatable = $value['translatable'];
             unset($value['translatable']);
         }
-
+    
         if (array_key_exists('timestampable', $value)) {
             $this->_usedProperties['timestampable'] = true;
             $this->timestampable = $value['timestampable'];
             unset($value['timestampable']);
         }
-
+    
         if (array_key_exists('blameable', $value)) {
             $this->_usedProperties['blameable'] = true;
             $this->blameable = $value['blameable'];
             unset($value['blameable']);
         }
-
+    
         if (array_key_exists('sluggable', $value)) {
             $this->_usedProperties['sluggable'] = true;
             $this->sluggable = $value['sluggable'];
             unset($value['sluggable']);
         }
-
+    
         if (array_key_exists('tree', $value)) {
             $this->_usedProperties['tree'] = true;
             $this->tree = $value['tree'];
             unset($value['tree']);
         }
-
+    
         if (array_key_exists('loggable', $value)) {
             $this->_usedProperties['loggable'] = true;
             $this->loggable = $value['loggable'];
             unset($value['loggable']);
         }
-
+    
         if (array_key_exists('sortable', $value)) {
             $this->_usedProperties['sortable'] = true;
             $this->sortable = $value['sortable'];
             unset($value['sortable']);
         }
-
+    
         if (array_key_exists('softdeleteable', $value)) {
             $this->_usedProperties['softdeleteable'] = true;
             $this->softdeleteable = $value['softdeleteable'];
             unset($value['softdeleteable']);
         }
-
+    
         if (array_key_exists('uploadable', $value)) {
             $this->_usedProperties['uploadable'] = true;
             $this->uploadable = $value['uploadable'];
             unset($value['uploadable']);
         }
-
+    
         if (array_key_exists('reference_integrity', $value)) {
             $this->_usedProperties['referenceIntegrity'] = true;
             $this->referenceIntegrity = $value['reference_integrity'];
             unset($value['reference_integrity']);
         }
-
+    
         if ([] !== $value) {
             throw new InvalidConfigurationException(sprintf('The following keys are not supported by "%s": ', __CLASS__).implode(', ', array_keys($value)));
         }
     }
-
+    
     public function toArray(): array
     {
         $output = [];
@@ -252,7 +252,7 @@ class ClassConfig
         if (isset($this->_usedProperties['referenceIntegrity'])) {
             $output['reference_integrity'] = $this->referenceIntegrity;
         }
-
+    
         return $output;
     }
 
