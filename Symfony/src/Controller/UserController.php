@@ -35,6 +35,9 @@ class UserController extends AbstractController
         int $id
     ): JsonResponse
     {
+        return $this->json([
+            'id' => $id
+        ]);
         /**
          * @var User $user
          */
@@ -52,6 +55,7 @@ class UserController extends AbstractController
             'id' => $userDTO->getId(),
             'email' => $userDTO->getEmail(),
             'username' => $userDTO->getUsername(),
+            'ethAddress' => $userDTO->getMetaMaskAddress(),
             'profileImage' => $userDTO->getProfileImage(),
             'backgroundImage' => $userDTO->getBackgroundImage()
         ]);
@@ -232,5 +236,45 @@ class UserController extends AbstractController
         $em->flush();
 
         return $this->json($response);
+    }
+
+    #[Route('/user/{id}/metamask-connect', name: 'api_user_metamask_connect', methods: ['POST'])]
+    public function connectToMetaMask(
+        Request $request,
+        EntityManagerInterface $em,
+        UserMapper $userMapper,
+        int $id
+    ): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $ethAddress = $data['ethAddress'];
+
+        /**
+         * @var User $user
+         */
+        $user = $em->getRepository(User::class)->find($id);
+
+        if (!$user) {
+            return $this->json([
+                'error' => 'no user with id ' . $id
+            ], 400);
+        }
+
+        $encryptedAddress = base64_encode($ethAddress);
+        $user->setMetamaskAddress(trim($encryptedAddress));
+
+        $em->persist($user);
+        $em->flush();
+
+        $userDTO = $userMapper->mapToUserDTO($user);
+
+        return $this->json([
+            'id' => $userDTO->getId(),
+            'email' => $userDTO->getEmail(),
+            'username' => $userDTO->getUsername(),
+            'ethAddress' => $userDTO->getMetaMaskAddress(),
+            'profileImage' => $userDTO->getProfileImage(),
+            'backgroundImage' => $userDTO->getBackgroundImage()
+        ]);
     }
 }

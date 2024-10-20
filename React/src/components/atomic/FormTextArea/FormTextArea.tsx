@@ -1,13 +1,13 @@
 import "./FormTextArea.css";
 
-const FormTextarea = ({ label, id, register, errors, value = null, placeholder }) => {
+const FormTextarea = ({ label, id, register, errors, defaultValue = null, placeholder }) => {
     return (
         <div className="input-wrapper">
             <textarea
                 className="input-box"
                 id={id}
                 placeholder={placeholder}
-                value={value}
+                defaultValue={defaultValue}
                 {...register(id, { required: true })}
             />
             {errors[id] && <span className="text-danger">This field is required</span>}

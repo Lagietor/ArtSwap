@@ -1,13 +1,12 @@
 import "./GoogleButton.css";
 import { useGoogleLogin } from "@react-oauth/google";
 import useApi from "../../../customHooks/useApi";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Cookies } from "react-cookie";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGoogle } from '@fortawesome/free-brands-svg-icons';
 import LoadingAnimation from "../LoadingAnimation/LoadingAnimation";
 import useUserStore from "../../../store/useUserStore";
-import fetchUserData from "../../../utils/fetchUserData";
 
 function GoogleButton() {
     const apiUrl = import.meta.env.VITE_API_URL;
@@ -15,19 +14,15 @@ function GoogleButton() {
     const { isLoading, response, fetchData: handleSubmitApi } = useApi(apiUrl + "google-login", "POST");
     const cookies = new Cookies();
     const { setUser } = useUserStore();
-    const [isInitializingUser, setIsInitializingUser] = useState(false);
 
     useEffect(() => {
         const fetchUser = async () => {
             if (response) {
-                setIsInitializingUser(true);
                 try {
-                    const userData = await fetchUserData(response.token);
-                    setUser(userData);
-                    cookies.set("userToken", response.token, { path: '/' });
-                    
-                    setIsInitializingUser(false);
-                    window.location.reload();
+                    setUser(response["user"]);
+                    cookies.set("userToken", response["token"], { path: '/' });
+                    console.log(response["token"]);
+                    // window.location.reload();
                 } catch (error) {
                     console.error("Error fetching user data:", error);
                 }
@@ -52,7 +47,7 @@ function GoogleButton() {
 
     return (
         <div>
-            {isLoading || isInitializingUser ? (
+            {isLoading ? (
                 <div className="d-flex justify-content-center">
                     <LoadingAnimation />
                 </div>

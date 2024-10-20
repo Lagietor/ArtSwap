@@ -1,6 +1,6 @@
 import './FormPasswordInput.css';
 
-const FormPasswordInput = ({ id, register, errors, placeholder, require = true}) => {
+const FormPasswordInput = ({ id, register, errors, placeholder, require = true, errorsEnabled = true}) => {
     return (
         <div className="input-wrapper">
             <input
@@ -15,13 +15,17 @@ const FormPasswordInput = ({ id, register, errors, placeholder, require = true})
                 })}
             />
             <span className="underline"></span>
-            {errors[id] && errors[id].type === "minLength" && (
-                <span className="text-danger">Password must be at least 6 characters long</span>
-            )}
-            {errors[id] && errors[id].type === "pattern" && (
-                <span className="text-danger">
-                    Password must contain at least one number, one uppercase letter, and one special character
-                </span>
+            {errorsEnabled && (
+                <> 
+                    {errors[id] && errors[id].type === "minLength" && (
+                        <span className="text-danger">Password must be at least 6 characters long</span>
+                    )}
+                    {errors[id] && errors[id].type === "pattern" && (
+                        <span className="text-danger">
+                            Password must contain at least one number, one uppercase letter, and one special character
+                        </span>
+                    )}
+                </>
             )}
         </div>
     );

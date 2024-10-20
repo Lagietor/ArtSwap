@@ -11,11 +11,7 @@ import useUserStore from "../../store/useUserStore";
 import useCollectionStore from "../../store/useCollectionStore";
 import useItemStore from "../../store/useItemStore";
 import ItemType from "../../types/ItemType";
-
-// TODO: trzeba przebudować całą kolekcję, żeby nie wczytywać osobno obiektów z kolekcji i osobno samej kolekcji
-// skoro w symfony jest funkcja $collection->getItems(), trzeba tylko zrobić system pod filtry
-// jak będzie jeden input API to będzie można zapisać dane o kolekcji po pierwszym przeładowaniu w CollectionStore
-// ALBO poukładać jakoś ten kod żeby przy wpisywaniu frazy wyszukiwania nie przeładowywała się cała strona tylko lista obiektów nft
+import useApi from "../../customHooks/useApi";
 
 function Collection() {
     const apiUrl = import.meta.env.VITE_API_URL;
@@ -35,9 +31,12 @@ function Collection() {
     }
 
     const { isLoading, response, error, fetchData: searchItems } = useSearch(apiUrl + "collection/" + id + "/items");
+    const { fetchData: addView } = useApi(apiUrl + "collection/" + id + "/view");
 
     useEffect(() => {
         if (!response) {
+            addView();
+
             const params = new URLSearchParams(location.search);
             const sortFromUrl = params.get("sort") || "Popular";
             const phraseFromUrl = params.get("phrase") || "";

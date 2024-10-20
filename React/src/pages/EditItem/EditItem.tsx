@@ -25,11 +25,12 @@ function EditItem() {
         formState: { errors }
     } = useForm<{name: string, value: string, image: string}>();
 
-    const { isLoading, response, error, fetchFile: editItem } = useApi(apiUrl + `item/edit/${id}`, "POST");
+    const { isLoading, response, error, fetchFile: editItem } = useApi(apiUrl + `item/edit`, "POST");
 
     const onSubmit: SubmitHandler<{name: string; value: string; image: string}> = async (data) => {
         try {
             const formData = new FormData();
+            formData.append("id", id);
             formData.append("name", data.name);
             formData.append("value", data.value);
             formData.append("image", data.image[0]);
@@ -61,14 +62,14 @@ function EditItem() {
                     register={register}
                     errors={errors}
                     placeholder="Enter name"
-                    value={item.name}
+                    defaultValue={item.name}
                 />
                 <FormInput
                     id="value"
                     register={register}
                     errors={errors}
                     placeholder="Enter value"
-                    value={item.value}
+                    defaultValue={item.value}
                 />
                 <FormFileInput
                     label="Upload image"

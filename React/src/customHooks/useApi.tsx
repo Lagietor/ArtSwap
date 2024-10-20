@@ -2,6 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 
 const useApi = (url: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE' = 'GET') => {
+    const ApiAuth = import.meta.env.API_AUTH;
     const [response, setResponse] = useState(null);
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -22,7 +23,9 @@ const useApi = (url: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE' = 'GET') 
                     response = await axios.put(url, body);
                     break;
                 case 'DELETE':
-                    response = await axios.delete(url);
+                    response = await axios.delete(url, {
+                        data: body
+                    });
                     break;
                 default:
                     throw new Error('Unsupported HTTP method');
@@ -39,7 +42,9 @@ const useApi = (url: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE' = 'GET') 
     const fetchFile = async (formData: FormData) => {
         setIsLoading(true);
         try {
-            const config = { headers: {'Content-Type': 'multipart/form-data' }};
+            const config = { headers: {
+                'Content-Type': 'multipart/form-data',
+            }};
             const response = await axios.post(url, formData, config);
             setResponse(response.data);
         } catch (error: any) {

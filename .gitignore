@@ -1,0 +1,5 @@
+node_modules
+
+# Cache
+Symfony/var/cache/*
+Symfony/var/cache/dev/profiler/08/b6/bfb608

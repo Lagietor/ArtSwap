@@ -9,12 +9,14 @@ import FormTextarea from "../../components/atomic/FormTextArea/FormTextArea";
 import FormFileInput from "../../components/atomic/FormFileInput/FormFileInput";
 import isUserLogged from "../../utils/isUserLogged";
 import useUserStore from "../../store/useUserStore";
+import useCollectionStore from "../../store/useCollectionStore";
 
 function CreateCollection() {
     const apiUrl = import.meta.env.VITE_API_URL;
 
     const isLogged = isUserLogged();
     const { user } = useUserStore();
+    const { setCollection } = useCollectionStore();
     const navigate = useNavigate();
 
     const {
@@ -41,6 +43,7 @@ function CreateCollection() {
 
     useEffect(() => {
         if (response) {
+            setCollection(response);
             navigate(`/collection/${response.id}`);
         }
     }, [response])
@@ -72,6 +75,7 @@ function CreateCollection() {
                     id="image"
                     register={register}
                     errors={errors}
+                    require={false}
                 />
                 <div className="d-flex justify-content-center">
                     <SubmitButton isLoading={isLoading} text={"Submit"}/>

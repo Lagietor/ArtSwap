@@ -1,0 +1,33 @@
+.metamask-button {
+    background-color: #f6851b;
+    color: white;
+    font-size: 16px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    outline: none;
+}
+
+.metamask-button:hover {
+    background-color: #e0761b;
+}
+
+.metamask-button:active {
+    background-color: #d7651b;
+}
+
+.metamask-button img {
+    margin-left: 8px;
+    height: 24px;
+    width: 24px;
+}
+
+.metamask-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    box-shadow: none;
+}

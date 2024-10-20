@@ -8,6 +8,7 @@ class UserDTO
     private $email;
     private $roles;
     private $username;
+    private $metaMaskAddress;
     private $collectionCount;
     private $itemCount;
     private $profileImage;
@@ -19,7 +20,8 @@ class UserDTO
         $id, 
         $email, 
         $roles, 
-        $username, 
+        $username,
+        $metaMaskAddress,
         $collectionCount,
         $itemCount,
         $profileImageLink, 
@@ -32,6 +34,7 @@ class UserDTO
         $this->email = $email;
         $this->roles = $roles;
         $this->username = $username;
+        $this->metaMaskAddress = $metaMaskAddress;
         $this->collectionCount = $collectionCount;
         $this->itemCount = $itemCount;
         $this->profileImage = $profileImageLink;
@@ -58,6 +61,11 @@ class UserDTO
     public function getUsername()
     {
         return $this->username;
+    }
+
+    public function getMetaMaskAddress()
+    {
+        return $this->metaMaskAddress;
     }
 
     public function getCollectionCount()

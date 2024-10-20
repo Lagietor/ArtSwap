@@ -79,10 +79,10 @@ function Profile() {
                     )}
                     </div>
                 <div className="col me-5">
-                    {activeCategoryButton === "items" ? (
+                    {user && activeCategoryButton === "items" ? (
                         <ProfileItems id={user.id as string} filter={activeFilterButton} />
                     ) : (
-                        <ProfileCollections id={user.id as string} filter={activeFilterButton} />
+                        user && <ProfileCollections id={user.id as string} filter={activeFilterButton} />
                     )}
                 </div>
             </div>

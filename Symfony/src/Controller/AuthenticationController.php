@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Mapper\UserMapper;
 use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Client;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
@@ -22,7 +23,9 @@ class AuthenticationController extends AbstractController
         EntityManagerInterface $em,
         UserPasswordHasherInterface $hasher,
         JWTTokenManagerInterface $jwtManager,
-        ValidatorInterface $validator): JsonResponse
+        ValidatorInterface $validator,
+        UserMapper $userMapper
+    ): JsonResponse
     {
         $request = json_decode($request->getContent(), true);
 
@@ -64,8 +67,19 @@ class AuthenticationController extends AbstractController
         $em->persist($user);
         $em->flush();
 
+        $userDTO = $userMapper->mapToUserDTO($user);
+
         return $this->json([
-            'token' => $token
+            'token' => $token,
+            'user' => [
+                'id' => $userDTO->getId(),
+                'email' => $userDTO->getEmail(),
+                'username' => $userDTO->getUsername(),
+                'ethAddress' => $userDTO->getMetamaskAddress(),
+                'profileImage' => $userDTO->getProfileImage(),
+                'backgroundImage' => $userDTO->getBackgroundImage(),
+                'roles' => $userDTO->getRoles()
+            ]
         ]);
     }
 
@@ -74,7 +88,9 @@ class AuthenticationController extends AbstractController
         Request $request,
         EntityManagerInterface $em,
         JWTTokenManagerInterface $jwtManager,
-        UserPasswordHasherInterface $hasher): JsonResponse
+        UserPasswordHasherInterface $hasher,
+        UserMapper $userMapper
+    ): JsonResponse
     {
         $request = json_decode($request->getContent(), true);
         
@@ -91,8 +107,19 @@ class AuthenticationController extends AbstractController
 
         $token = $jwtManager->create($user);
 
+        $userDTO = $userMapper->mapToUserDTO($user);
+
         return $this->json([
-            'token' => $token
+            'token' => $token,
+            'user' => [
+                'id' => $userDTO->getId(),
+                'email' => $userDTO->getEmail(),
+                'username' => $userDTO->getUsername(),
+                'ethAddress' => $userDTO->getMetamaskAddress(),
+                'profileImage' => $userDTO->getProfileImage(),
+                'backgroundImage' => $userDTO->getBackgroundImage(),
+                'roles' => $userDTO->getRoles()
+            ]
         ]);
     }
 
@@ -101,7 +128,9 @@ class AuthenticationController extends AbstractController
         Request $request,
         EntityManagerInterface $em,
         JWTTokenManagerInterface $jwtManager,
-        UserPasswordHasherInterface $hasher): JsonResponse
+        UserPasswordHasherInterface $hasher,
+        UserMapper $userMapper
+    ): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
         $accessToken = $data['token'];
@@ -129,8 +158,20 @@ class AuthenticationController extends AbstractController
         }
 
         $token = $jwtManager->create($user);
+        $userDTO = $userMapper->mapToUserDTO($user);
 
-        return $this->json(['token' => $token]);
+        return $this->json([
+            'token' => $token,
+            'user' => [
+                'id' => $userDTO->getId(),
+                'email' => $userDTO->getEmail(),
+                'username' => $userDTO->getUsername(),
+                'ethAddress' => $userDTO->getMetamaskAddress(),
+                'profileImage' => $userDTO->getProfileImage(),
+                'backgroundImage' => $userDTO->getBackgroundImage(),
+                'roles' => $userDTO->getRoles()
+            ]
+        ]);
     }
 
     #[Route('/github-login', name: 'api_github_login', methods: ['POST'])]
@@ -138,7 +179,9 @@ class AuthenticationController extends AbstractController
         Request $request,
         EntityManagerInterface $em,
         JWTTokenManagerInterface $jwtManager,
-        UserPasswordHasherInterface $hasher): JsonResponse
+        UserPasswordHasherInterface $hasher,
+        UserMapper $userMapper
+    ): JsonResponse
     {
         $client = new Client();
         $code = json_decode($request->getContent(), true)['code'];
@@ -191,7 +234,32 @@ class AuthenticationController extends AbstractController
         }
 
         $token = $jwtManager->create($user);
+        $userDTO = $userMapper->mapToUserDTO($user);
 
-        return $this->json(['token' => $token]);
+        return $this->json([
+            'token' => $token,
+            'user' => [
+                'id' => $userDTO->getId(),
+                'email' => $userDTO->getEmail(),
+                'username' => $userDTO->getUsername(),
+                'ethAddress' => $userDTO->getMetamaskAddress(),
+                'profileImage' => $userDTO->getProfileImage(),
+                'backgroundImage' => $userDTO->getBackgroundImage(),
+                'roles' => $userDTO->getRoles()
+            ]
+        ]);
+    }
+
+    #[Route('/metamask-login', name: 'api_metamask_login', methods: ['POST'])]
+    public function metamaskLogin(
+        Request $request,
+        EntityManagerInterface $em,
+        JWTTokenManagerInterface $jwt,
+        UserPasswordHasherInterface $hasher
+    ) {
+        $data = json_decode($request->getContent(), true);
+
+        $userAddress = $data['address'];
+        // Logowanie za pomocą Metamask dokończę później
     }
 }

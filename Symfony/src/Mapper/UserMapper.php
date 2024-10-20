@@ -13,12 +13,14 @@ class UserMapper
         $backgroundImageLink = $this->getGoogleDriveLink($user->getBackgroundImage());
         $collectionsCount = count($user->getNFTCollections());
         $itemsCount = count($user->getNFTItems());
+        $decryptedAddress = base64_decode($user->getMetamaskAddress());
 
         return new UserDTO(
             $user->getId(),
             $user->getEmail(),
             $user->getRoles(),
             $user->getUsername(),
+            $decryptedAddress,
             $collectionsCount,
             $itemsCount,
             $profileImageLink,

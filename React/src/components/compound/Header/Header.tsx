@@ -5,6 +5,8 @@ import { Cookies } from "react-cookie";
 import { useEffect, useState } from "react";
 import isUserLogged from "../../../utils/isUserLogged";
 import useUserStore from "../../../store/useUserStore";
+import ConnectMetaMaskButton from "../../atomic/ConnectMetaMaskButton/ConnectMetaMaskButton";
+import WalletBalance from "../../atomic/WalletBalance/WalletBalance";
 
 function Header() {
     const navigate = useNavigate();
@@ -51,11 +53,7 @@ function Header() {
                 <div className="container-fluid p-2 mx-5">
                     <a className="navbar-brand" href="#" onClick={() => navigate("/")}><img src="/logofull.png" width="60px"></img></a>
                     <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                            <li className="nav-item">
-                                <a className="nav-link link-primary text-secondary" href="#" onClick={() => navigate("/")}>Home</a>
-                            </li>
-                        </ul>
+                        <ul className="navbar-nav me-auto mb-2 mb-lg-0"></ul>
                         <div>
                         {!isLogged ? (
                                 <button className="btn btn-primary" onClick={() => setShowLoginModal(true)}>
@@ -63,10 +61,15 @@ function Header() {
                                 </button>
                             ) : (
                                 <div className="d-flex justify-content-end">
+                                    {!user?.ethAddress ? (
+                                        <ConnectMetaMaskButton />
+                                    ) : (
+                                        <WalletBalance user={user} />
+                                    )}
                                     <button className="btn btn-primary mx-5" onClick={handleCreateCollection}>Create</button>
                                     <div className="dropdown">
                                         <a href="#" className="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
-                                            <img src={user.profileImage || "/defaultImages/profile_default.jpg"} alt="profile image" className="rounded-circle profile-img-header" />
+                                            <img src={user?.profileImage || "/defaultImages/profile_default.jpg"} alt="profile image" className="rounded-circle profile-img-header" />
                                         </a>
                                         <ul className="dropdown-menu dropdown-menu-dark dropdown-menu-end text-small">
                                             <li>

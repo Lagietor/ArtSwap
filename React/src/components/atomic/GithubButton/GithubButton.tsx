@@ -1,12 +1,11 @@
 import './GithubButton.css';
-import { useEffect, useState} from 'react';
+import { useEffect } from 'react';
 import { Cookies } from 'react-cookie';
 import useApi from '../../../customHooks/useApi';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import LoadingAnimation from '../LoadingAnimation/LoadingAnimation';
-import fetchUserData from '../../../utils/fetchUserData';
 import useUserStore from '../../../store/useUserStore';
 
 const GitHubButton = () => {
@@ -18,7 +17,6 @@ const GitHubButton = () => {
     const cookies = new Cookies();
     const { setUser } = useUserStore();
     const navigate = useNavigate();
-    const [ isInitializingUser, setIsInitializingUser ] = useState(false);
     
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
@@ -42,12 +40,9 @@ const GitHubButton = () => {
         const fetchUser = async () => {
             if (response) {
                 try {
-                    setIsInitializingUser(true);
-                    const userData = await fetchUserData(response.token);
-                    setUser(userData);
-                    cookies.set("userToken", response.token, { path: '/' });
+                    setUser(response["user"]);
+                    cookies.set("userToken", response["token"], { path: '/' });
                     
-                    setIsInitializingUser(false);
                     navigate("/");
                     window.location.reload();
                 } catch (error) {
@@ -69,7 +64,7 @@ const GitHubButton = () => {
 
     return (
         <>
-            {isLoading || isInitializingUser ? (
+            {isLoading ? (
                 <div className="d-flex justify-content-center">
                     <LoadingAnimation />
                 </div>

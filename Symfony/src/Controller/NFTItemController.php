@@ -102,6 +102,8 @@ class NFTItemController extends AbstractController
         $id
     ): JsonResponse
     {
+        // $this->denyAccessUnlessGranted('ROLE_USER');
+
         /**
          * @var NFTItem item
          */
@@ -131,15 +133,15 @@ class NFTItemController extends AbstractController
         ]);
     }
 
-    #[Route('/item/edit/{id}', name: 'api_item_edit', methods:['GET'])]
+    #[Route('/item/edit', name: 'api_item_edit', methods:['POST'])]
     public function edit(
         Request $request,
         EntityManagerInterface $em,
         ItemMapper $itemMapper,
         UserMapper $userMapper,
-        $id
     )
     {
+        $id = $request->get('id');
         $newName = $request->get('name');
         $newValue = $request->get('value');
         $newImage = $request->files->get('image');
@@ -181,6 +183,50 @@ class NFTItemController extends AbstractController
             'views' => $itemDTO->getViews(),
             'value' => $itemDTO->getValue(),
             'image' => $itemDTO->getImage()
+        ]);
+    }
+
+    #[Route('/item/{id}/view', name: 'api_item_view', methods:['GET'])]
+    public function incrementViews(
+        EntityManagerInterface $em,
+        int $id
+    ): JsonResponse
+    {
+        $item = $em->getRepository(NFTItem::class)->find($id);
+        $views = $item->getViews();
+
+        $item->setViews($views + 1);
+
+        $em->persist($item);
+        $em->flush();
+
+        return $this->json([
+            'views' => $item->getViews()
+        ]);
+    }
+
+    #[Route('/item/delete', name: 'api_item_delete', methods:['DELETE'])]
+    public function delete(
+        Request $request,
+        EntityManagerInterface $em,
+    )
+    {
+        $data = json_decode($request->getContent(), true);
+        $id = $data['id'];
+
+        $item = $em->getRepository(NFTItem::class)->find($id);
+
+        if (!$item) {
+            return $this->json([
+                'error' => 'no item with ' . $id . 'id'
+            ], 400);
+        }
+
+        $em->remove($item);
+        $em->flush();
+
+        return $this->json([
+            'message' => 'item was deleted successfully'
         ]);
     }
 }

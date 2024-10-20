@@ -16,7 +16,7 @@ function EditCollection() {
 
     const isLogged = isUserLogged();
     const { user } = useUserStore();
-    const { collection } = useCollectionStore();
+    const { collection, clearCollection } = useCollectionStore();
     const navigate = useNavigate();
 
     const {
@@ -42,6 +42,7 @@ function EditCollection() {
 
     useEffect(() => {
         if (response) {
+            clearCollection();
             navigate("/profile");
         }
     }, [response])
@@ -59,7 +60,7 @@ function EditCollection() {
                     id="name"
                     register={register}
                     errors={errors}
-                    value={collection.name}
+                    defaultValue={collection.name}
                     placeholder="Enter name"
                 />
                 <FormTextarea
@@ -67,13 +68,14 @@ function EditCollection() {
                     id="desc"
                     register={register}
                     errors={errors}
-                    value={collection.description}
+                    defaultValue={collection.description}
                     placeholder="Enter description"
                 />
                 <FormFileInput
                     label="Upload Image"
                     id="image"
                     register={register}
+                    require={false}
                     errors={errors}
                 />
                 <img className="rounded mx-auto d-block mb-5" src={collection.image} />

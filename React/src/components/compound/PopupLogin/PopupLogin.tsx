@@ -2,15 +2,15 @@ import "./popupLogin.css";
 import useApi from "../../../customHooks/useApi";
 import { useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Cookies } from "react-cookie";
 import GoogleButton from "../../atomic/GoogleButton/GoogleButton";
 import GithubButton from "../../atomic/GithubButton/GithubButton";
 import FormInput from "../../atomic/FormInput/FormInput";
 import FormPasswordInput from "../../atomic/FormPasswordInput/FormPasswordInput";
 import SubmitButton from "../../atomic/SubmitButton/SubmitButton";
-import fetchUserData from "../../../utils/fetchUserData";
 import useUserStore from "../../../store/useUserStore";
+import MetaMaskButton from "../../atomic/MetaMaskButton/MetaMaskButton";
 
 function PopupLogin({ close }: {close: () => void }) {
     const apiUrl = import.meta.env.VITE_API_URL;
@@ -18,7 +18,6 @@ function PopupLogin({ close }: {close: () => void }) {
     const navigate = useNavigate();
     const cookies = new Cookies();
     const { setUser } = useUserStore();
-    const [isInitializingUser, setIsInitializingUser] = useState(false);
     const {
         register,
         handleSubmit,
@@ -33,12 +32,9 @@ function PopupLogin({ close }: {close: () => void }) {
         const fetchUser = async () => {
             if (response) {
                 try {
-                    setIsInitializingUser(true);
-                    const userData = await fetchUserData(response.token);
-                    setUser(userData);
-                    cookies.set("userToken", response.token, { path: '/' });
-                    
-                    setIsInitializingUser(false);
+                    setUser(response["user"]);
+                    cookies.set("userToken", response["token"], { path: '/' });
+
                     window.location.reload();
                 } catch (error) {
                     console.error("Error fetching user data:", error);
@@ -89,10 +85,11 @@ function PopupLogin({ close }: {close: () => void }) {
                             register={register}
                             errors={errors}
                             placeholder="Enter password"
+                            errorsEnabled={false}
                         />
                         <div className="d-grid gap-2">
                             <SubmitButton
-                                isLoading={isLoading || isInitializingUser}
+                                isLoading={isLoading}
                                 text="login"
                             />
                         </div>
@@ -102,6 +99,7 @@ function PopupLogin({ close }: {close: () => void }) {
                 <div className="social-buttons">
                     <GoogleButton />
                     <GithubButton />
+                    {/* <MetaMaskButton /> */}
                 </div>
                 <div>
                     <p className="text-light">Login with MetaMask</p>

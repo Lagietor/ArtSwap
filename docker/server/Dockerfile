@@ -19,6 +19,7 @@ RUN docker-php-ext-install -j$(nproc) gd
 # apache mods
 RUN a2enmod ssl
 RUN a2enmod rewrite
+RUN a2enmod headers
 
 # composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer

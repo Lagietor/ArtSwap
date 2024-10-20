@@ -8,6 +8,7 @@ import FormFileInput from "../../components/atomic/FormFileInput/FormFileInput";
 import SubmitButton from "../../components/atomic/SubmitButton/SubmitButton";
 import isUserLogged from "../../utils/isUserLogged";
 import useUserStore from "../../store/useUserStore";
+import useItemStore from "../../store/useItemStore";
 
 function CreateItem() {
     const apiUrl = import.meta.env.VITE_API_URL;
@@ -15,6 +16,7 @@ function CreateItem() {
     const isLogged = isUserLogged();
     const { user } = useUserStore();
     const { id } = useParams();
+    const { setItem } = useItemStore();
     const navigate = useNavigate();
 
     const {
@@ -42,6 +44,7 @@ function CreateItem() {
 
     useEffect(() => {
         if (response) {
+            setItem(response);
             navigate(`/collection/${id}/item/${response.id}`);
         }
     }, [response])

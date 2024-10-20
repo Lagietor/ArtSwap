@@ -64,6 +64,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $backgroundImage = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $MetamaskAddress = null;
+
     public function __construct()
     {
         $this->nFTCollections = new ArrayCollection();
@@ -231,6 +234,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setBackgroundImage(string $backgroundImage): static
     {
         $this->backgroundImage = $backgroundImage;
+
+        return $this;
+    }
+
+    public function getMetamaskAddress(): ?string
+    {
+        return $this->MetamaskAddress;
+    }
+
+    public function setMetamaskAddress(?string $MetamaskAddress): static
+    {
+        $this->MetamaskAddress = $MetamaskAddress;
 
         return $this;
     }

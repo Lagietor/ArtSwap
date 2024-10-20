@@ -253,4 +253,54 @@ class NFTCollectionController extends AbstractController
             'shortDescription' => $collectionDTO->getShortDescription()
         ]);
     }
+  
+    #[Route('/collection/{id}/view', name: 'api_collection_view', methods:['GET'])]
+    public function incrementViews(
+        EntityManagerInterface $em,
+        int $id
+    ): JsonResponse
+    {
+        $collection = $em->getRepository(NFTCollection::class)->find($id);
+        $views = $collection->getViews();
+
+        $collection->setViews($views + 1);
+
+        $em->persist($collection);
+        $em->flush();
+
+        return $this->json([
+            'views' => $collection->getViews()
+        ]);
+    }
+
+    #[Route('/collection/delete', name: 'api_collection_delete', methods:['DELETE'])]
+    public function delete(
+        Request $request,
+        EntityManagerInterface $em,
+    )
+    {
+        $data = json_decode($request->getContent(), true);
+        $id = $data['id'];
+        
+        $collection = $em->getRepository(NFTCollection::class)->find($id);
+
+        if (!$collection) {
+            return $this->json([
+                'error' => 'no collection with ' . $id . 'id'
+            ], 400);
+        }
+
+        $items = $collection->getNftItems();
+
+        foreach ($items as $item) {
+            $em->remove($item);
+        }
+
+        $em->remove($collection);
+        $em->flush();
+
+        return $this->json([
+            'message' => 'collection was deleted successfully'
+        ]);
+    }
 }
