@@ -75,6 +75,14 @@ services:
     command: bash -c 'npm install && npm run dev'
     networks:
       - some_network
+  hardhat:
+    image: ethereumoptimism/hardhat:latest
+    container_name: '${APP_NAME}-hardhat'
+    command: "npx hardhat node"
+    ports:
+      - "8545:8545"
+    networks:
+      - some_network
 
 volumes:
   db-data:

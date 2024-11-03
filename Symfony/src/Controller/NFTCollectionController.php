@@ -33,10 +33,14 @@ class NFTCollectionController extends AbstractController
         UserMapper $userMapper,
     ): JsonResponse
     {
-        // TODO dodać walidacje
-
         $userId = $request->get('userId');
         $user = $em->getRepository(User::class)->findOneBy(['id' => $userId]);
+
+        if (!$user) {
+            return $this->json([
+                'error' => 'There is no user with ' . $userId . ' id'
+            ]);
+        }
 
         $image = $request->files->get('image');
 
@@ -69,6 +73,7 @@ class NFTCollectionController extends AbstractController
                 'image' => $userDTO->getprofileImage()
             ],
             'name' => $collectionDTO->getName(),
+            'shortName' => $collectionDTO->getShortName(),
             'itemsCount' => $collectionDTO->getItemsCount(),
             'floorPrice' => $collectionDTO->getFloorPrice(),
             'volume' => $collectionDTO->getVolume(),
@@ -88,8 +93,10 @@ class NFTCollectionController extends AbstractController
     {
         $phrase = $request->query->get('phrase', '');
         $sort = $request->query->get('sort', '');
+        $page = $request->query->get('page', 1);
+        $limit = $request->query->get('limit', 12);
 
-        $collections = $em->getRepository(NFTCollection::class)->findByFilters($phrase, $sort);
+        $collections = $em->getRepository(NFTCollection::class)->findByFilters($phrase, $sort, $limit, ($page - 1) * $limit);
         $result = [];
 
         if (!$collections) {
@@ -109,6 +116,7 @@ class NFTCollectionController extends AbstractController
                     'image' => $userDTO->getProfileImage()
                 ],
                 'name' => $collectionDTO->getName(),
+                'shortName' => $collectionDTO->getShortName(),
                 'itemsCount' => $collectionDTO->getItemsCount(),
                 'floorPrice' => $collectionDTO->getFloorPrice(),
                 'volume' => $collectionDTO->getVolume(),
@@ -145,6 +153,7 @@ class NFTCollectionController extends AbstractController
                 'profileImageLink' => $userDTO->getProfileImage()
             ],
             'name' => $collectionDTO->getName(),
+            'shortName' => $collectionDTO->getShortName(),
             'itemsCount' => $collectionDTO->getItemsCount(),
             'floorPrice' => $collectionDTO->getFloorPrice(),
             'volume' => $collectionDTO->getVolume(),
@@ -167,8 +176,10 @@ class NFTCollectionController extends AbstractController
     {
         $phrase = $request->query->get('phrase', '');
         $filter = $request->query->get('filter', '');
+        $page = $request->query->get('page', 1);
+        $limit = $request->query->get('limit', 12);
 
-        $items = $em->getRepository(NFTItem::class)->findByCollection($id, $phrase, $filter);
+        $items = $em->getRepository(NFTItem::class)->findByCollection($id, $phrase, '', $filter, $limit, ($page - 1) * $limit);
         $result = [];
 
         foreach ($items as $item) {
@@ -188,6 +199,7 @@ class NFTCollectionController extends AbstractController
                     'image' => $userDTO->getProfileImage()
                 ],
                 'name' => $itemDTO->getName(),
+                'shortName' => $itemDTO->getShortName(),
                 'views' => $itemDTO->getViews(),
                 'value' => $itemDTO->getValue(),
                 'image' => $itemDTO->getImage(),
@@ -244,6 +256,7 @@ class NFTCollectionController extends AbstractController
                 'profileImageLink' => $userDTO->getProfileImage()
             ],
             'name' => $collectionDTO->getName(),
+            'shortName' => $collectionDTO->getShortName(),
             'itemsCount' => $collectionDTO->getItemsCount(),
             'floorPrice' => $collectionDTO->getFloorPrice(),
             'volume' => $collectionDTO->getVolume(),

@@ -49,7 +49,7 @@ class NFTItemRepository extends ServiceEntityRepository
     /**
      * @return NFTItem[]
      */
-    public function findByCollection($collectionId, $phrase = '', $sort = '', $filter = ''): array
+    public function findByCollection($collectionId, $phrase = '', $sort = '', $filter = '', $limit, $offset): array
     {
         $queryBuilder = $this->createQueryBuilder('n')
             ->andWhere('n.collection = :collectionId')
@@ -76,13 +76,16 @@ class NFTItemRepository extends ServiceEntityRepository
             $queryBuilder->orderBy('n.value', 'DESC');
         }
 
+        $queryBuilder->setFirstResult($offset)
+        ->setMaxResults($limit);
+
         return $queryBuilder->getQuery()->getResult();
     }
 
     /**
      * @return NFTItem[]
      */
-    public function findByUser($userId, $filter = '', $phrase = '', $sort = ''): array
+    public function findByUser($userId, $filter = '', $phrase = '', $sort = '', $limit, $offset): array
     {
         $queryBuilder = $this->createQueryBuilder('n');
 
@@ -126,6 +129,9 @@ class NFTItemRepository extends ServiceEntityRepository
         if ($sort === 'Expensive') {
             $queryBuilder->orderBy('n.value', 'DESC');
         }
+
+        $queryBuilder->setFirstResult($offset)
+        ->setMaxResults($limit);
 
         return $queryBuilder->getQuery()->getResult();
     }

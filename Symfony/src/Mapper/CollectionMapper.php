@@ -10,6 +10,14 @@ class CollectionMapper
     public function mapToCollectionDTO(NFTCollection $collection): CollectionDTO
     {
         $imageLink = $this->getGoogleDriveLink($collection->getImage());
+
+        $name = $collection->getName();
+        if (strlen($name) > 20) {
+            $shortName = substr($name, 0, 20) . '...';
+        } else {
+            $shortName = $name;
+        }
+
         $description = $collection->getDescription();
         if (strlen($description) > 40) {
             $shortDesc = substr($description, 0, 40) . '...';
@@ -31,6 +39,7 @@ class CollectionMapper
             $collection->getId(),
             $collection->getUser(),
             $collection->getName(),
+            $shortName,
             $itemsCount,
             $floorPrice,
             $collection->getVolume(),

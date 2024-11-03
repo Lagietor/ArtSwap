@@ -23,8 +23,8 @@ security:
             jwt: ~
 
     access_control:
-        - { path: ^/api/user, roles: ROLE_USER }
-        - { path: ^/api/admin, roles: ROLE_ADMIN }
+        # - { path: ^/api/user, roles: ROLE_USER }
+        # - { path: ^/api/admin, roles: ROLE_ADMIN }
 
 when@test:
     security:

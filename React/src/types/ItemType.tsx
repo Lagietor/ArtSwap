@@ -7,6 +7,7 @@ interface ItemType {
         "id": number
     }
     "name": string,
+    "shortName": string,
     "views": number,
     "value": number,
     "image": string

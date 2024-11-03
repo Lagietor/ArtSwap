@@ -22,7 +22,7 @@ function GoogleButton() {
                     setUser(response["user"]);
                     cookies.set("userToken", response["token"], { path: '/' });
                     console.log(response["token"]);
-                    // window.location.reload();
+                    window.location.reload();
                 } catch (error) {
                     console.error("Error fetching user data:", error);
                 }

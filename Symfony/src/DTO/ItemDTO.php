@@ -8,16 +8,18 @@ class ItemDTO
     private $collection;
     private $owner;
     private $name;
+    private $shortName;
     private $value;
     private $views;
     private $image;
 
-    public function __construct($id, $collection, $owner, $name, $value, $views, $image)
+    public function __construct($id, $collection, $owner, $name, $shortName, $value, $views, $image)
     {
         $this->id = $id;
         $this->collection = $collection;
         $this->owner = $owner;
         $this->name = $name;
+        $this->shortName = $shortName;
         $this->value = $value;
         $this->views = $views;
         $this->image = $image;
@@ -41,6 +43,11 @@ class ItemDTO
     public function getName()
     {
         return $this->name;
+    }
+
+    public function getShortName()
+    {
+        return $this->shortName;
     }
 
     public function getValue()

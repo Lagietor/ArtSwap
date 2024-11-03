@@ -4,6 +4,7 @@ interface CollectionType {
     "id": number,
     "user": UserType,
     "name": string,
+    "shortName": string,
     "itemsCount": number,
     "floorPrice": number,
     "volume": number,

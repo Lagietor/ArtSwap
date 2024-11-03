@@ -126,8 +126,10 @@ class UserController extends AbstractController
         $phrase = $request->query->get('phrase', '');
         $sort = $request->query->get('sort', '');
         $filter = $request->query->get('filter', '');
+        $page = $request->query->get('page', 1);
+        $limit = $request->query->get('limit', 12);
 
-        $items = $em->getRepository(NFTItem::class)->findByUser($id, $filter, $phrase, $sort);
+        $items = $em->getRepository(NFTItem::class)->findByUser($id, $filter, $phrase, $sort, $limit, ($page - 1) * $limit);
         $result = [];
 
         foreach ($items as $item) {
@@ -147,6 +149,7 @@ class UserController extends AbstractController
                     'image' => $userDTO->getProfileImage()
                 ],
                 'name' => $itemDTO->getName(),
+                'shortName' => $itemDTO->getShortName(),
                 'views' => $itemDTO->getViews(),
                 'value' => $itemDTO->getValue(),
                 'image' => $itemDTO->getImage(),
@@ -168,8 +171,10 @@ class UserController extends AbstractController
         $phrase = $request->query->get('phrase', '');
         $sort = $request->query->get('sort', '');
         $filter = $request->query->get('filter', '');
+        $page = $request->query->get('page', 1);
+        $limit = $request->query->get('limit', 12);
 
-        $collections = $em->getRepository(NFTCollection::class)->findByUser($id, $filter, $phrase, $sort);
+        $collections = $em->getRepository(NFTCollection::class)->findByUser($id, $filter, $phrase, $sort, ($page - 1) * $limit);
         $result = [];
 
         foreach ($collections as $collection) {
@@ -185,6 +190,7 @@ class UserController extends AbstractController
                     'image' => $userDTO->getProfileImage()
                 ],
                 'name' => $collectionDTO->getName(),
+                'shortName' => $collectionDTO->getShortName(),
                 'itemsCount' => $collectionDTO->getItemsCount(),
                 'floorPrice' => $collectionDTO->getFloorPrice(),
                 'volume' => $collectionDTO->getVolume(),

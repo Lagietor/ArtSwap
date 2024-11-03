@@ -2,55 +2,95 @@ import { useEffect, useState } from "react";
 import useSearch from "../../../customHooks/useSearch";
 import LoadingAnimation from "../../atomic/LoadingAnimation/LoadingAnimation";
 import SearchBar from "../../atomic/SearchBar/SearchBar";
-import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { faHeartCrack } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
-import useCollectionStore from "../../../store/useCollectionStore";
 import CollectionType from "../../../types/CollectionType";
 import ProfileCollectionItems from "../ProfileCollectionItems/ProfileCollectionItems";
-import useApi from "../../../customHooks/useApi";
+import { useInView } from "react-intersection-observer";
+import useDebounce from "../../../customHooks/useDebounce";
+import CollectionsList from "../CollectionsList/CollectionsList";
 
 function ProfileCollections({ id, filter}: {id: string, filter: string}) {
     const apiUrl = import.meta.env.VITE_API_URL;
 
-    const { isLoading, response, error, fetchData: searchCollections } = useSearch(apiUrl + "user/" + id + "/collections");
-    const { fetchData: deleteCollection } = useApi(apiUrl + "collection/delete", 'DELETE');
+    const { isLoading, error, fetchData: searchCollections } = useSearch(apiUrl + "user/" + id + "/collections");
     const [ phrase, setPhrase ] = useState("");
     const [ sort ] = useState("");
-    const [isDeleteLoading, setIsDeleteLoading] = useState<{ [key: number]: boolean }>({});
-    const { setCollection } = useCollectionStore();
     const [selectedCollection, setSelectedCollection] = useState<CollectionType | null>(null);
     const navigate = useNavigate();
-
-    useEffect(() => {
-        if (!response) {
-            searchCollections(phrase, sort, filter);
-        }
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(false);
+    const { ref, inView } = useInView({
+        threshold: 0.2,
+        triggerOnce: false,
     });
+    const [collections, setCollections] = useState<CollectionType[]>([]);
+    const debouncedPhrase = useDebounce(phrase, 300);
 
     useEffect(() => {
-        searchCollections(phrase, sort, filter);
-    }, [phrase, sort, filter])
+        if (hasMore) {
+            loadCollections();
+        }
+    }, [page])
 
-    const handleEditCollection = (e: React.MouseEvent, collection: CollectionType) => {
-        e.stopPropagation();
-        setCollection(collection);
-        navigate(`/collection/${collection.id}/edit`);
-        window.location.reload();
+    useEffect(() => {
+        if (inView && hasMore) {
+            setPage((prevPage) => prevPage + 1);
+        }
+    }, [inView, hasMore]);
+
+    useEffect(() => {
+        setPage(1);
+        setCollections([]);
+        updateURL();
+    }, [sort, debouncedPhrase, filter]);
+
+    useEffect(() => {
+        console.log(location.search);
+        loadCollections();
+    }, [location.search]);
+
+    const loadCollections = async () => {
+        const params = new URLSearchParams(location.search);
+        const filterFromUrl = params.get("filter") || "all";
+        const sortFromUrl = params.get("sort") || "Popular";
+        const phraseFromUrl = params.get("phrase") || "";
+    
+        const newCollections = await searchCollections(phraseFromUrl, sortFromUrl, filterFromUrl, page);
+        if (newCollections && newCollections.length > 0) {
+            setCollections((prevCollections) => [...prevCollections, ...newCollections]);
+            setHasMore(newCollections.length === 12);
+        } else {
+            setHasMore(false);
+        }
     }
 
-    const handleDeleteCollection = async (e: React.MouseEvent, collection: CollectionType) => {
-        e.preventDefault()
-        e.stopPropagation()
+    const updateURL = () => {
+        const params = new URLSearchParams();
+        params.set("sort", sort);
+        params.set("phrase", phrase);
+        params.set("filter", filter);
+        navigate({ search: params.toString() });
+    };
 
-        setIsDeleteLoading((prev) => ({ ...prev, [collection.id]: true }));
-        await deleteCollection({id: collection.id});
-        setIsDeleteLoading((prev) => ({ ...prev, [collection.id]: false }));
+    // const handleEditCollection = (e: React.MouseEvent, collection: CollectionType) => {
+    //     e.stopPropagation();
+    //     setCollection(collection);
+    //     navigate(`/collection/${collection.id}/edit`);
+    //     window.location.reload();
+    // }
 
-        window.location.reload();
-    }
+    // const handleDeleteCollection = async (e: React.MouseEvent, collection: CollectionType) => {
+    //     e.preventDefault()
+    //     e.stopPropagation()
+
+    //     setIsDeleteLoading((prev) => ({ ...prev, [collection.id]: true }));
+    //     await deleteCollection({id: collection.id});
+    //     setIsDeleteLoading((prev) => ({ ...prev, [collection.id]: false }));
+
+    //     window.location.reload();
+    // }
 
     const handleBack = () => {
         setSelectedCollection(null);
@@ -68,50 +108,38 @@ function ProfileCollections({ id, filter}: {id: string, filter: string}) {
                         </div>
                     </form>
                     <div className="mt-3">
-                        {isLoading || !response ? (
+                        {isLoading && collections.length === 0 ? (
                             <div className="d-flex justify-content-center">
                                 <LoadingAnimation />
                             </div>
                         ) : (
                             <>
-                                {response.length > 0 ? (
-                                    response.map((collections: object, index: number) => (
-                                        index % 4 === 0 && (
-                                            <div className="card-group" key={`row-${index}`}>
-                                                {response.slice(index, index + 4).map((subCollection) => (
-                                                    <div className="col-md-3 mb-4" key={subCollection.id}>
-                                                        <a href="#" onClick={() => setSelectedCollection(subCollection)}>
-                                                            <div className="card rounded mx-2">
-                                                                <img className="card-img-top card-img" src={subCollection.image || "/defaultImages/collection_default.jpg"} alt="item image" />
-                                                                <div className="card-body d-flex justify-content-between">
-                                                                    <h5 className="card-title">{subCollection.name}</h5>
-                                                                    <div className="d-flex">
-                                                                        <button className="edit-button" onClick={(e) => handleEditCollection(e, subCollection)}>
-                                                                            <FontAwesomeIcon icon={faPenToSquare} />
-                                                                        </button>
-                                                                        <button className="delete-button ms-2" onClick={(e) => handleDeleteCollection(e, subCollection)}>
-                                                                        {isDeleteLoading[subCollection.id] ? (
-                                                                            <div className="spinner-border spinner-border-sm text-danger" role="status"></div>
-                                                                        ) : (
-                                                                            <FontAwesomeIcon icon={faTrashCan} />
-                                                                        )}
-                                                                        </button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </a>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        )
-                                    ))
+                                {collections.length > 0 ? (
+                                    <>
+                                        <CollectionsList collections={collections} isProfile={true} />
+                                        {hasMore && collections.length != 0 && (
+                                            <>
+                                                <div ref={ref} style={{ height: '20px' }} />
+                                                <div className="d-flex justify-content-center">
+                                                    <LoadingAnimation />
+                                                </div>
+                                            </>
+                                        )}
+                                    </>
                                 ) : (
                                     <div className="d-flex flex-column align-items-center mt-5 pb-5">
                                         <h3 className="text-primary">No Collections</h3>
                                         <FontAwesomeIcon className="text-primary fa-2x" icon={faHeartCrack} />
                                     </div>
                                 )}
-                                
+                                {hasMore && collections.length != 0 && (
+                                    <>
+                                        <div ref={ref} style={{ height: '20px' }} />
+                                        <div className="d-flex justify-content-center">
+                                            <LoadingAnimation />
+                                        </div>
+                                    </>
+                                )}
                             </>
                         )}
                     </div>

@@ -50,7 +50,7 @@ class NFTCollectionRepository extends ServiceEntityRepository
     /**
      * @return NFTCollection[]
      */
-    public function findByFilters($phrase = '', $filter = ''): array
+    public function findByFilters($phrase = '', $filter = '', $limit, $offset): array
     {
         $queryBuilder = $this->createQueryBuilder('n');
 
@@ -74,6 +74,9 @@ class NFTCollectionRepository extends ServiceEntityRepository
         if ($filter === 'Expensive') {
             $queryBuilder->orderBy('n.floorPrice', 'DESC');
         }
+
+        $queryBuilder->setFirstResult($offset)
+        ->setMaxResults($limit);
 
         return $queryBuilder->getQuery()->getResult();
     }

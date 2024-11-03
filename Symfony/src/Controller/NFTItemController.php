@@ -88,6 +88,7 @@ class NFTItemController extends AbstractController
                 'image' => $userDTO->getprofileImage()
             ],
             'name' => $itemDTO->getName(),
+            'shortName' => $itemDTO->getShortName(),
             'views' => $itemDTO->getViews(),
             'value' => $itemDTO->getValue(),
             'image' => $itemDTO->getImage()
@@ -102,8 +103,6 @@ class NFTItemController extends AbstractController
         $id
     ): JsonResponse
     {
-        // $this->denyAccessUnlessGranted('ROLE_USER');
-
         /**
          * @var NFTItem item
          */
@@ -127,6 +126,7 @@ class NFTItemController extends AbstractController
                 'image' => $userDTO->getprofileImage()
             ],
             'name' => $itemDTO->getName(),
+            'shortName' => $itemDTO->getShortName(),
             'views' => $itemDTO->getViews(),
             'value' => $itemDTO->getValue(),
             'image' => $itemDTO->getImage()
@@ -180,6 +180,7 @@ class NFTItemController extends AbstractController
                 'image' => $userDTO->getprofileImage()
             ],
             'name' => $itemDTO->getName(),
+            'shortName' => $itemDTO->getShortName(),
             'views' => $itemDTO->getViews(),
             'value' => $itemDTO->getValue(),
             'image' => $itemDTO->getImage()

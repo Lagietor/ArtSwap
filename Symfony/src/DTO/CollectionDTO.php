@@ -7,6 +7,7 @@ class CollectionDTO
     private $id;
     private $user;
     private $name;
+    private $shortName;
     private $itemsCount;
     private $floorPrice;
     private $volume;
@@ -16,11 +17,12 @@ class CollectionDTO
     private $image;
     private $nftItems;
 
-    public function __construct($id, $user, $name, $itemsCount, $floorPrice, $volume, $views, $description, $shortDescription, $image, $nftItems)
+    public function __construct($id, $user, $name, $shortName, $itemsCount, $floorPrice, $volume, $views, $description, $shortDescription, $image, $nftItems)
     {
         $this->id = $id;
         $this->user = $user;
         $this->name = $name;
+        $this->shortName = $shortName;
         $this->itemsCount = $itemsCount;
         $this->floorPrice = $floorPrice;
         $this->volume = $volume;
@@ -44,6 +46,11 @@ class CollectionDTO
     public function getName()
     {
         return $this->name;
+    }
+
+    public function getShortName()
+    {
+        return $this->shortName;
     }
 
     public function getItemsCount()

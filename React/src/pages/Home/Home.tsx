@@ -3,45 +3,72 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { useInView } from 'react-intersection-observer';
 import useSearch from "../../customHooks/useSearch";
 import CollectionType from "../../types/CollectionType";
 import LoadingAnimation from "../../components/atomic/LoadingAnimation/LoadingAnimation";
 import SearchBar from "../../components/atomic/SearchBar/SearchBar";
-import useCollectionStore from "../../store/useCollectionStore";
+import useDebounce from "../../customHooks/useDebounce";
+import CollectionsList from "../../components/compound/CollectionsList/CollectionsList";
 
 function Home() {
     const apiUrl = import.meta.env.VITE_API_URL;
 
-    const [ sort, setsort ] = useState("");
-    const [ phrase, setPhrase ] = useState("");
+    const [sort, setSort] = useState("Popular");
+    const [phrase, setPhrase] = useState("");
     const { search } = useLocation();
     const location = useLocation();
     const navigate = useNavigate();
-    const { setCollection } = useCollectionStore();
-    const { isLoading, response, error, fetchData: searchCollections } = useSearch(apiUrl + "collection");
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(false);
+    const [collections, setCollections] = useState<CollectionType[]>([]);
+    const { ref, inView } = useInView({
+        threshold: 0.2,
+        triggerOnce: false,
+    });
+    const debouncedPhrase = useDebounce(phrase, 300);
+    const { isLoading, fetchData: searchCollections } = useSearch(apiUrl + "collection");
 
     useEffect(() => {
-        if (!response) {
-            const params = new URLSearchParams(location.search);
-            const sortFromUrl = params.get("sort") || "Popular";
-            const phraseFromUrl = params.get("phrase") || "";
-
-            searchCollections(phraseFromUrl, sortFromUrl);
-
-            setPhrase(phraseFromUrl);
-            setsort(sortFromUrl);
+        if (hasMore) {
+            loadCollections();
         }
-    }, [response])
+    }, [page])
+
+    useEffect(() => {
+        if (inView && hasMore) {
+            setPage((prevPage) => prevPage + 1);
+        }
+    }, [inView, hasMore]);
 
     useEffect(() => {
         const params = new URLSearchParams(search);
         const autoLogin = params.get("autoLogin");
-
+        
         if (!autoLogin) {
+            setPage(1);
+            setCollections([]);
             updateURL();
-            searchCollections(phrase, sort);
         }
-    }, [sort, phrase]);
+    }, [sort, debouncedPhrase]);
+
+    useEffect(() => {
+        loadCollections();
+    }, [location.search]);
+
+    const loadCollections = async () => {
+        const params = new URLSearchParams(location.search);
+        const sortFromUrl = params.get("sort") || "Popular";
+        const phraseFromUrl = params.get("phrase") || "";
+    
+        const newCollections = await searchCollections(phraseFromUrl, sortFromUrl, "", page);
+        if (newCollections && newCollections.length > 0) {
+            setCollections((prevCollections) => [...prevCollections, ...newCollections]);
+            setHasMore(newCollections.length === 12);
+        } else {
+            setHasMore(false);
+        }
+    }
 
     const updateURL = () => {
         const params = new URLSearchParams();
@@ -49,12 +76,6 @@ function Home() {
         params.set("phrase", phrase);
         navigate({ search: params.toString() });
     };
-
-    const enterCollection = (collection: CollectionType) => {
-        setCollection(collection);
-        navigate("/collection/" + collection.id);
-        window.location.reload();
-    }
 
     return(
         <div className="container">
@@ -66,10 +87,10 @@ function Home() {
                 </form>
             </div>
             <div className="categories mt-5">
-                <button className={`category-btn ${sort === "Popular" ? "active" : ""}`} onClick={() => setsort("Popular")}>Popular</button>
-                <button className={`category-btn ${sort === "Expensive" ? "active" : ""}`} onClick={() => setsort("Expensive")}>Expensive</button>
-                <button className={`category-btn ${sort === "Newest" ? "active" : ""}`} onClick={() => setsort("Newest")}>Newest</button>
-                <button className={`category-btn ${sort === "Oldest" ? "active" : ""}`} onClick={() => setsort("Oldest")}>Oldest</button>
+                <button className={`category-btn ${sort === "Popular" ? "active" : ""}`} onClick={() => setSort("Popular")}>Popular</button>
+                <button className={`category-btn ${sort === "Expensive" ? "active" : ""}`} onClick={() => setSort("Expensive")}>Expensive</button>
+                <button className={`category-btn ${sort === "Newest" ? "active" : ""}`} onClick={() => setSort("Newest")}>Newest</button>
+                <button className={`category-btn ${sort === "Oldest" ? "active" : ""}`} onClick={() => setSort("Oldest")}>Oldest</button>
                 <button className={`category-btn ${phrase ? "active" : ""}`}>
                     {phrase && (
                         <span className="mx-2">{phrase}</span>
@@ -78,43 +99,22 @@ function Home() {
                 </button>
             </div>
             <div className="nft-items mt-5">
-            
-            {isLoading || !response ? (
-                <div className="d-flex justify-content-center">
-                    <LoadingAnimation />
-                </div>
-            ) : (
-                <>
-                    {response.map((collection: CollectionType, index: number) => (
-                        index % 6 === 0 && (
-                            <div className="card-group" key={`row-${index}`}>
-                                {response.slice(index, index + 6).map((subCollection: CollectionType) => (
-                                    <div className="col-md-2 mb-4" key={subCollection.id}>
-                                        <a href="" onClick={() => enterCollection(subCollection)}>
-                                            <div className="card rounded mx-2">
-                                                <img className="card-img-top card-img" src={subCollection.image || "/defaultImages/collection_default.jpg"} alt="collection image" />
-                                                <div className="card-body">
-                                                    <h5 className="card-title">{subCollection.name}</h5>
-                                                    <p className="card-text text-light">{subCollection.shortDescription}</p>
-                                                    <div className="row">
-                                                        <div className="col">
-                                                            <h6 className="text-light">Floor</h6>
-                                                            <span className="text-light">{subCollection.floorPrice}</span>
-                                                        </div>
-                                                        <div className="col">
-                                                            <h6 className="text-light">Volume</h6>
-                                                            <span className="text-light">{subCollection.volume}</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </div>
-                                ))}
-                            </div>
-                        )
-                    ))}
-                </>
+                {isLoading && collections.length === 0 ? (
+                    <div className="d-flex justify-content-center">
+                        <LoadingAnimation />
+                    </div>
+                ) : (
+                    <>
+                        <CollectionsList collections={collections} isProfile={false}/>
+                        {hasMore && collections.length != 0 && (
+                            <>
+                                <div ref={ref} style={{ height: '20px' }} />
+                                <div className="d-flex justify-content-center">
+                                    <LoadingAnimation />
+                                </div>
+                            </>
+                        )}
+                    </>
                 )}
             </div>
         </div>
