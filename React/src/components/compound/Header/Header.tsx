@@ -7,15 +7,23 @@ import isUserLogged from "../../../utils/isUserLogged";
 import useUserStore from "../../../store/useUserStore";
 import ConnectMetaMaskButton from "../../atomic/ConnectMetaMaskButton/ConnectMetaMaskButton";
 import WalletBalance from "../../atomic/WalletBalance/WalletBalance";
+import useMetaMaskStatus from "../../../customHooks/useMetaMaskStatus";
+import useUserWalletStore from "../../../store/useUserWalletStore";
 
 function Header() {
     const navigate = useNavigate();
     const isLogged = isUserLogged();
     const { search } = useLocation();
     const [showLoginModal, setShowLoginModal] = useState(false);
+    const { checkMetaMaskConnection, isChecking } = useMetaMaskStatus();
+    const { userWallet } = useUserWalletStore();
     const { clearUser, user } = useUserStore();
 
     useEffect(() => {
+        if (isLogged) {
+            checkMetaMaskConnection();
+        }
+
         const params = new URLSearchParams(search);
         const autoLogin = params.get("autoLogin");
         if (autoLogin) {
@@ -43,7 +51,7 @@ function Header() {
 
     const handleCreateCollection = () => {
         navigate("/collection/create");
-        window.location.reload();
+        // window.location.reload();
     }
 
     return(
@@ -61,10 +69,10 @@ function Header() {
                                 </button>
                             ) : (
                                 <div className="d-flex justify-content-end">
-                                    {!user?.ethAddress ? (
+                                    {!userWallet?.ethAddress ? (
                                         <ConnectMetaMaskButton />
                                     ) : (
-                                        <WalletBalance user={user} />
+                                        <WalletBalance />
                                     )}
                                     <button className="btn btn-primary mx-5" onClick={handleCreateCollection}>Create</button>
                                     <div className="dropdown">

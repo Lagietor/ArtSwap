@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\NFTItemRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
@@ -35,6 +36,9 @@ class NFTItem
 
     #[ORM\Column(length: 255)]
     private ?string $image = null;
+
+    #[ORM\Column(type: Types::BIGINT)]
+    private ?string $tokenId = null;
 
     public function getId(): ?int
     {
@@ -109,6 +113,18 @@ class NFTItem
     public function setImage(string $image): static
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    public function getTokenId(): ?string
+    {
+        return $this->tokenId;
+    }
+
+    public function setTokenId(string $tokenId): static
+    {
+        $this->tokenId = $tokenId;
 
         return $this;
     }

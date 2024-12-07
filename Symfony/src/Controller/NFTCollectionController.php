@@ -203,6 +203,7 @@ class NFTCollectionController extends AbstractController
                 'views' => $itemDTO->getViews(),
                 'value' => $itemDTO->getValue(),
                 'image' => $itemDTO->getImage(),
+                'tokenId' => $itemDTO->getTokenId()
             ];
         }
 

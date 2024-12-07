@@ -18,6 +18,7 @@ function ProfileItems({ id, filter}: {id: string, filter: string}) {
     const [ sort ] = useState("");
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(false);
+    const [isFetching, setIsFetching] = useState(false);
     const navigate = useNavigate();
     const { ref, inView } = useInView({
         threshold: 0.2,
@@ -39,6 +40,9 @@ function ProfileItems({ id, filter}: {id: string, filter: string}) {
     }, [inView, hasMore]);
 
     const loadItems = async () => {
+        if (isFetching) return;
+
+        setIsFetching(true);
         const params = new URLSearchParams(location.search);
         const filterFromUrl = params.get("filter") || "all";
         const sortFromUrl = params.get("sort") || "Popular";
@@ -51,6 +55,8 @@ function ProfileItems({ id, filter}: {id: string, filter: string}) {
         } else {
             setHasMore(false);
         }
+
+        setIsFetching(false);
     }
 
     useEffect(() => {

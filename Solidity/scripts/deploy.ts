@@ -4,14 +4,10 @@ async function main() {
 
     console.log("Deploying contracts with the account:", deployer.address);
 
-    const example = await ethers.getContractFactory("HelloWorld");
-    const contract = await example.deploy();
+    const MyNFT  = await ethers.getContractFactory("MyNFT");
+    const contract = await MyNFT.deploy();
 
     console.log("Contract deployed at:", contract.target);
-
-    const saySomething = await contract.speak();
-    
-    console.log("saySomething value:", saySomething);
 }
 
 main()

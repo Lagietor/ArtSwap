@@ -75,6 +75,7 @@ services:
     command: bash -c 'npm install && npm run dev'
     networks:
       - some_network
+
   hardhat:
     image: ethereumoptimism/hardhat:latest
     container_name: '${APP_NAME}-hardhat'

@@ -12,8 +12,8 @@ class CollectionMapper
         $imageLink = $this->getGoogleDriveLink($collection->getImage());
 
         $name = $collection->getName();
-        if (strlen($name) > 20) {
-            $shortName = substr($name, 0, 20) . '...';
+        if (strlen($name) > 18) {
+            $shortName = substr($name, 0, 18) . '...';
         } else {
             $shortName = $name;
         }

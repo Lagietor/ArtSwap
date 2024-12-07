@@ -7,6 +7,7 @@ use App\Entity\NFTItem;
 use App\Entity\User;
 use App\Mapper\ItemMapper;
 use App\Mapper\UserMapper;
+use App\Service\NFTMetadataService;
 use App\Service\UploadImageService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -37,7 +38,7 @@ class NFTItemController extends AbstractController
 
         if (!$owner) {
             return $this->json([
-                'message' => 'There is no user with id ' . $ownerId
+                'error' => 'There is no user with id ' . $ownerId
             ]);
         }
 
@@ -46,9 +47,16 @@ class NFTItemController extends AbstractController
 
         if (!$collection) {
             return $this->json([
-                'message' => 'There is no collection with id ' . $collectionId
+                'error' => 'There is no collection with id ' . $collectionId
             ]);
         }
+
+        $tokenId = $request->get('tokenId');
+        // return $this->json([
+        //     'dfdsffds' => $tokenId
+        // ]);
+        // dump($tokenId);
+        // die;
 
         $name = $request->get('name');
         $value = $request->get('value');
@@ -64,6 +72,7 @@ class NFTItemController extends AbstractController
         $item = new NFTItem();
         $item->setCollection($collection);
         $item->setOwner($owner);
+        $item->setTokenId($tokenId);
         $item->setName($name);
         $item->setValue($value);
         $item->setViews(0);
@@ -91,7 +100,8 @@ class NFTItemController extends AbstractController
             'shortName' => $itemDTO->getShortName(),
             'views' => $itemDTO->getViews(),
             'value' => $itemDTO->getValue(),
-            'image' => $itemDTO->getImage()
+            'image' => $itemDTO->getImage(),
+            'tokenId' => $itemDTO->getTokenId()
         ]);
     }
 
@@ -129,7 +139,8 @@ class NFTItemController extends AbstractController
             'shortName' => $itemDTO->getShortName(),
             'views' => $itemDTO->getViews(),
             'value' => $itemDTO->getValue(),
-            'image' => $itemDTO->getImage()
+            'image' => $itemDTO->getImage(),
+            'tokenId' => $itemDTO->getTokenId()
         ]);
     }
 
@@ -183,7 +194,8 @@ class NFTItemController extends AbstractController
             'shortName' => $itemDTO->getShortName(),
             'views' => $itemDTO->getViews(),
             'value' => $itemDTO->getValue(),
-            'image' => $itemDTO->getImage()
+            'image' => $itemDTO->getImage(),
+            'tokenId' => $itemDTO->getTokenId()
         ]);
     }
 
@@ -228,6 +240,66 @@ class NFTItemController extends AbstractController
 
         return $this->json([
             'message' => 'item was deleted successfully'
+        ]);
+    }
+
+    #[Route('/item/buy', name: 'api_item_buy', methods:['POST'])]
+    public function buy(
+        Request $request,
+        EntityManagerInterface $em,
+        ItemMapper $itemMapper,
+        UserMapper $userMapper
+    )
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $buyerId = $data['buyerId'];
+        $itemId = $data['nftId'];
+
+        $buyer = $em->getRepository(User::class)->find($buyerId);
+
+        if (!$buyer) {
+            return $this->json([
+                'error' => 'There is no user with ' . $buyerId . ' id'
+            ]);
+        }
+
+        $item = $em->getRepository(NFTItem::class)->find($itemId);
+
+        
+        if (!$item) {
+            return $this->json([
+                'error' => 'There is no nft with ' . $itemId . ' id'
+            ]);
+        }
+
+        if ($item->getOwner()->getId() == $buyerId) {
+            return $this->json([
+                'error' => 'You can\'t buy your own NFT'
+            ]);
+        }
+
+        $item->setOwner($buyer);
+        $em->persist($item);
+        $em->flush();
+
+        $itemDTO = $itemMapper->mapToItemDTO($item);
+        $userDTO = $userMapper->mapToUserDTO($buyer);
+
+        return $this->json([
+            'id' => $itemDTO->getId(),
+            'owner' => [
+                'id' => $userDTO->getId(),
+                'email' => $userDTO->getEmail(),
+                'username' => $userDTO->getUsername(),
+                'image' => $userDTO->getprofileImage()
+            ],
+            'name' => $itemDTO->getName(),
+            'shortName' => $itemDTO->getShortName(),
+            'views' => $itemDTO->getViews(),
+            'value' => $itemDTO->getValue(),
+            'image' => $itemDTO->getImage(),
+            'tokenId' => $itemDTO->getTokenId()
         ]);
     }
 }

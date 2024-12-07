@@ -9,6 +9,8 @@ import SubmitButton from "../../components/atomic/SubmitButton/SubmitButton";
 import isUserLogged from "../../utils/isUserLogged";
 import useUserStore from "../../store/useUserStore";
 import useItemStore from "../../store/useItemStore";
+import createNFT from "../../utils/Contract/createNFT";
+import useUserWalletStore from "../../store/useUserWalletStore";
 
 function CreateItem() {
     const apiUrl = import.meta.env.VITE_API_URL;
@@ -18,6 +20,7 @@ function CreateItem() {
     const { id } = useParams();
     const { setItem } = useItemStore();
     const navigate = useNavigate();
+    const { userWallet } = useUserWalletStore();
 
     const {
         register,
@@ -29,16 +32,31 @@ function CreateItem() {
 
     const onSubmit: SubmitHandler<{collection: string; name: string; value: string; image: string}> = async (data) => {
         try {
-            const formData = new FormData();
-            formData.append("owner", user.id)
-            formData.append("collection", id);
-            formData.append("name", data.name);
-            formData.append("value", data.value);
-            formData.append("image", data.image[0]);
+            const metadata = {
+                name: data.name,
+                value: data.value,
+                image: data.image[0],
+            };
 
-            await createItem(formData);
+            const mintedTokenId = await createNFT(userWallet?.ethAddress, metadata, data.value);
+
+            if (mintedTokenId) {
+                const formData = new FormData();
+                formData.append("owner", user.id);
+                formData.append("collection", id);
+                formData.append("name", data.name);
+                formData.append("value", data.value);
+                formData.append("tokenId", mintedTokenId);
+                formData.append("image", data.image[0]);
+
+                await createItem(formData);
+                toast.success("NFT successfully minted and item created!");
+            } else {
+                toast.error("Failed to mint NFT.");
+            }
         } catch (error) {
-            toast.error("Something went wrong!");
+            const errorMessage = error?.message || "Something went wrong!";
+            toast.error(errorMessage);
         }
     }
 

@@ -25,7 +25,8 @@ class ItemMapper
             $shortName,
             $item->getValue(),
             $item->getViews(),
-            $imageLink
+            $imageLink,
+            $item->getTokenId()
         );
     }
 

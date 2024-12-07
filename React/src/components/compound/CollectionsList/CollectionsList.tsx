@@ -6,7 +6,7 @@ import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 
-function CollectionsList({ collections, isProfile}: { collections: CollectionType[], isProfile: boolean}) {
+function CollectionsList({ collections, isProfile, setSelectedCollection = () => {}}: { collections: CollectionType[], isProfile: boolean, setSelectedCollection: Function}) {
     const apiUrl = import.meta.env.VITE_API_URL;
 
     const navigate = useNavigate();
@@ -21,7 +21,7 @@ function CollectionsList({ collections, isProfile}: { collections: CollectionTyp
     const enterCollection = (collection: CollectionType) => {
         setCollection(collection);
         navigate("/collection/" + collection.id);
-        window.location.reload();
+        // window.location.reload();
     }
 
     const handleEditCollection = (e: React.MouseEvent, collection: CollectionType) => {
@@ -31,16 +31,16 @@ function CollectionsList({ collections, isProfile}: { collections: CollectionTyp
         window.location.reload();
     }
 
-    const handleDeleteCollection = async (e: React.MouseEvent, collection: CollectionType) => {
-        e.preventDefault()
-        e.stopPropagation()
+    // const handleDeleteCollection = async (e: React.MouseEvent, collection: CollectionType) => {
+    //     e.preventDefault()
+    //     e.stopPropagation()
 
-        setIsDeleteLoading((prev) => ({ ...prev, [collection.id]: true }));
-        await deleteCollection({id: collection.id});
-        setIsDeleteLoading((prev) => ({ ...prev, [collection.id]: false }));
+    //     setIsDeleteLoading((prev) => ({ ...prev, [collection.id]: true }));
+    //     await deleteCollection({id: collection.id});
+    //     setIsDeleteLoading((prev) => ({ ...prev, [collection.id]: false }));
 
-        window.location.reload();
-    }
+    //     window.location.reload();
+    // }
 
     return (
         <>
@@ -49,7 +49,13 @@ function CollectionsList({ collections, isProfile}: { collections: CollectionTyp
                     <div className="card-group" key={`row-${index}`}>
                         {collections.slice(index, index + cols).map((subCollection: CollectionType) => (
                             <div className={`col-md-${width} mb-4`} key={subCollection.id}>
-                                <a href="#" onClick={() => enterCollection(subCollection)}>
+                                <a 
+                                    href="#"
+                                    onClick={isProfile 
+                                        ? () => setSelectedCollection(subCollection) 
+                                        : () => enterCollection(subCollection)
+                                    }
+                                >
                                     <div className="card rounded mx-2">
                                         <img className="card-img-top card-img" src={subCollection.image || "/defaultImages/collection_default.jpg"} alt="collection image" />
                                         <div className={`card-body ${profileStyle}`}>
@@ -60,13 +66,13 @@ function CollectionsList({ collections, isProfile}: { collections: CollectionTyp
                                                 <button className="edit-button" onClick={(e) => handleEditCollection(e, subCollection)}>
                                                     <FontAwesomeIcon icon={faPenToSquare} />
                                                 </button>
-                                                <button className="delete-button ms-2" onClick={(e) => handleDeleteCollection(e, subCollection)}>
+                                                {/* <button className="delete-button ms-2" onClick={(e) => handleDeleteCollection(e, subCollection)}>
                                                 {isDeleteLoading[subCollection.id] ? (
                                                     <div className="spinner-border spinner-border-sm text-danger" role="status"></div>
                                                 ) : (
                                                     <FontAwesomeIcon icon={faTrashCan} />
                                                 )}
-                                                </button>
+                                                </button> */}
                                             </div>
                                             ) : (
                                                 <div className="row">

@@ -2,6 +2,7 @@ import User from "./UserType";
 
 interface ItemType {
     "id": number,
+    "tokenId": bigint,
     "owner": User,
     "collection": {
         "id": number
@@ -10,7 +11,7 @@ interface ItemType {
     "shortName": string,
     "views": number,
     "value": number,
-    "image": string
+    "image": string,
 }
 
 export default ItemType;

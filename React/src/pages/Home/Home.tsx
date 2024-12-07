@@ -22,6 +22,7 @@ function Home() {
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(false);
     const [collections, setCollections] = useState<CollectionType[]>([]);
+    const [isFetching, setIsFetching] = useState(false);
     const { ref, inView } = useInView({
         threshold: 0.2,
         triggerOnce: false,
@@ -30,45 +31,54 @@ function Home() {
     const { isLoading, fetchData: searchCollections } = useSearch(apiUrl + "collection");
 
     useEffect(() => {
-        if (hasMore) {
-            loadCollections();
-        }
-    }, [page])
-
-    useEffect(() => {
-        if (inView && hasMore) {
+        if (inView && hasMore && !isFetching) {
             setPage((prevPage) => prevPage + 1);
         }
-    }, [inView, hasMore]);
+    }, [inView, hasMore, isFetching]);
 
     useEffect(() => {
         const params = new URLSearchParams(search);
         const autoLogin = params.get("autoLogin");
         
         if (!autoLogin) {
-            setPage(1);
-            setCollections([]);
+            resetCollections();
             updateURL();
         }
     }, [sort, debouncedPhrase]);
 
     useEffect(() => {
         loadCollections();
-    }, [location.search]);
+    }, [location.search, page]);
+
+    const resetCollections = () => {
+        setPage(1);
+        setCollections([]);
+        setHasMore(true);
+    };
 
     const loadCollections = async () => {
+        if (isFetching) return;
+
+        setIsFetching(true);
         const params = new URLSearchParams(location.search);
         const sortFromUrl = params.get("sort") || "Popular";
         const phraseFromUrl = params.get("phrase") || "";
-    
+
         const newCollections = await searchCollections(phraseFromUrl, sortFromUrl, "", page);
+
         if (newCollections && newCollections.length > 0) {
-            setCollections((prevCollections) => [...prevCollections, ...newCollections]);
+            setCollections((prevCollections) => {
+                const mergedCollections = [...prevCollections, ...newCollections];
+                const uniqueCollections = Array.from(new Set(mergedCollections.map(c => c.id)))
+                    .map(id => mergedCollections.find(c => c.id === id));
+                return uniqueCollections;
+            });
             setHasMore(newCollections.length === 12);
         } else {
             setHasMore(false);
         }
-    }
+        setIsFetching(false);
+    };
 
     const updateURL = () => {
         const params = new URLSearchParams();
@@ -105,8 +115,8 @@ function Home() {
                     </div>
                 ) : (
                     <>
-                        <CollectionsList collections={collections} isProfile={false}/>
-                        {hasMore && collections.length != 0 && (
+                        <CollectionsList collections={collections} isProfile={false} />
+                        {hasMore && collections.length !== 0 && (
                             <>
                                 <div ref={ref} style={{ height: '20px' }} />
                                 <div className="d-flex justify-content-center">

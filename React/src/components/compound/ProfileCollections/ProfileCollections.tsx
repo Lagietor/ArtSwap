@@ -21,6 +21,7 @@ function ProfileCollections({ id, filter}: {id: string, filter: string}) {
     const navigate = useNavigate();
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(false);
+    const [isFetching, setIsFetching] = useState(false);
     const { ref, inView } = useInView({
         threshold: 0.2,
         triggerOnce: false,
@@ -47,11 +48,13 @@ function ProfileCollections({ id, filter}: {id: string, filter: string}) {
     }, [sort, debouncedPhrase, filter]);
 
     useEffect(() => {
-        console.log(location.search);
         loadCollections();
-    }, [location.search]);
+    }, [location.search, page]);
 
     const loadCollections = async () => {
+        if (isFetching) return;
+
+        setIsFetching(true);
         const params = new URLSearchParams(location.search);
         const filterFromUrl = params.get("filter") || "all";
         const sortFromUrl = params.get("sort") || "Popular";
@@ -64,6 +67,8 @@ function ProfileCollections({ id, filter}: {id: string, filter: string}) {
         } else {
             setHasMore(false);
         }
+
+        setIsFetching(false);
     }
 
     const updateURL = () => {
@@ -73,24 +78,6 @@ function ProfileCollections({ id, filter}: {id: string, filter: string}) {
         params.set("filter", filter);
         navigate({ search: params.toString() });
     };
-
-    // const handleEditCollection = (e: React.MouseEvent, collection: CollectionType) => {
-    //     e.stopPropagation();
-    //     setCollection(collection);
-    //     navigate(`/collection/${collection.id}/edit`);
-    //     window.location.reload();
-    // }
-
-    // const handleDeleteCollection = async (e: React.MouseEvent, collection: CollectionType) => {
-    //     e.preventDefault()
-    //     e.stopPropagation()
-
-    //     setIsDeleteLoading((prev) => ({ ...prev, [collection.id]: true }));
-    //     await deleteCollection({id: collection.id});
-    //     setIsDeleteLoading((prev) => ({ ...prev, [collection.id]: false }));
-
-    //     window.location.reload();
-    // }
 
     const handleBack = () => {
         setSelectedCollection(null);
@@ -116,7 +103,7 @@ function ProfileCollections({ id, filter}: {id: string, filter: string}) {
                             <>
                                 {collections.length > 0 ? (
                                     <>
-                                        <CollectionsList collections={collections} isProfile={true} />
+                                        <CollectionsList collections={collections} isProfile={true} setSelectedCollection={setSelectedCollection} />
                                         {hasMore && collections.length != 0 && (
                                             <>
                                                 <div ref={ref} style={{ height: '20px' }} />

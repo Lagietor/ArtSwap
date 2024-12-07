@@ -1,3 +1,16 @@
-/* * {
-    color: white;
-} */
+/* Make sure the app wrapper takes the full height of the screen */
+.app-wrapper {
+    min-height: 100vh; /* Ensure the wrapper is at least as tall as the viewport */
+    display: flex;
+    flex-direction: column; /* Stack content and footer vertically */
+  }
+  
+  /* Content should take up available space */
+  .content {
+    flex: 1; /* This allows the content to take up the remaining space */
+  }
+  
+  /* Footer will be pushed to the bottom */
+  footer {
+    margin-top: auto; /* This pushes the footer to the bottom of the container */
+  }

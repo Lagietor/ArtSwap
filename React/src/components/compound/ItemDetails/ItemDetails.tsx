@@ -1,14 +1,33 @@
 import "./ItemDetails.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LoginModal from "../LoginModal/LoginModal";
 import BuyNowModal from "../BuyNowModal/BuyNowModal";
 import ItemType from "../../../types/ItemType";
 import isUserLogged from "../../../utils/isUserLogged";
+import useUserWalletStore from "../../../store/useUserWalletStore";
+import { getTokenOwner } from "../../../utils/Contract/contractConnector";
+import getNftHistory from "../../../utils/Contract/getNftHistory";
+import NFTHistoryChart from "../NftHistoryChart/NftHistoryChart";
 
 function ItemDetails({ item }: { item: ItemType }) {
     const [showLoginModal, setShowLoginModal] = useState(false);
     const [showBuyNowModal, setShowBuyNowModal] = useState(false);
+    const [tokenOwner, setTokenOwner] = useState();
+    const { userWallet } = useUserWalletStore();
     const isLogged = isUserLogged();
+    const [history, setHistory ] = useState([]);
+
+    useEffect(() => {
+        const fetchTokenOwner = async () => {
+            const nftHistory = await getNftHistory(item.tokenId);
+            setHistory(nftHistory);
+            let tokenOwner = await getTokenOwner(item.tokenId);
+            tokenOwner = tokenOwner.toLowerCase();
+            setTokenOwner(tokenOwner);
+        }
+
+        fetchTokenOwner();
+    })
 
     const handleBuyNowClick = () => {
         if (isLogged) {
@@ -32,12 +51,9 @@ function ItemDetails({ item }: { item: ItemType }) {
                 <hr className="text-light"/>
                 <p className="text-light">Current Price: </p>
                 <h4 className="text-light">{item.value} ETH</h4>
-                <button className="btn btn-primary mt-4" onClick={handleBuyNowClick}>Buy Now</button>
+                <button className={`btn btn-primary mt-4 ${(isLogged && userWallet?.ethAddress == tokenOwner) && 'disabled'}`} onClick={handleBuyNowClick}>Buy Now</button>
                 <hr className="text-light" />
-                <p className="text-light">Some other data</p>
-            </div>
-            <div className="mt-5">
-                <h6 className="text-light">Here will be blockchain history</h6>
+                <NFTHistoryChart history={history} />
             </div>
         </div>
     );

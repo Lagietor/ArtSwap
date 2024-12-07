@@ -14,17 +14,17 @@
     background-color: #FBCA53;
    }
    
-   .submit-btn:hover {
+.submit-btn:hover {
     transform: translateY(-3px);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-   }
-   
-   .submit-btn:active {
+}
+
+.submit-btn:active {
     transform: translateY(-1px);
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-   }
-   
-   .submit-btn::after {
+}
+
+.submit-btn::after {
     content: "";
     display: inline-block;
     height: 100%;
@@ -35,13 +35,20 @@
     left: 0;
     z-index: -1;
     transition: all .4s;
-   }
-   
-   .submit-btn::after {
+}
+
+.submit-btn::after {
     background-color: #FBCA53;
-   }
-   
-   .submit-btn:hover::after {
+}
+
+.submit-btn:hover::after {
     transform: scaleX(1.4) scaleY(1.6);
     opacity: 0;
-   }
+}
+
+.submit-btn.disabled,
+.submit-btn:disabled {
+    background-color: #cccccc;
+    cursor: default;
+    pointer-events: none;
+}

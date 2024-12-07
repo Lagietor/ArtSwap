@@ -10,7 +10,6 @@ import FormInput from "../../atomic/FormInput/FormInput";
 import FormPasswordInput from "../../atomic/FormPasswordInput/FormPasswordInput";
 import SubmitButton from "../../atomic/SubmitButton/SubmitButton";
 import useUserStore from "../../../store/useUserStore";
-import MetaMaskButton from "../../atomic/MetaMaskButton/MetaMaskButton";
 
 function PopupLogin({ close }: {close: () => void }) {
     const apiUrl = import.meta.env.VITE_API_URL;
@@ -99,10 +98,6 @@ function PopupLogin({ close }: {close: () => void }) {
                 <div className="social-buttons">
                     <GoogleButton />
                     <GithubButton />
-                    {/* <MetaMaskButton /> */}
-                </div>
-                <div>
-                    <p className="text-light">Login with MetaMask</p>
                 </div>
             </div>
         </div>

@@ -10,7 +10,7 @@ function BuyNowModal({ open, handleClose }) {
             overlayStyle={{ background: 'rgba(0, 0, 0, 0.5)' }}
             contentStyle={{
                 width: '80%',
-                maxWidth: '400px',
+                maxWidth: '500px',
                 background: '#fff',
                 borderRadius: '5px',
                 boxShadow: '0 2px 5px rgba(0, 0, 0, 0.3)'

@@ -9,6 +9,8 @@ import SubmitButton from "../../components/atomic/SubmitButton/SubmitButton";
 import isUserLogged from "../../utils/isUserLogged";
 import useUserStore from "../../store/useUserStore";
 import useItemStore from "../../store/useItemStore";
+import editNFT from "../../utils/Contract/editNFT";
+import useUserWalletStore from "../../store/useUserWalletStore";
 
 function EditItem() {
     const apiUrl = import.meta.env.VITE_API_URL;
@@ -17,6 +19,7 @@ function EditItem() {
     const { user } = useUserStore();
     const { item, clearItem } = useItemStore();
     const { id } = useParams();
+    const { userWallet } = useUserWalletStore();
     const navigate = useNavigate();
 
     const {
@@ -29,15 +32,30 @@ function EditItem() {
 
     const onSubmit: SubmitHandler<{name: string; value: string; image: string}> = async (data) => {
         try {
+            let image = data.image[0];
+
+            if (image == undefined) {
+                image = item.image;
+            }
+
+            const metadata = {
+                name: data.name,
+                value: data.value,
+                image: image,
+            };
+
+            await editNFT(item?.tokenId, userWallet?.ethAddress, metadata, data.value);
+
             const formData = new FormData();
             formData.append("id", id);
             formData.append("name", data.name);
             formData.append("value", data.value);
-            formData.append("image", data.image[0]);
+            formData.append("image", image);
 
             await editItem(formData);
         } catch (error) {
-            toast.error("Something went wrong!");
+            const errorMessage = error?.message || "Something went wrong!";
+            toast.error(errorMessage);
         }
     }
 

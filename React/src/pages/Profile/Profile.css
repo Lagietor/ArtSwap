@@ -120,6 +120,12 @@
     background-color: #444;
 }
 
+.edit-button:disabled {
+    color: #a0a0a0;
+    background-color: #555;
+    cursor: not-allowed;
+}
+
 .delete-button {
     display: flex;
     padding: 7px 7px;
@@ -134,6 +140,12 @@
     
 .delete-button:hover {
     background-color: #444;
+}
+
+.delete-button:disabled {
+    color: #a0a0a0;
+    background-color: #555;
+    cursor: not-allowed;
 }
 
 .breadCrumb {

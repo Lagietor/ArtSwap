@@ -26,6 +26,7 @@ function Collection() {
     const [ phrase, setPhrase ] = useState("");
     const [ sort ] = useState("");
     const { fetchData: addView } = useApi(apiUrl + "collection/" + id + "/view");
+    const [isFetching, setIsFetching] = useState(false);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(false);
     const navigate = useNavigate();
@@ -55,6 +56,9 @@ function Collection() {
     }, [inView, hasMore]);
 
     const loadItems = async () => {
+        if (isFetching) return;
+
+        setIsFetching(true);
         const params = new URLSearchParams(location.search);
         const filterFromUrl = params.get("filter") || "all";
         const sortFromUrl = params.get("sort") || "Popular";
@@ -67,11 +71,13 @@ function Collection() {
         } else {
             setHasMore(false);
         }
+
+        setIsFetching(false);
     }
 
     useEffect(() => {
         loadItems();
-    }, [location.search]);
+    }, [location.search, page]);
 
     useEffect(() => {
         setPage(1);
@@ -86,15 +92,13 @@ function Collection() {
         navigate({ search: params.toString() });
     };
 
-    // Do naprawy
-    // useEffect(() => {
-    //     console.log('test');
-    //     addView();
-    // })
+    useEffect(() => {
+        addView();
+    }, [])
 
     const enterCreateItem = () => {
         navigate(`/collection/${id}/item/create`);
-        window.location.reload();
+        // window.location.reload();
     }
 
     return (

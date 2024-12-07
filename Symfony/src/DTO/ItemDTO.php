@@ -5,6 +5,7 @@ namespace App\DTO;
 class ItemDTO
 {
     private $id;
+    private $tokenId;
     private $collection;
     private $owner;
     private $name;
@@ -13,7 +14,7 @@ class ItemDTO
     private $views;
     private $image;
 
-    public function __construct($id, $collection, $owner, $name, $shortName, $value, $views, $image)
+    public function __construct($id, $collection, $owner, $name, $shortName, $value, $views, $image, $tokenId)
     {
         $this->id = $id;
         $this->collection = $collection;
@@ -23,6 +24,7 @@ class ItemDTO
         $this->value = $value;
         $this->views = $views;
         $this->image = $image;
+        $this->tokenId = $tokenId;
     }
 
     public function getId()
@@ -63,5 +65,10 @@ class ItemDTO
     public function getImage()
     {
         return $this->image;
+    }
+
+    public function getTokenId()
+    {
+        return $this->tokenId;
     }
 }
