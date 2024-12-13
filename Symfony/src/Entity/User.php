@@ -61,7 +61,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: NFTItem::class)]
     private Collection $nFTItems;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $backgroundImage = null;
 
     #[ORM\Column(length: 255, nullable: true)]

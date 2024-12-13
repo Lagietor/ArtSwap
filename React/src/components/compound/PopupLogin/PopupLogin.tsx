@@ -23,7 +23,7 @@ function PopupLogin({ close }: {close: () => void }) {
         formState: { errors },
     } = useForm<{email: string, password: string}>();
 
-    const { isLoading, response, error, fetchData: handleSubmitApi } = useApi(apiUrl + "login", "POST");
+    const { isLoading, response, error, fetchData: handleSubmitApi } = useApi(apiUrl + "login_check", "POST");
 
     useEffect(() => {
         document.documentElement.style.setProperty("--input-width", "100%");
@@ -44,7 +44,7 @@ function PopupLogin({ close }: {close: () => void }) {
         fetchUser();
     }, [response]);
 
-    const onSubmit: SubmitHandler<{ email: string, password: string}> = async(data) => {
+    const onSubmit: SubmitHandler<{ username: string, password: string}> = async(data) => {
         try {
             await handleSubmitApi(data);
         } catch (e: any) {
@@ -74,7 +74,7 @@ function PopupLogin({ close }: {close: () => void }) {
 
                         <FormInput
                             type="email"
-                            id="email"
+                            id="username"
                             register={register}
                             errors={errors}
                             placeholder="Enter email"

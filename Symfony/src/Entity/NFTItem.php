@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\NFTItemRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
@@ -34,11 +36,19 @@ class NFTItem
     #[ORM\Column]
     private ?int $views = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
 
     #[ORM\Column(type: Types::BIGINT)]
     private ?string $tokenId = null;
+
+    #[ORM\OneToMany(mappedBy: 'NftId', targetEntity: Order::class)]
+    private Collection $orders;
+
+    public function __construct()
+    {
+        $this->orders = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -125,6 +135,35 @@ class NFTItem
     public function setTokenId(string $tokenId): static
     {
         $this->tokenId = $tokenId;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Order>
+     */
+    public function getOrders(): Collection
+    {
+        return $this->orders;
+    }
+
+    public function addOrder(Order $order): static
+    {
+        if (!$this->orders->contains($order)) {
+            $this->orders->add($order);
+            $order->setNftId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrder(Order $order): static
+    {
+        if ($this->orders->removeElement($order)) {
+            if ($order->getNftId() === $this) {
+                $order->setNftId(null);
+            }
+        }
 
         return $this;
     }

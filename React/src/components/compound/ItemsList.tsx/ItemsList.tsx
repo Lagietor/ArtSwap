@@ -92,7 +92,7 @@ function ItemsList({items, isProfile}: {items: ItemType[], isProfile: boolean}) 
                     <div className="card-group" key={`row-${index}`}>
                         {items.slice(index, index + cols).map((subItem: ItemType) => (
                             <div className={`col-md-${width} mb-4`} key={subItem.id}>
-                                <a href="#" onClick={() => handlePreviewItem(subItem)}>
+                                <a href="" onClick={() => handlePreviewItem(subItem)}>
                                     <div className="card rounded mx-2">
                                         <img className="card-img-top card-img" src={subItem.image || "/defaultImages/item_default.jpg"} alt="item image" />
                                         <div className={`card-body ${profileStyle}`}>

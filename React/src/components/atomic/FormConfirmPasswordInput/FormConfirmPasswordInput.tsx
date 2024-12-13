@@ -1,12 +1,13 @@
 import './FormConfirmPasswordInput.css';
 
-const FormConfirmPasswordInput = ({ id, register, errors, password }) => {
+const FormConfirmPasswordInput = ({ id, register, errors, password, placeholder }) => {
     return (
         <div className="input-wrapper">
             <input
                 type="password"
                 id={id}
                 className="input-box"
+                placeholder={placeholder}
                 {...register(id, {
                     validate: (value) => value === password || "The passwords do not match"
                 })}

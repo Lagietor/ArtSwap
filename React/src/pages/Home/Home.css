@@ -24,6 +24,10 @@ body {
     background-color: #3a3a3a;
 }
 
+.category-btn.active:hover {
+    background-color: #FBCA53;
+}
+
 a {
     text-decoration: none;
 }

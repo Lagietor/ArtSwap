@@ -37,7 +37,7 @@ class NFTCollection
     #[ORM\Column]
     private ?int $views = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
 
     #[ORM\Column(length: 500, nullable: true)]
@@ -46,9 +46,13 @@ class NFTCollection
     #[ORM\OneToMany(mappedBy: 'collection', targetEntity: NFTItem::class)]
     private Collection $nFTItems;
 
+    #[ORM\OneToMany(mappedBy: 'collectionId', targetEntity: Order::class)]
+    private Collection $orders;
+
     public function __construct()
     {
         $this->nFTItems = new ArrayCollection();
+        $this->orders = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -176,6 +180,36 @@ class NFTCollection
             // set the owning side to null (unless already changed)
             if ($nFTItem->getCollection() === $this) {
                 $nFTItem->setCollection(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Order>
+     */
+    public function getOrders(): Collection
+    {
+        return $this->orders;
+    }
+
+    public function addOrder(Order $order): static
+    {
+        if (!$this->orders->contains($order)) {
+            $this->orders->add($order);
+            $order->setCollectionId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrder(Order $order): static
+    {
+        if ($this->orders->removeElement($order)) {
+            // set the owning side to null (unless already changed)
+            if ($order->getCollectionId() === $this) {
+                $order->setCollectionId(null);
             }
         }
 

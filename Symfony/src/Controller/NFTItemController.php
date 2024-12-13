@@ -4,10 +4,10 @@ namespace App\Controller;
 
 use App\Entity\NFTCollection;
 use App\Entity\NFTItem;
+use App\Entity\Order;
 use App\Entity\User;
 use App\Mapper\ItemMapper;
 use App\Mapper\UserMapper;
-use App\Service\NFTMetadataService;
 use App\Service\UploadImageService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -273,13 +273,14 @@ class NFTItemController extends AbstractController
             ]);
         }
 
-        if ($item->getOwner()->getId() == $buyerId) {
-            return $this->json([
-                'error' => 'You can\'t buy your own NFT'
-            ]);
-        }
+        $order = new Order();
+        $order->setNftId($item);
+        $order->setCollectionId($item->getCollection());
+        $order->setSalePrice($item->getValue());
 
         $item->setOwner($buyer);
+
+        $em->persist($order);
         $em->persist($item);
         $em->flush();
 

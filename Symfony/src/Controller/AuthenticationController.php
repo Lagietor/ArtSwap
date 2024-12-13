@@ -83,7 +83,7 @@ class AuthenticationController extends AbstractController
         ]);
     }
 
-    #[Route('/login', name: 'api_login', methods:['POST'])]
+    // #[Route('/login', name: 'api_login', methods:['POST'])]
     public function login(
         Request $request,
         EntityManagerInterface $em,
@@ -248,18 +248,5 @@ class AuthenticationController extends AbstractController
                 'roles' => $userDTO->getRoles()
             ]
         ]);
-    }
-
-    #[Route('/metamask-login', name: 'api_metamask_login', methods: ['POST'])]
-    public function metamaskLogin(
-        Request $request,
-        EntityManagerInterface $em,
-        JWTTokenManagerInterface $jwt,
-        UserPasswordHasherInterface $hasher
-    ) {
-        $data = json_decode($request->getContent(), true);
-
-        $userAddress = $data['address'];
-        // Logowanie za pomocą Metamask dokończę później
     }
 }

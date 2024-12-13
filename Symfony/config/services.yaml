@@ -23,14 +23,13 @@ services:
     App\EventSubscriber\JWTCreatedSubscriber:
          tags:
             - { name: 'kernel.event_subscriber' }
+    App\EventSubscriber\JWTAuthenticationSuccessSubscriber:
+        tags:
+            - { name: kernel.event_subscriber }
 
     gedmo.listener.timestampable:
         class: Gedmo\Timestampable\TimestampableListener
         tags:
             - { name: doctrine.event_subscriber, connection: default }
-    App\Service\NFTMetadataService:
-        arguments:
-            $pinataApiUrl: '%env(PINATA_API_URL)%'
-            $pinataJwtToken: '%env(PINATA_JWT_TOKEN)%'
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

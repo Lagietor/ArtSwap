@@ -32,12 +32,12 @@ class UserController extends AbstractController
     public function get(
         EntityManagerInterface $em,
         UserMapper $userMapper,
-        int $id
+        int $id,
+        Request $request
     ): JsonResponse
     {
-        return $this->json([
-            'id' => $id
-        ]);
+        $headers = $request->headers->all();
+
         /**
          * @var User $user
          */
@@ -86,7 +86,7 @@ class UserController extends AbstractController
         if (isset($request['email'])) {
             $userExists = $em->getRepository(User::class)->findOneBy(['email' => $request['email']]);
 
-            if ($userExists) {
+            if ($userExists && $user->getEmail() != $email) {
                 return $this->json([
                     'message' => 'This email is already registered'
                 ], 400);
